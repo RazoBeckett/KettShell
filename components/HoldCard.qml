@@ -38,13 +38,24 @@ Rectangle {
 
   Behavior on scale { NumberAnimation { duration: 200; easing.type: Easing.OutCubic } }
 
+  readonly property real innerRadius: Math.max(0, root.radius - root.border.width)
+  readonly property real fillHeight: Math.max(0, (root.height - 2 * root.border.width) * root.fillLevel)
+  readonly property real fillCornerRadius: Math.min(innerRadius, fillHeight / 2)
+
   Rectangle {
-    x: 0
-    y: parent.height - parent.height * root.fillLevel
-    width: parent.width
-    height: parent.height * root.fillLevel
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    anchors.leftMargin: root.border.width
+    anchors.rightMargin: root.border.width
+    anchors.bottomMargin: root.border.width
+    height: root.fillHeight
     color: root.accentColor
     opacity: 0.35
+    bottomLeftRadius: root.fillCornerRadius
+    bottomRightRadius: root.fillCornerRadius
+    topLeftRadius: root.fillLevel >= 0.999 ? root.fillCornerRadius : 0
+    topRightRadius: root.fillLevel >= 0.999 ? root.fillCornerRadius : 0
   }
 
   Rectangle {
