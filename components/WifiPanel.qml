@@ -90,6 +90,22 @@ PanelWindow {
     return network.security !== WifiSecurityType.Open && network.security !== WifiSecurityType.Owe
   }
 
+  function securityLabel(network) {
+    if (!network) return "—"
+    switch (network.security) {
+      case WifiSecurityType.Open: return "Open"
+      case WifiSecurityType.Owe: return "OWE"
+      case WifiSecurityType.Wep: return "WEP"
+      case WifiSecurityType.WpaPsk: return "WPA-PSK"
+      case WifiSecurityType.Wpa2Psk: return "WPA2-PSK"
+      case WifiSecurityType.WpaEap: return "WPA-EAP"
+      case WifiSecurityType.Wpa2Eap: return "WPA2-EAP"
+      case WifiSecurityType.Sae: return "WPA3-SAE"
+      case WifiSecurityType.Wpa3Eap: return "WPA3-EAP"
+      default: return "Secured"
+    }
+  }
+
   function statusText(network) {
     if (!network) return ""
     if (network.stateChanging) return "Connecting..."
@@ -288,24 +304,37 @@ PanelWindow {
               Rectangle {
                 id: connectedRow
                 Layout.fillWidth: true
-                Layout.preferredHeight: root.expandedNetwork === root.effectiveCenter ? 100 : 62
-                color: connectedHeaderMa.containsMouse ? Colors.surface : (root.expandedNetwork === root.effectiveCenter ? Colors.card : Colors.transparent)
+                Layout.preferredHeight: mainCol.implicitHeight
+                color: connHover.hovered ? Colors.surface : (root.expandedNetwork === root.effectiveCenter ? Colors.card : Colors.transparent)
                 opacity: root.wifiCenter ? 1.0 : 0.72
                 Behavior on color { ColorAnimation { duration: 90 } }
                 clip: true
+                HoverHandler { id: connHover }
 
                 ColumnLayout {
+                  id: mainCol
                   anchors.fill: parent
                   spacing: 0
 
                   Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 62
+                    MouseArea {
+                      id: connectedHeaderMa
+                      anchors.fill: parent
+                      z: 0
+                      cursorShape: Qt.PointingHandCursor
+                      onClicked: {
+                        if (root.expandedNetwork === root.effectiveCenter) root.expandedNetwork = null
+                        else root.expandedNetwork = root.effectiveCenter
+                      }
+                    }
                     RowLayout {
                       anchors.fill: parent
                       anchors.leftMargin: 16
                       anchors.rightMargin: 12
                       spacing: 12
+                      z: 1
                       Text { text: root.signalIcon(root.effectiveCenter); color: Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 20 }
                       ColumnLayout {
                         Layout.fillWidth: true
@@ -313,40 +342,56 @@ PanelWindow {
                         Text { text: root.effectiveCenter ? (root.effectiveCenter.name || "Hidden Network") : ""; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
                         Text { text: root.wifiCenter ? root.statusText(root.effectiveCenter) : "Connected, secured"; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                       }
-                      Text { visible: false; text: "●"; color: Colors.blue; font.pixelSize: 8 }
-                    }
-                    MouseArea {
-                      id: connectedHeaderMa
-                      anchors.fill: parent
-                      hoverEnabled: true
-                      cursorShape: Qt.PointingHandCursor
-                      z: 0
-                      onClicked: {
-                        if (root.expandedNetwork === root.effectiveCenter) root.expandedNetwork = null
-                        else root.expandedNetwork = root.effectiveCenter
+                      Item { Layout.fillWidth: true }
+                      Rectangle {
+                        width: 28
+                        height: 28
+                        radius: 0
+                        color: wifiDiscHover.containsMouse ? Colors.red : Colors.card
+                        border.color: wifiDiscHover.containsMouse ? Colors.red : Colors.border
+                        border.width: 1
+                        opacity: (connHover.hovered || root.expandedNetwork === root.effectiveCenter) ? 1 : 0
+                        enabled: connHover.hovered || root.expandedNetwork === root.effectiveCenter
+                        Behavior on opacity { NumberAnimation { duration: 90 } }
+                        Behavior on color { ColorAnimation { duration: 90 } }
+                        Text { anchors.centerIn: parent; text: String.fromCodePoint(0xF0338); color: wifiDiscHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 14 }
+                        MouseArea { id: wifiDiscHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; enabled: root.wifiCenter !== null && (connHover.hovered || root.expandedNetwork === root.effectiveCenter); onClicked: root.connectTo(root.effectiveCenter) }
                       }
                     }
                   }
-
-                  // expanded actions — above the header mousearea via z
-                  RowLayout {
+                  ColumnLayout {
+                    id: expandedInfo
                     visible: root.expandedNetwork === root.effectiveCenter
                     Layout.fillWidth: true
                     Layout.leftMargin: 48
                     Layout.rightMargin: 12
+                    Layout.topMargin: 6
                     Layout.bottomMargin: 10
-                    spacing: 8
-                    z: 1
-                    Rectangle {
-                      Layout.preferredWidth: 84
-                      Layout.preferredHeight: 28
-                      color: discMa.containsMouse ? Colors.surface : Colors.card
-                      border.color: Colors.border
-                      border.width: 1
-                      Text { anchors.centerIn: parent; text: "Disconnect"; color: Colors.foreground; font.pixelSize: 12; font.family: Config.font.family }
-                      MouseArea { id: discMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; enabled: root.wifiCenter !== null; onClicked: root.connectTo(root.effectiveCenter) }
+                    spacing: 4
+                    RowLayout {
+                      Layout.fillWidth: true
+                      spacing: 8
+                      Text { text: "Interface"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
+                      Text { text: root.wifiDevice ? root.wifiDevice.name : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
                     }
-                    Item { Layout.fillWidth: true }
+                    RowLayout {
+                      Layout.fillWidth: true
+                      spacing: 8
+                      Text { text: "MAC"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
+                      Text { text: root.wifiDevice ? root.wifiDevice.address : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
+                    }
+                    RowLayout {
+                      Layout.fillWidth: true
+                      spacing: 8
+                      Text { text: "Signal"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
+                      Text { text: root.effectiveCenter ? Math.round(root.effectiveCenter.signalStrength * 100) + "%" : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; Layout.fillWidth: true }
+                    }
+                    RowLayout {
+                      Layout.fillWidth: true
+                      spacing: 8
+                      Text { text: "Security"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
+                      Text { text: root.effectiveCenter ? securityLabel(root.effectiveCenter) : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
+                    }
                   }
                 }
               }
