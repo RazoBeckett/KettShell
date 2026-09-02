@@ -7,6 +7,7 @@ Scope {
   id: root
 
   WifiPanel {}
+  BluetoothPanel {}
 
   Variants {
     model: Quickshell.screens

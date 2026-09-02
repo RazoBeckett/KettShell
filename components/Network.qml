@@ -8,6 +8,7 @@ WrapperMouseArea {
   id: root
   hoverEnabled: true
   cursorShape: Qt.PointingHandCursor
+  acceptedButtons: Qt.LeftButton | Qt.RightButton
 
   property var wifiDevice: Networking.devices.values.find(d => d.type === DeviceType.Wifi)
   property var active: wifiDevice ? wifiDevice.networks.values.find(n => n.connected) : null
@@ -52,5 +53,13 @@ WrapperMouseArea {
     }
   }
 
-  onClicked: NetworkMenuState.visible = !NetworkMenuState.visible
+  onClicked: mouse => {
+    if (mouse.button === Qt.RightButton) {
+      BluetoothMenuState.visible = !BluetoothMenuState.visible
+      if (BluetoothMenuState.visible) NetworkMenuState.visible = false
+    } else if (mouse.button === Qt.LeftButton) {
+      NetworkMenuState.visible = !NetworkMenuState.visible
+      if (NetworkMenuState.visible) BluetoothMenuState.visible = false
+    }
+  }
 }

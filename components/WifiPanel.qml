@@ -56,6 +56,7 @@ PanelWindow {
 
   onWifiCenterChanged: if (wifiCenter) cachedCenter = wifiCenter
   onVisibleChanged: {
+    if (visible) BluetoothMenuState.visible = false
     if (visible && wifiOn && wifiDevice) wifiDevice.scannerEnabled = true
     if (!visible) {
       expandedNetwork = null
