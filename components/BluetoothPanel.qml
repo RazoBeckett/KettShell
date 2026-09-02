@@ -302,10 +302,11 @@ PanelWindow {
                   required property var modelData
                   required property int index
                   Layout.fillWidth: true
-                  Layout.preferredHeight: root.expandedDevice === modelData ? 100 : 62
-                  color: connHeaderMa.containsMouse ? Colors.surface : (root.expandedDevice === modelData ? Colors.card : Colors.transparent)
+                  Layout.preferredHeight: root.expandedDevice === modelData ? 84 : 62
+                  color: connHover.hovered ? Colors.surface : (root.expandedDevice === modelData ? Colors.card : Colors.transparent)
                   clip: true
                   Behavior on color { ColorAnimation { duration: 90 } }
+                  HoverHandler { id: connHover }
 
                   ColumnLayout {
                     anchors.fill: parent
@@ -314,11 +315,22 @@ PanelWindow {
                     Item {
                       Layout.fillWidth: true
                       Layout.preferredHeight: 62
+                      MouseArea {
+                        id: connHeaderMa
+                        anchors.fill: parent
+                        z: 0
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                          if (root.expandedDevice === connRow.modelData) root.expandedDevice = null
+                          else root.expandedDevice = connRow.modelData
+                        }
+                      }
                       RowLayout {
                         anchors.fill: parent
                         anchors.leftMargin: 16
                         anchors.rightMargin: 12
                         spacing: 12
+                        z: 1
                         Text { text: root.deviceIcon(connRow.modelData); color: Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 20 }
                         ColumnLayout {
                           Layout.fillWidth: true
@@ -326,16 +338,33 @@ PanelWindow {
                           Text { text: connRow.modelData.name || connRow.modelData.deviceName || connRow.modelData.address; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
                           Text { text: root.statusText(connRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                         }
-                      }
-                      MouseArea {
-                        id: connHeaderMa
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        z: 0
-                        onClicked: {
-                          if (root.expandedDevice === connRow.modelData) root.expandedDevice = null
-                          else root.expandedDevice = connRow.modelData
+                        Item { Layout.fillWidth: true }
+                        RowLayout {
+                          visible: connHover.hovered || root.expandedDevice === connRow.modelData
+                          spacing: 6
+                          z: 1
+                          Rectangle {
+                            width: 28
+                            height: 28
+                            radius: 0
+                            color: discHover.containsMouse ? Colors.red : Colors.card
+                            border.color: discHover.containsMouse ? Colors.red : Colors.border
+                            border.width: 1
+                            Behavior on color { ColorAnimation { duration: 90 } }
+                            Text { anchors.centerIn: parent; text: String.fromCodePoint(0xF0338); color: discHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 14 }
+                            MouseArea { id: discHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.handleDeviceClick(connRow.modelData) }
+                          }
+                          Rectangle {
+                            width: 28
+                            height: 28
+                            radius: 0
+                            color: forgetHover.containsMouse ? Colors.yellow : Colors.card
+                            border.color: forgetHover.containsMouse ? Colors.yellow : Colors.border
+                            border.width: 1
+                            Behavior on color { ColorAnimation { duration: 90 } }
+                            Text { anchors.centerIn: parent; text: String.fromCodePoint(0xEAD0); color: forgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 13 }
+                            MouseArea { id: forgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { connRow.modelData.forget(); root.expandedDevice = null } }
+                          }
                         }
                       }
                     }
@@ -348,24 +377,6 @@ PanelWindow {
                       Layout.bottomMargin: 10
                       spacing: 8
                       z: 1
-                      Rectangle {
-                        Layout.preferredWidth: 84
-                        Layout.preferredHeight: 28
-                        color: discMa.containsMouse ? Colors.surface : Colors.card
-                        border.color: Colors.border
-                        border.width: 1
-                        Text { anchors.centerIn: parent; text: "Disconnect"; color: Colors.foreground; font.pixelSize: 12; font.family: Config.font.family }
-                        MouseArea { id: discMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.handleDeviceClick(connRow.modelData) }
-                      }
-                      Rectangle {
-                        Layout.preferredWidth: 72
-                        Layout.preferredHeight: 28
-                        color: forgetConnMa.containsMouse ? Colors.surface : Colors.card
-                        border.color: Colors.border
-                        border.width: 1
-                        Text { anchors.centerIn: parent; text: "Forget"; color: Colors.foreground; font.pixelSize: 12; font.family: Config.font.family }
-                        MouseArea { id: forgetConnMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { connRow.modelData.forget(); root.expandedDevice = null } }
-                      }
                       Item { Layout.fillWidth: true }
                       Text { visible: connRow.modelData ? connRow.modelData.address.length > 0 : false; text: connRow.modelData ? connRow.modelData.address : ""; color: Colors.white; font.pixelSize: 10; font.family: Config.font.family; elide: Text.ElideRight; Layout.maximumWidth: 110 }
                     }
@@ -393,10 +404,11 @@ PanelWindow {
                 required property var modelData
                 required property int index
                 Layout.fillWidth: true
-                Layout.preferredHeight: root.expandedDevice === modelData ? 100 : 62
-                color: availHeaderMa.containsMouse ? Colors.surface : (root.expandedDevice === modelData ? Colors.card : Colors.transparent)
+                Layout.preferredHeight: root.expandedDevice === modelData ? 84 : 62
+                color: availHover.hovered ? Colors.surface : (root.expandedDevice === modelData ? Colors.card : Colors.transparent)
                 clip: true
                 Behavior on color { ColorAnimation { duration: 90 } }
+                HoverHandler { id: availHover }
 
                 Rectangle {
                   anchors.left: parent.left
@@ -413,11 +425,22 @@ PanelWindow {
                   Item {
                     Layout.fillWidth: true
                     Layout.preferredHeight: 62
+                    MouseArea {
+                      id: availHeaderMa
+                      anchors.fill: parent
+                      z: 0
+                      cursorShape: Qt.PointingHandCursor
+                      onClicked: {
+                        if (root.expandedDevice === availRow.modelData) root.expandedDevice = null
+                        else root.expandedDevice = availRow.modelData
+                      }
+                    }
                     RowLayout {
                       anchors.fill: parent
                       anchors.leftMargin: 16
                       anchors.rightMargin: 12
                       spacing: 12
+                      z: 1
                       Text { text: root.deviceIcon(availRow.modelData); color: Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 20 }
                       ColumnLayout {
                         Layout.fillWidth: true
@@ -425,23 +448,34 @@ PanelWindow {
                         Text { text: availRow.modelData.name || availRow.modelData.deviceName || availRow.modelData.address; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
                         Text { text: availRow.modelData === null ? "" : root.statusText(availRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                       }
-                      Text {
-                        visible: availRow.modelData ? availRow.modelData.paired : false
-                        text: String.fromCodePoint(0xF033E)
-                        color: Colors.white
-                        font.family: Config.iconFont.family
-                        font.pixelSize: 12
-                      }
-                    }
-                    MouseArea {
-                      id: availHeaderMa
-                      anchors.fill: parent
-                      hoverEnabled: true
-                      cursorShape: Qt.PointingHandCursor
-                      z: 0
-                      onClicked: {
-                        if (root.expandedDevice === availRow.modelData) root.expandedDevice = null
-                        else root.expandedDevice = availRow.modelData
+                      Item { Layout.fillWidth: true; visible: availHover.hovered }
+                      RowLayout {
+                        visible: availHover.hovered
+                        spacing: 6
+                        z: 1
+                        Rectangle {
+                          visible: availRow.modelData ? availRow.modelData.paired : false
+                          width: 28
+                          height: 28
+                          radius: 0
+                          color: availForgetHover.containsMouse ? Colors.yellow : Colors.card
+                          border.color: availForgetHover.containsMouse ? Colors.yellow : Colors.border
+                          border.width: 1
+                          Behavior on color { ColorAnimation { duration: 90 } }
+                          Text { anchors.centerIn: parent; text: String.fromCodePoint(0xEAD0); color: availForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 13 }
+                          MouseArea { id: availForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { availRow.modelData.forget(); root.expandedDevice = null } }
+                        }
+                        Rectangle {
+                          width: 28
+                          height: 28
+                          radius: 0
+                          color: availConnHover.containsMouse ? Qt.lighter(Colors.blue, 1.22) : Colors.blue
+                          border.color: availConnHover.containsMouse ? Colors.foreground : Colors.border
+                          border.width: 1
+                          Behavior on color { ColorAnimation { duration: 90 } }
+                          Text { anchors.centerIn: parent; text: availRow.modelData && availRow.modelData.paired ? String.fromCodePoint(0xF0337) : String.fromCodePoint(0xF0C94); color: Colors.black; font.family: Config.iconFont.family; font.pixelSize: 14 }
+                          MouseArea { id: availConnHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.handleDeviceClick(availRow.modelData) }
+                        }
                       }
                     }
                   }
@@ -464,38 +498,7 @@ PanelWindow {
                       Layout.maximumWidth: 120
                       Layout.fillWidth: true
                     }
-
-                    Rectangle {
-                      visible: availRow.modelData ? availRow.modelData.paired : false
-                      Layout.preferredWidth: 72
-                      Layout.preferredHeight: 28
-                      color: forgetMa.containsMouse ? Colors.surface : Colors.card
-                      border.color: Colors.border
-                      border.width: 1
-                      Text { anchors.centerIn: parent; text: "Forget"; color: Colors.foreground; font.pixelSize: 12; font.family: Config.font.family }
-                      MouseArea { id: forgetMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { availRow.modelData.forget(); root.expandedDevice = null } }
-                    }
-
-                    Rectangle {
-                      Layout.preferredWidth: 72
-                      Layout.preferredHeight: 28
-                      color: connMa.containsMouse ? Qt.lighter(Colors.blue, 1.08) : Colors.blue
-                      visible: availRow.modelData ? !availRow.modelData.pairing && availRow.modelData.state !== BluetoothDeviceState.Connecting : true
-                      Text {
-                        anchors.centerIn: parent
-                        text: availRow.modelData ? (availRow.modelData.paired ? "Connect" : "Pair") : "Connect"
-                        color: Colors.black
-                        font.pixelSize: 12
-                        font.family: Config.font.family
-                      }
-                      MouseArea {
-                        id: connMa
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        onClicked: root.handleDeviceClick(availRow.modelData)
-                      }
-                    }
+                    Item { Layout.fillWidth: true }
                     Text { visible: availRow.modelData ? (availRow.modelData.pairing || availRow.modelData.state === BluetoothDeviceState.Connecting) : false; text: "Connecting..."; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                   }
                 }
