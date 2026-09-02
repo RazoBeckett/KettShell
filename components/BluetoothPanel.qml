@@ -1,27 +1,13 @@
 import ".."
-import Quickshell
 import Quickshell.Bluetooth
-import Quickshell.Hyprland
-import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 
-// Bluetooth flyout — mirrors WifiPanel layout and styling
-PanelWindow {
+PopupCard {
   id: root
-  anchors {
-    top: true
-    right: true
-  }
-  margins.top: Config.height + Config.margin
-  margins.right: Config.margin
-  implicitWidth: 360
-  implicitHeight: 460
-  exclusionMode: ExclusionMode.Ignore
-  WlrLayershell.layer: WlrLayer.Overlay
-  color: Colors.transparent
-  visible: BluetoothMenuState.visible
-  focusable: BluetoothMenuState.visible
+  popoutKind: "bluetooth"
+  contentWidth: 360
+  contentHeight: 460
 
   property var adapter: Bluetooth.defaultAdapter
   readonly property bool bluetoothOn: adapter ? adapter.enabled : false
@@ -46,23 +32,18 @@ PanelWindow {
     return all
   }
 
-  onVisibleChanged: {
-    if (visible) NetworkMenuState.visible = false
-    if (visible && bluetoothOn && adapter && !adapter.discovering) adapter.discovering = true
-    if (!visible) expandedDevice = null
+  onOpenChanged: {
+    if (open && bluetoothOn && adapter && !adapter.discovering) adapter.discovering = true
+    if (!open) expandedDevice = null
   }
 
   Timer {
     interval: 4000
-    running: root.visible && root.bluetoothOn && root.adapter !== null
+    running: root.open && root.bluetoothOn && root.adapter !== null
     repeat: true
     onTriggered: if (root.adapter && !root.adapter.discovering) root.adapter.discovering = true
   }
 
-  Shortcut {
-    sequence: "Escape"
-    onActivated: BluetoothMenuState.visible = false
-  }
 
   function deviceIcon(device) {
     if (!device) return String.fromCodePoint(0xF00AF)
@@ -98,19 +79,6 @@ PanelWindow {
       return
     }
     device.connect()
-  }
-
-  HyprlandFocusGrab {
-    active: root.visible
-    windows: [root]
-    onCleared: BluetoothMenuState.visible = false
-  }
-
-  // fallback inside-panel click to close — behind bg so it does not block bg input
-  MouseArea {
-    anchors.fill: parent
-    z: -1
-    onClicked: BluetoothMenuState.visible = false
   }
 
   Rectangle {

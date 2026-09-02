@@ -1,27 +1,13 @@
 import ".."
-import Quickshell
-import Quickshell.Hyprland
 import Quickshell.Networking
-import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
 
-// Windows 10 network flyout — minimal, flat, fixed height
-PanelWindow {
+PopupCard {
   id: root
-  anchors {
-    top: true
-    right: true
-  }
-  margins.top: Config.height + Config.margin
-  margins.right: Config.margin
-  implicitWidth: 360
-  implicitHeight: 460
-  exclusionMode: ExclusionMode.Ignore
-  WlrLayershell.layer: WlrLayer.Overlay
-  color: Colors.transparent
-  visible: NetworkMenuState.visible
-  focusable: NetworkMenuState.visible
+  popoutKind: "wifi"
+  contentWidth: 360
+  contentHeight: 460
 
   property var wifiDevice: Networking.devices.values.find(d => d.type === DeviceType.Wifi) || null
   property var pendingNetwork: null
@@ -56,10 +42,9 @@ PanelWindow {
   readonly property bool wifiOn: Networking.wifiEnabled
 
   onWifiCenterChanged: if (wifiCenter) cachedCenter = wifiCenter
-  onVisibleChanged: {
-    if (visible) BluetoothMenuState.visible = false
-    if (visible && wifiOn && wifiDevice) wifiDevice.scannerEnabled = true
-    if (!visible) {
+  onOpenChanged: {
+    if (open && wifiOn && wifiDevice) wifiDevice.scannerEnabled = true
+    if (!open) {
       expandedNetwork = null
       pendingNetwork = null
       password = ""
@@ -69,15 +54,11 @@ PanelWindow {
 
   Timer {
     interval: 4000
-    running: root.visible && root.wifiOn && root.wifiDevice !== null
+    running: root.open && root.wifiOn && root.wifiDevice !== null
     repeat: true
     onTriggered: if (root.wifiDevice) root.wifiDevice.scannerEnabled = true
   }
 
-  Shortcut {
-    sequence: "Escape"
-    onActivated: NetworkMenuState.visible = false
-  }
 
   function signalIcon(network) {
     let s = network ? network.signalStrength : 0
@@ -145,17 +126,14 @@ PanelWindow {
     }
   }
 
-  HyprlandFocusGrab {
-    active: root.visible
-    windows: [root]
-    onCleared: NetworkMenuState.visible = false
-  }
-
-  // fallback inside-panel click to close — behind bg so it does not block bg input
-  MouseArea {
-    anchors.fill: parent
-    z: -1
-    onClicked: NetworkMenuState.visible = false
+  function forgetNetwork(network) {
+    if (!network) return
+    network.forget()
+    if (expandedNetwork === network) expandedNetwork = null
+    if (pendingNetwork === network) {
+      pendingNetwork = null
+      password = ""
+    }
   }
 
   Rectangle {
@@ -350,19 +328,35 @@ PanelWindow {
                         Text { text: root.statusText(root.effectiveCenter); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                       }
                       Item { Layout.fillWidth: true }
-                      Rectangle {
-                        width: 28
-                        height: 28
-                        radius: 0
-                        color: wifiDiscHover.containsMouse ? Colors.red : Colors.card
-                        border.color: wifiDiscHover.containsMouse ? Colors.red : Colors.border
-                        border.width: 1
+                      RowLayout {
                         opacity: (connHover.hovered || root.expandedNetwork === root.effectiveCenter) ? 1 : 0
                         enabled: connHover.hovered || root.expandedNetwork === root.effectiveCenter
+                        spacing: 6
                         Behavior on opacity { NumberAnimation { duration: 90 } }
-                        Behavior on color { ColorAnimation { duration: 90 } }
-                        Text { anchors.centerIn: parent; text: String.fromCodePoint(0xF0338); color: wifiDiscHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 14 }
-                        MouseArea { id: wifiDiscHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; enabled: root.wifiCenter !== null && (connHover.hovered || root.expandedNetwork === root.effectiveCenter); onClicked: root.connectTo(root.effectiveCenter) }
+
+                        Rectangle {
+                          width: 28
+                          height: 28
+                          radius: 0
+                          color: wifiDiscHover.containsMouse ? Colors.red : Colors.card
+                          border.color: wifiDiscHover.containsMouse ? Colors.red : Colors.border
+                          border.width: 1
+                          Behavior on color { ColorAnimation { duration: 90 } }
+                          Text { anchors.centerIn: parent; text: String.fromCodePoint(0xF0338); color: wifiDiscHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 14 }
+                          MouseArea { id: wifiDiscHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; enabled: root.wifiCenter !== null; onClicked: root.connectTo(root.effectiveCenter) }
+                        }
+                        Rectangle {
+                          visible: root.effectiveCenter ? root.effectiveCenter.known : false
+                          width: 28
+                          height: 28
+                          radius: 0
+                          color: wifiForgetHover.containsMouse ? Colors.yellow : Colors.card
+                          border.color: wifiForgetHover.containsMouse ? Colors.yellow : Colors.border
+                          border.width: 1
+                          Behavior on color { ColorAnimation { duration: 90 } }
+                          Text { anchors.centerIn: parent; text: String.fromCodePoint(0xEAD0); color: wifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 13 }
+                          MouseArea { id: wifiForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.forgetNetwork(root.effectiveCenter) }
+                        }
                       }
                     }
                   }
@@ -441,6 +435,7 @@ PanelWindow {
                       anchors.leftMargin: 16
                       anchors.rightMargin: 12
                       spacing: 12
+                      z: 1
                       Text { text: root.signalIcon(netRow.modelData); color: Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 20 }
                       ColumnLayout {
                         Layout.fillWidth: true
@@ -448,7 +443,19 @@ PanelWindow {
                         Text { text: netRow.modelData.name || "Hidden Network"; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
                         Text { text: netRow.modelData === root.connectingNetwork ? "Connecting..." : root.statusText(netRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                       }
-                      Text { visible: netRow.modelData && netRow.modelData.security !== WifiSecurityType.Open && netRow.modelData.security !== WifiSecurityType.Owe; text: String.fromCodePoint(0xF033E); color: Colors.white; font.family: Config.iconFont.family; font.pixelSize: 12 }
+                      Text { visible: netRow.modelData && netRow.modelData.security !== WifiSecurityType.Open && netRow.modelData.security !== WifiSecurityType.Owe && !(netRow.modelData.known && (headerMa.containsMouse || root.expandedNetwork === netRow.modelData)); text: String.fromCodePoint(0xF033E); color: Colors.white; font.family: Config.iconFont.family; font.pixelSize: 12 }
+                      Rectangle {
+                        visible: netRow.modelData ? netRow.modelData.known && (headerMa.containsMouse || root.expandedNetwork === netRow.modelData) : false
+                        width: 28
+                        height: 28
+                        radius: 0
+                        color: availWifiForgetHover.containsMouse ? Colors.yellow : Colors.card
+                        border.color: availWifiForgetHover.containsMouse ? Colors.yellow : Colors.border
+                        border.width: 1
+                        Behavior on color { ColorAnimation { duration: 90 } }
+                        Text { anchors.centerIn: parent; text: String.fromCodePoint(0xEAD0); color: availWifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 13 }
+                        MouseArea { id: availWifiForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.forgetNetwork(netRow.modelData) }
+                      }
                     }
                     MouseArea {
                       id: headerMa
