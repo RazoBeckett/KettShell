@@ -1,6 +1,7 @@
 import ".."
 import Quickshell
 import Quickshell.Bluetooth
+import Quickshell.Hyprland
 import Quickshell.Wayland
 import QtQuick
 import QtQuick.Layouts
@@ -99,7 +100,13 @@ PanelWindow {
     device.connect()
   }
 
-  // outside click to close — behind bg so it does not block bg input
+  HyprlandFocusGrab {
+    active: root.visible
+    windows: [root]
+    onCleared: BluetoothMenuState.visible = false
+  }
+
+  // fallback inside-panel click to close — behind bg so it does not block bg input
   MouseArea {
     anchors.fill: parent
     z: -1
@@ -454,6 +461,17 @@ PanelWindow {
                         spacing: 6
                         z: 1
                         Rectangle {
+                          width: 28
+                          height: 28
+                          radius: 0
+                          color: availConnHover.containsMouse ? Qt.lighter(Colors.blue, 1.22) : Colors.blue
+                          border.color: availConnHover.containsMouse ? Colors.foreground : Colors.border
+                          border.width: 1
+                          Behavior on color { ColorAnimation { duration: 90 } }
+                          Text { anchors.centerIn: parent; text: availRow.modelData && availRow.modelData.paired ? String.fromCodePoint(0xF0337) : String.fromCodePoint(0xF0C94); color: Colors.black; font.family: Config.iconFont.family; font.pixelSize: 14 }
+                          MouseArea { id: availConnHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.handleDeviceClick(availRow.modelData) }
+                        }
+                        Rectangle {
                           visible: availRow.modelData ? availRow.modelData.paired : false
                           width: 28
                           height: 28
@@ -464,17 +482,6 @@ PanelWindow {
                           Behavior on color { ColorAnimation { duration: 90 } }
                           Text { anchors.centerIn: parent; text: String.fromCodePoint(0xEAD0); color: availForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 13 }
                           MouseArea { id: availForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { availRow.modelData.forget(); root.expandedDevice = null } }
-                        }
-                        Rectangle {
-                          width: 28
-                          height: 28
-                          radius: 0
-                          color: availConnHover.containsMouse ? Qt.lighter(Colors.blue, 1.22) : Colors.blue
-                          border.color: availConnHover.containsMouse ? Colors.foreground : Colors.border
-                          border.width: 1
-                          Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: availRow.modelData && availRow.modelData.paired ? String.fromCodePoint(0xF0337) : String.fromCodePoint(0xF0C94); color: Colors.black; font.family: Config.iconFont.family; font.pixelSize: 14 }
-                          MouseArea { id: availConnHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.handleDeviceClick(availRow.modelData) }
                         }
                       }
                     }
