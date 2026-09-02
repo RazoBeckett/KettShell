@@ -3,34 +3,47 @@ import Quickshell
 import QtQuick
 import QtQuick.Layouts
 
-ShellRoot {
+Scope {
+  id: root
+
   NetworkHub {}
 
-  PanelWindow {
-    anchors {
-      top: true
-      left: true
-      right: true
-    }
-    implicitHeight: Config.height
-    color: Colors.transparent
+  Variants {
+    model: Quickshell.screens
 
-    RowLayout {
-      anchors.fill: parent
-      anchors.leftMargin: Config.margin
-      anchors.rightMargin: Config.margin
+    PanelWindow {
+      required property var modelData
+      screen: modelData
 
-      Workspaces {}
-
-      Item { Layout.fillWidth: true }
+      anchors {
+        top: true
+        left: true
+        right: true
+      }
+      implicitHeight: Config.barHeight
+      color: Colors.transparent
 
       RowLayout {
-        spacing: Config.spacing
-        Brightness {}
-        Volume {}
-        Network {}
-        Battery {}
-        Clock {}
+        anchors.fill: parent
+        anchors.leftMargin: 4
+        anchors.rightMargin: 4
+        spacing: 0
+
+        // Left: workspaces + window title placeholder
+        Workspaces {}
+
+        Item { Layout.fillWidth: true }
+
+        // Right: waybar-style flat modules, spacing 4 like waybar
+        RowLayout {
+          spacing: Config.spacing
+
+          Brightness {}
+          Volume {}
+          Network {}
+          Battery {}
+          Clock {}
+        }
       }
     }
   }

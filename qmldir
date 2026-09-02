@@ -5,3 +5,4 @@ Workspaces 1.0 Workspaces.qml
 singleton Colors 1.0 Colors.qml
 singleton Config 1.0 Config.qml
 HoldCard 1.0 components/HoldCard.qml
+Pill 1.0 components/Pill.qml
