@@ -14,6 +14,10 @@ PopupCard {
   property string password: ""
   property var expandedNetwork: null
   property bool showPassword: false
+  property bool connectAutomatically: false
+  property string pendingAutoconnectName: ""
+  property bool pendingAutoconnectValue: false
+  property int autoconnectApplyAttempts: 0
 
   readonly property var wifiCenter: wifiDevice && wifiDevice.networks ? wifiDevice.networks.values.find(n => n.connected) : null
   property var cachedCenter: null
@@ -49,6 +53,7 @@ PopupCard {
       pendingNetwork = null
       password = ""
       showPassword = false
+      connectAutomatically = false
     }
   }
 
@@ -59,6 +64,20 @@ PopupCard {
     onTriggered: if (root.wifiDevice) root.wifiDevice.scannerEnabled = true
   }
 
+  Timer {
+    id: autoconnectApplyTimer
+    interval: 500
+    repeat: true
+    onTriggered: {
+      let network = root.networkByName(root.pendingAutoconnectName)
+      if (root.writeAutoconnect(network, root.pendingAutoconnectValue) || root.autoconnectApplyAttempts >= 10) {
+        stop()
+        root.pendingAutoconnectName = ""
+        return
+      }
+      root.autoconnectApplyAttempts += 1
+    }
+  }
 
   function signalIcon(network) {
     let s = network ? network.signalStrength : 0
@@ -100,6 +119,31 @@ PopupCard {
     return "Secured"
   }
 
+  function networkByName(name) {
+    if (!name || !wifiDevice || !wifiDevice.networks) return null
+    return wifiDevice.networks.values.find(n => n && n.name === name) || null
+  }
+
+  function writeAutoconnect(network, enabled) {
+    if (!network || !network.nmSettings || network.nmSettings.length === 0) return false
+
+    let wrote = false
+    for (let settings of network.nmSettings) {
+      if (!settings || typeof settings.write !== "function") continue
+      settings.write({ connection: { autoconnect: enabled } })
+      wrote = true
+    }
+    return wrote
+  }
+
+  function queueAutoconnectApply(network, enabled) {
+    if (!network) return
+    pendingAutoconnectName = network.name || ""
+    pendingAutoconnectValue = enabled
+    autoconnectApplyAttempts = 0
+    if (pendingAutoconnectName !== "") autoconnectApplyTimer.restart()
+  }
+
   function connectTo(network) {
     if (!network) return
     if (network.connected) {
@@ -111,6 +155,7 @@ PopupCard {
       pendingNetwork = network
       expandedNetwork = network
       password = ""
+      connectAutomatically = false
       return
     }
     network.connect()
@@ -119,7 +164,10 @@ PopupCard {
 
   function confirmConnect() {
     if (pendingNetwork && password.length > 0) {
-      pendingNetwork.connectWithPsk(password)
+      let network = pendingNetwork
+      let autoconnect = connectAutomatically
+      network.connectWithPsk(password)
+      queueAutoconnectApply(network, autoconnect)
       expandedNetwork = null
       pendingNetwork = null
       password = ""
@@ -469,7 +517,7 @@ PopupCard {
                           if (root.pendingNetwork === netRow.modelData) { root.pendingNetwork = null; root.password = "" }
                         } else {
                           root.expandedNetwork = netRow.modelData
-                          if (root.needsSecret(netRow.modelData)) { root.pendingNetwork = netRow.modelData; root.password = "" }
+                          if (root.needsSecret(netRow.modelData)) { root.pendingNetwork = netRow.modelData; root.password = ""; root.connectAutomatically = false }
                           else root.pendingNetwork = null
                         }
                       }
@@ -511,9 +559,17 @@ PopupCard {
                           echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
                           passwordCharacter: "•"
                           selectByMouse: true
-                          focus: netRow.modelData ? (root.expandedNetwork === netRow.modelData && root.needsSecret(netRow.modelData)) : false
+                          readonly property bool wantsFocus: netRow.modelData ? (root.expandedNetwork === netRow.modelData && root.needsSecret(netRow.modelData)) : false
+                          focus: wantsFocus
+                          onWantsFocusChanged: if (wantsFocus) passFocusTimer.restart()
                           onTextChanged: if (root.pendingNetwork === netRow.modelData) root.password = text
                           onAccepted: root.confirmConnect()
+
+                          Timer {
+                            id: passFocusTimer
+                            interval: 1
+                            onTriggered: passInput.forceActiveFocus()
+                          }
                           // placeholder
                           Text {
                             anchors.verticalCenter: parent.verticalCenter
@@ -551,8 +607,45 @@ PopupCard {
                     RowLayout {
                       Layout.fillWidth: true
                       spacing: 8
-                      Rectangle { width: 16; height: 16; color: Colors.transparent; border.color: Colors.white; border.width: 1 }
-                      Text { text: "Connect automatically"; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
+                      Rectangle {
+                        width: 16
+                        height: 16
+                        color: autoConnectHover.containsMouse ? Colors.surface : Colors.transparent
+                        border.color: root.connectAutomatically ? Colors.blue : Colors.white
+                        border.width: 1
+                        Behavior on color { ColorAnimation { duration: 90 } }
+
+                        Text {
+                          anchors.centerIn: parent
+                          visible: root.connectAutomatically
+                          text: String.fromCodePoint(0xF012C)
+                          color: Colors.blue
+                          font.family: Config.iconFont.family
+                          font.pixelSize: 13
+                        }
+
+                        MouseArea {
+                          id: autoConnectHover
+                          anchors.fill: parent
+                          hoverEnabled: true
+                          cursorShape: Qt.PointingHandCursor
+                          onClicked: root.connectAutomatically = !root.connectAutomatically
+                        }
+                      }
+                      Text {
+                        text: "Connect automatically"
+                        color: autoLabelHover.containsMouse ? Colors.foreground : Colors.white
+                        font.pixelSize: 12
+                        font.family: Config.font.family
+
+                        MouseArea {
+                          id: autoLabelHover
+                          anchors.fill: parent
+                          hoverEnabled: true
+                          cursorShape: Qt.PointingHandCursor
+                          onClicked: root.connectAutomatically = !root.connectAutomatically
+                        }
+                      }
                       Item { Layout.fillWidth: true }
                       Rectangle {
                         Layout.preferredWidth: 72
