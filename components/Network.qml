@@ -12,26 +12,43 @@ WrapperMouseArea {
   property var wifiDevice: Networking.devices.values.find(d => d.type === DeviceType.Wifi)
   property var active: wifiDevice ? wifiDevice.networks.values.find(n => n.connected) : null
   readonly property real signal: active ? active.signalStrength : 0
+  readonly property bool wifiOn: Networking.wifiEnabled
+  readonly property bool disconnected: wifiOn && !active
   readonly property string icon: {
-    if (!Networking.wifiEnabled) return String.fromCodePoint(0xF05AA)
+    if (!wifiOn) return String.fromCodePoint(0xF05AA)
     if (!active) return String.fromCodePoint(0xF092D)
     let tier = signal >= 0.75 ? 4 : signal >= 0.50 ? 3 : signal >= 0.25 ? 2 : 1
     return String.fromCodePoint(0xF091F + (tier - 1) * 3)
   }
+  readonly property string label: {
+    if (!wifiOn) return "OFF"
+    if (active) return active.name
+    return "Disconnected"
+  }
 
-  child: RowLayout {
-    spacing: 6
+  child: Item {
+    implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
+    implicitHeight: Config.barHeight
 
-    Text {
-      text: root.icon
-      color: Networking.wifiEnabled ? Colors.magenta : Colors.white
-      font: Config.iconFont
-    }
+    RowLayout {
+      id: row
+      anchors.centerIn: parent
+      spacing: 6
 
-    Text {
-      text: !Networking.wifiEnabled ? "OFF" : root.active ? root.active.name : "Disconnected"
-      color: Colors.foreground
-      font: Config.font
+      Text {
+        text: root.icon
+        color: root.disconnected ? Colors.waybarDisconnected : Colors.foreground
+        font.family: Config.iconFont.family
+        font.pixelSize: Config.iconSize
+      }
+
+      Text {
+        text: root.label
+        color: root.disconnected ? Colors.waybarDisconnected : Colors.foreground
+        font: Config.font
+        elide: Text.ElideRight
+        Layout.maximumWidth: 140
+      }
     }
   }
 
