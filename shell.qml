@@ -6,7 +6,7 @@ import QtQuick.Layouts
 Scope {
   id: root
 
-  NetworkHub {}
+  WifiPanel {}
 
   Variants {
     model: Quickshell.screens
