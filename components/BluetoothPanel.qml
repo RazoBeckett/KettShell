@@ -64,6 +64,13 @@ PanelWindow {
   }
 
   function deviceIcon(device) {
+    if (!device) return String.fromCodePoint(0xF00AF)
+    let icon = (device.icon || "").toLowerCase()
+    if (icon.includes("headset") || icon.includes("headphone")) return String.fromCodePoint(0xF02CB)
+    if (icon.includes("speaker")) return String.fromCodePoint(0xF04C3)
+    if (icon.includes("audio")) return String.fromCodePoint(0xF00B0)
+    if (icon.includes("keyboard")) return String.fromCodePoint(0xF030C)
+    if (icon.includes("mouse")) return String.fromCodePoint(0xF037D)
     return String.fromCodePoint(0xF00AF)
   }
 
@@ -319,7 +326,6 @@ PanelWindow {
                           Text { text: connRow.modelData.name || connRow.modelData.deviceName || connRow.modelData.address; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
                           Text { text: root.statusText(connRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                         }
-                        Text { visible: connRow.modelData && connRow.modelData.batteryAvailable; text: connRow.modelData ? Math.round(connRow.modelData.battery * 100) + "%" : ""; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family }
                       }
                       MouseArea {
                         id: connHeaderMa
