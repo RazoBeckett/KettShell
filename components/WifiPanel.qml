@@ -172,7 +172,7 @@ PanelWindow {
           Rectangle {
             id: track
             anchors.fill: parent
-            radius: 12
+            radius: 0
             color: root.wifiOn ? Colors.blue : Colors.card
             border.color: toggleMa.containsMouse ? Colors.border : Colors.transparent
             border.width: 1
@@ -182,7 +182,7 @@ PanelWindow {
             id: thumb
             width: 18
             height: 18
-            radius: 9
+            radius: 0
             color: Colors.foreground
             anchors.verticalCenter: parent.verticalCenter
             x: root.wifiOn ? parent.width - width - 3 : 3

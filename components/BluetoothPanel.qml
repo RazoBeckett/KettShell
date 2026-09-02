@@ -64,7 +64,7 @@ PanelWindow {
   }
 
   function deviceIcon(device) {
-    return String.fromCodePoint(0xF00BE)
+    return String.fromCodePoint(0xF00AF)
   }
 
   function statusText(device) {
@@ -146,7 +146,7 @@ PanelWindow {
           Rectangle {
             id: track
             anchors.fill: parent
-            radius: 12
+            radius: 0
             color: root.bluetoothOn ? Colors.blue : Colors.card
             border.color: toggleMa.containsMouse ? Colors.border : Colors.transparent
             border.width: 1
@@ -156,7 +156,7 @@ PanelWindow {
             id: thumb
             width: 18
             height: 18
-            radius: 9
+            radius: 0
             color: Colors.foreground
             anchors.verticalCenter: parent.verticalCenter
             x: root.bluetoothOn ? parent.width - width - 3 : 3
@@ -228,7 +228,7 @@ PanelWindow {
             spacing: 12
             Layout.fillWidth: true
             Text {
-              text: String.fromCodePoint(0xF00BF)
+              text: String.fromCodePoint(0xF00B2)
               color: Colors.white
               font.family: Config.iconFont.family
               font.pixelSize: 22
