@@ -1,5 +1,6 @@
 import ".."
 import Quickshell
+import Quickshell.Hyprland
 import Quickshell.Networking
 import Quickshell.Wayland
 import QtQuick
@@ -32,7 +33,7 @@ PanelWindow {
   property var cachedCenter: null
   readonly property var connectingNetwork: wifiDevice && wifiDevice.networks ? wifiDevice.networks.values.find(n => n.stateChanging) : null
   readonly property var effectiveCenter: wifiCenter ?? (connectingNetwork && cachedCenter ? cachedCenter : connectingNetwork)
-  readonly property bool hasCenter: effectiveCenter !== null
+  readonly property bool hasCenter: !!effectiveCenter && (wifiCenter !== null || connectingNetwork !== null) && (((effectiveCenter.name || "").trim()) !== "")
   // Keep previous center visible while switching, hide it from the available list.
   // Use name-based filtering because NetworkManager may recreate objects on rescan.
   readonly property var wifiAvailable: {
@@ -144,7 +145,13 @@ PanelWindow {
     }
   }
 
-  // outside click to close — behind bg so it does not block bg input
+  HyprlandFocusGrab {
+    active: root.visible
+    windows: [root]
+    onCleared: NetworkMenuState.visible = false
+  }
+
+  // fallback inside-panel click to close — behind bg so it does not block bg input
   MouseArea {
     anchors.fill: parent
     z: -1
@@ -339,8 +346,8 @@ PanelWindow {
                       ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
-                        Text { text: root.effectiveCenter ? (root.effectiveCenter.name || "Hidden Network") : ""; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
-                        Text { text: root.wifiCenter ? root.statusText(root.effectiveCenter) : "Connected, secured"; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
+                        Text { text: root.effectiveCenter ? ((root.effectiveCenter.name || "").trim() || "Hidden Network") : ""; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: root.statusText(root.effectiveCenter); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                       }
                       Item { Layout.fillWidth: true }
                       Rectangle {
