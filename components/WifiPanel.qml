@@ -462,9 +462,10 @@ PopupCard {
                 required property int index
                 Layout.fillWidth: true
                 Layout.preferredHeight: !modelData ? 62 : root.expandedNetwork === modelData ? (root.needsSecret(modelData) ? 136 : 100) : 62
-                color: headerMa.containsMouse ? Colors.surface : (root.expandedNetwork === modelData ? Colors.card : Colors.transparent)
+                color: rowHover.hovered ? Colors.surface : (root.expandedNetwork === modelData ? Colors.card : Colors.transparent)
                 clip: true
                 Behavior on color { ColorAnimation { duration: 90 } }
+                HoverHandler { id: rowHover }
 
                 Rectangle {
                   anchors.left: parent.left
@@ -496,15 +497,15 @@ PopupCard {
                         Text { text: netRow.modelData === root.connectingNetwork ? "Connecting..." : root.statusText(netRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                       }
                       Rectangle {
-                        visible: netRow.modelData ? netRow.modelData.known && (headerMa.containsMouse || root.expandedNetwork === netRow.modelData) : false
+                        visible: netRow.modelData ? netRow.modelData.known && (rowHover.hovered || root.expandedNetwork === netRow.modelData) : false
                         width: 28
                         height: 28
                         radius: 0
-                        color: availWifiForgetHover.containsMouse ? Colors.yellow : Colors.card
-                        border.color: availWifiForgetHover.containsMouse ? Colors.yellow : Colors.border
+                        color: availWifiForgetHover.containsMouse ? Colors.red : Colors.card
+                        border.color: availWifiForgetHover.containsMouse ? Colors.red : Colors.border
                         border.width: 1
                         Behavior on color { ColorAnimation { duration: 90 } }
-                        Text { anchors.centerIn: parent; text: "delete"; color: availWifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
+                        Text { anchors.centerIn: parent; text: "delete"; color: availWifiForgetHover.containsMouse ? Colors.white : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
                         MouseArea { id: availWifiForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.forgetNetwork(netRow.modelData) }
                       }
                     }
