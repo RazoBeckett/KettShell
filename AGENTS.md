@@ -1,6 +1,6 @@
 Always refer @CODING-STANDARDS.md file before making any changes.
 
-refer to 'quickshell-ui-elements' skills.
+refer to 'quickshell' skill.
 
 do not assume anything, make sure it's right.
 always do everything quickshell natively, if not possible discuss with maintainer, on approach before applying any change.
