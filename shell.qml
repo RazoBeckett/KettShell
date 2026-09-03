@@ -109,7 +109,10 @@ Scope {
                 id: networkPill
                 shell: root
               }
-              Battery {}
+              Battery {
+                id: batteryPill
+                shell: root
+              }
               Clock {}
             }
           }
@@ -142,6 +145,13 @@ Scope {
         barWindow: barWindow
         shell: root
         open: root.activePopoutKind === "brightness" && root.activePopoutOwner === brightnessPill
+      }
+
+      BatteryPanel {
+        anchorItem: batteryPill
+        barWindow: barWindow
+        shell: root
+        open: root.activePopoutKind === "battery" && root.activePopoutOwner === batteryPill
       }
     }
   }

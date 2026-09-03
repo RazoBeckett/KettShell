@@ -1,12 +1,16 @@
 import ".."
 import Quickshell.Services.UPower
+import Quickshell.Widgets
 import QtQuick
 import QtQuick.Layouts
 
-Item {
+WrapperMouseArea {
   id: root
-  implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
-  implicitHeight: Config.barHeight
+  acceptedButtons: Qt.LeftButton
+  hoverEnabled: true
+  cursorShape: Qt.PointingHandCursor
+
+  property var shell: null
 
   property var battery: UPower.displayDevice
   readonly property bool charging: battery ? battery.state === UPowerDeviceState.Charging : false
@@ -27,40 +31,50 @@ Item {
     return "battery_android_0"
   }
 
-  // waybar: critical blinks via animation, charging is green, else #eed5d9
-  Rectangle {
-    anchors.fill: parent
-    anchors.leftMargin: Config.moduleHMargin
-    anchors.rightMargin: Config.moduleHMargin
-    color: root.critical ? Colors.waybarCriticalBg : Colors.transparent
-    visible: root.critical
-    opacity: blink.running ? 1 : 0
-  }
-
   SequentialAnimation {
     id: blink
     running: root.critical
     loops: Animation.Infinite
-    NumberAnimation { target: root; property: "opacity"; from: 1; to: 0.6; duration: 250 }
-    NumberAnimation { target: root; property: "opacity"; from: 0.6; to: 1; duration: 250 }
+    NumberAnimation { target: blinkTarget; property: "opacity"; from: 1; to: 0.6; duration: 250 }
+    NumberAnimation { target: blinkTarget; property: "opacity"; from: 0.6; to: 1; duration: 250 }
   }
 
-  RowLayout {
-    id: row
-    anchors.centerIn: parent
-    spacing: 6
+  function togglePopout() {
+    if (root.shell && typeof root.shell.togglePopout === "function") root.shell.togglePopout("battery", root)
+  }
 
-    Text {
-      text: root.icon
-      color: root.charging ? Colors.waybarCharging : root.critical ? Colors.foreground : Colors.foreground
-      font.family: Config.materialSymbols.family
-      font.pixelSize: Config.iconSize
+  onClicked: root.togglePopout()
+
+  child: Item {
+    id: blinkTarget
+    implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
+    implicitHeight: Config.barHeight
+
+    Rectangle {
+      anchors.fill: parent
+      anchors.leftMargin: Config.moduleHMargin
+      anchors.rightMargin: Config.moduleHMargin
+      color: root.critical ? Colors.waybarCriticalBg : Colors.transparent
+      visible: root.critical
     }
 
-    Text {
-      text: root.ready ? root.level + "%" : "-"
-      color: root.charging ? Colors.waybarCharging : root.critical ? Colors.foreground : Colors.foreground
-      font: Config.font
+    RowLayout {
+      id: row
+      anchors.centerIn: parent
+      spacing: 6
+
+      Text {
+        text: root.icon
+        color: root.charging ? Colors.waybarCharging : root.critical ? Colors.foreground : Colors.foreground
+        font.family: Config.materialSymbols.family
+        font.pixelSize: Config.iconSize
+      }
+
+      Text {
+        text: root.ready ? root.level + "%" : "-"
+        color: root.charging ? Colors.waybarCharging : root.critical ? Colors.foreground : Colors.foreground
+        font: Config.font
+      }
     }
   }
 }

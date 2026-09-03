@@ -23,7 +23,7 @@ QtObject {
 
   readonly property font materialSymbols: Qt.font({
     family: "Material Symbols Rounded",
-    pixelSize: 13,
+    pixelSize: 16,
     weight: Font.Normal
   })
 
