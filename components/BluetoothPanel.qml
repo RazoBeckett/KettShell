@@ -310,7 +310,7 @@ PopupCard {
                         ColumnLayout {
                           Layout.fillWidth: true
                           spacing: 1
-                          Text { text: connRow.modelData.name || connRow.modelData.deviceName || connRow.modelData.address; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 190 }
+                          Text { text: connRow.modelData.name || connRow.modelData.deviceName || connRow.modelData.address; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
                           Text { text: root.statusText(connRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                         }
                         Item { Layout.fillWidth: true }
@@ -420,7 +420,7 @@ PopupCard {
                       ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
-                        Text { text: availRow.modelData.name || availRow.modelData.deviceName || availRow.modelData.address; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 190 }
+                        Text { text: availRow.modelData.name || availRow.modelData.deviceName || availRow.modelData.address; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
                         Text { text: availRow.modelData === null ? "" : root.statusText(availRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                       }
                       Item { Layout.fillWidth: true; visible: availHover.hovered }
