@@ -14,11 +14,17 @@ Item {
   readonly property int level: ready ? Math.round(battery.percentage * 100) : 0
   readonly property bool critical: !charging && level <= 15
   readonly property string icon: {
-    if (!ready) return String.fromCodePoint(0xF0083)
-    if (charging) return String.fromCodePoint(0xF0084)
-    if (level >= 100) return String.fromCodePoint(0xF0079)
-    if (level < 10) return String.fromCodePoint(0xF0083)
-    return String.fromCodePoint(0xF007A + (Math.floor(level / 10) - 1))
+    if (!ready) return "battery_android_question"
+    if (charging) return "battery_android_bolt"
+    if (critical) return "battery_android_alert"
+    if (level >= 95) return "battery_android_full"
+    if (level >= 85) return "battery_android_6"
+    if (level >= 70) return "battery_android_5"
+    if (level >= 55) return "battery_android_4"
+    if (level >= 40) return "battery_android_3"
+    if (level >= 25) return "battery_android_2"
+    if (level >= 10) return "battery_android_1"
+    return "battery_android_0"
   }
 
   // waybar: critical blinks via animation, charging is green, else #eed5d9
@@ -47,7 +53,7 @@ Item {
     Text {
       text: root.icon
       color: root.charging ? Colors.waybarCharging : root.critical ? Colors.foreground : Colors.foreground
-      font.family: Config.iconFont.family
+      font.family: Config.materialSymbols.family
       font.pixelSize: Config.iconSize
     }
 
