@@ -134,7 +134,8 @@ Item {
           x: Math.round(tickLine.width * ((modelData.db - root.minimumDb) / (root.clipDb - root.minimumDb)))
 
           Rectangle {
-            anchors.top: tickLine.bottom
+            anchors.top: parent.top
+            anchors.topMargin: 3
             anchors.horizontalCenter: parent.horizontalCenter
             width: 1
             height: modelData.db === -20 || modelData.db === -9 || modelData.db === 0 ? 4 : 2
