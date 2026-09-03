@@ -34,10 +34,31 @@ PopupWindow {
   }
 
   HyprlandFocusGrab {
+    id: grab
     active: root.open
-    windows: root.barWindow ? [root, root.barWindow] : [root]
+    windows: [root]
     onCleared: root.close()
   }
+
+  onOpenChanged: {
+    if (open) {
+      // ensure Hyprland gives keyboard focus to the popup even when
+      // the cursor is already inside the popup at open time
+      Qt.callLater(() => {
+        grab.active = false
+        grab.active = true
+        contentHolder.forceActiveFocus()
+      })
+    }
+  }
+
+  // when the popup window actually maps, re-prime the grab and Qt focus
+  // (mirrors KeyboardPanel's backingWindowVisible prime)
+  onBackingWindowVisibleChanged: if (open && backingWindowVisible) Qt.callLater(() => {
+    grab.active = false
+    grab.active = true
+    contentHolder.forceActiveFocus()
+  })
 
   anchor {
     id: popupAnchor

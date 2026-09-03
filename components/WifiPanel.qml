@@ -310,6 +310,7 @@ PopupCard {
           contentHeight: contentCol.implicitHeight
           clip: true
           boundsBehavior: Flickable.StopAtBounds
+          interactive: contentHeight > height
 
           ColumnLayout {
             id: contentCol
@@ -560,15 +561,26 @@ PopupCard {
                           passwordCharacter: "•"
                           selectByMouse: true
                           readonly property bool wantsFocus: netRow.modelData ? (root.expandedNetwork === netRow.modelData && root.needsSecret(netRow.modelData)) : false
+                          property int focusAttempts: 0
                           focus: wantsFocus
-                          onWantsFocusChanged: if (wantsFocus) passFocusTimer.restart()
+                          activeFocusOnTab: true
+                          onWantsFocusChanged: if (wantsFocus) { focusAttempts = 0; focusTimer.restart() } else focusTimer.stop()
+                          onVisibleChanged: if (visible && wantsFocus) { focusAttempts = 0; focusTimer.restart() }
+                          Component.onCompleted: if (visible && wantsFocus) { focusAttempts = 0; focusTimer.restart() }
                           onTextChanged: if (root.pendingNetwork === netRow.modelData) root.password = text
                           onAccepted: root.confirmConnect()
 
                           Timer {
-                            id: passFocusTimer
-                            interval: 1
-                            onTriggered: passInput.forceActiveFocus()
+                            id: focusTimer
+                            interval: 30
+                            repeat: true
+                            onTriggered: {
+                              if (!passInput.visible || !passInput.wantsFocus) { stop(); return }
+                              if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus()
+                              passInput.forceActiveFocus()
+                              passInput.focusAttempts += 1
+                              if (passInput.activeFocus || passInput.focusAttempts > 20) stop()
+                            }
                           }
                           // placeholder
                           Text {
@@ -579,6 +591,15 @@ PopupCard {
                             font.pixelSize: 12
                             font.family: Config.font.family
                             visible: passInput.text.length === 0 && !passInput.activeFocus
+                          }
+                          // ensure click on the field itself gains focus even inside Flickable (preventStealing)
+                          MouseArea {
+                            anchors.fill: parent
+                            cursorShape: Qt.IBeamCursor
+                            preventStealing: true
+                            propagateComposedEvents: true
+                            onPressed: mouse => { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus(); mouse.accepted = false }
+                            onClicked: mouse => { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus(); mouse.accepted = false }
                           }
                         }
                         Text {
@@ -600,7 +621,9 @@ PopupCard {
                         anchors.fill: parent
                         z: -1
                         cursorShape: Qt.IBeamCursor
-                        onClicked: passInput.forceActiveFocus()
+                        preventStealing: true
+                        onPressed: { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus() }
+                        onClicked: { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus() }
                       }
                     }
 
