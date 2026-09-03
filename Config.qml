@@ -21,6 +21,13 @@ QtObject {
     weight: Font.Bold
   })
 
+  readonly property font materialSymbols: Qt.font({
+    family: "Material Symbols Rounded",
+    pixelSize: 13,
+    weight: Font.Normal
+  })
+
+
   readonly property font iconFont: Qt.font({
     family: "JetBrainsMono Nerd Font Propo",
   })
