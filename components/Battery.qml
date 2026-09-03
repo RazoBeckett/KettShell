@@ -19,7 +19,7 @@ WrapperMouseArea {
   readonly property bool critical: !charging && level <= 15
   readonly property string icon: {
     if (!ready) return "battery_android_question"
-    if (charging) return "battery_android_bolt"
+    if (charging) return level < 30 ? "battery_android_bolt" : "battery_android_frame_bolt"
     if (critical) return "battery_android_alert"
     if (level >= 95) return "battery_android_full"
     if (level >= 85) return "battery_android_6"

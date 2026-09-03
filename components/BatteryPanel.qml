@@ -7,7 +7,7 @@ PopupCard {
   id: root
   popoutKind: "battery"
   contentWidth: 360
-  contentHeight: 92
+  contentHeight: 148
 
   readonly property var battery: UPower.displayDevice
   readonly property bool ready: battery != null && battery.isPresent
@@ -74,22 +74,53 @@ PopupCard {
   }
 
   readonly property string chargingIcon: level < 30 ? "battery_android_bolt" : "battery_android_frame_bolt"
+  readonly property double energy: ready ? Number(battery.energy) : 0
+  readonly property double energyCapacity: ready ? Number(battery.energyCapacity) : 0
+  readonly property double rateRaw: ready ? Number(battery.changeRate) : 0
+  readonly property double healthRaw: ready ? Number(battery.healthPercentage) : 0
+  readonly property bool healthSupported: ready ? Boolean(battery.healthSupported) : false
+
+  function formatRate(v) {
+    if (!ready || isNaN(v) || Math.abs(v) < 0.05) return "—"
+    let rounded = Number(v).toFixed(1)
+    if (rounded.endsWith(".0")) rounded = rounded.slice(0, -2)
+    return rounded + "W"
+  }
+
+  function formatHealth(v, supported) {
+    if (!ready || !supported || isNaN(v) || v <= 0) return "—"
+    let pct = v > 1.5 ? v : v * 100
+    return Math.round(pct) + "%"
+  }
+
+  function formatEnergy(e, cap) {
+    if (!ready || isNaN(e) || isNaN(cap) || cap <= 0) return "—"
+    return e.toFixed(1) + " / " + cap.toFixed(1) + " Wh"
+  }
+
+  readonly property string rateLabel: formatRate(rateRaw)
+  readonly property string healthLabel: formatHealth(healthRaw, healthSupported)
+  readonly property string energyLabel: formatEnergy(energy, energyCapacity)
 
   Rectangle {
     id: bg
     width: 360
-    height: 92
+    height: 148
     color: Colors.background
     border.color: Colors.border
     border.width: 1
 
-    RowLayout {
+    ColumnLayout {
       anchors.fill: parent
       anchors.leftMargin: 16
       anchors.rightMargin: 16
       anchors.topMargin: 14
-      anchors.bottomMargin: 14
+      anchors.bottomMargin: 12
       spacing: 10
+
+      RowLayout {
+        Layout.fillWidth: true
+        spacing: 10
 
       // Battery icon — Win10 style. Pending shows Power icon.
       // Charging shows single Material icon: bolt (<30) or frame_bolt (>=30).
@@ -216,6 +247,107 @@ PopupCard {
           horizontalAlignment: Text.AlignRight
           visible: text !== ""
           opacity: 0.72
+        }
+      }
+      }
+
+      // Energy progress bar — thin track with fill at fraction
+      Item {
+        Layout.fillWidth: true
+        Layout.preferredHeight: 6
+
+        Rectangle {
+          id: energyTrack
+          anchors.fill: parent
+          radius: 3
+          color: Colors.card
+        }
+
+        Rectangle {
+          id: energyFill
+          anchors.left: energyTrack.left
+          anchors.verticalCenter: energyTrack.verticalCenter
+          height: energyTrack.height
+          radius: 3
+          width: Math.max(energyTrack.height, Math.round(energyTrack.width * root.fraction))
+          color: root.isCharging ? Colors.waybarCharging : root.level <= 15 && !root.isFullyCharged ? Colors.waybarCriticalBg : Colors.foreground
+          Behavior on width { NumberAnimation { duration: 220; easing.type: Easing.OutCubic } }
+        }
+      }
+
+      // Details row: energy · rate · health
+      RowLayout {
+        Layout.fillWidth: true
+        spacing: 12
+
+        ColumnLayout {
+          Layout.fillWidth: true
+          spacing: 2
+          Text {
+            text: "Energy"
+            color: Colors.white
+            font.family: Config.font.family
+            font.pixelSize: 10
+            opacity: 0.55
+            elide: Text.ElideRight
+            Layout.fillWidth: true
+          }
+          Text {
+            text: root.energyLabel
+            color: Colors.foreground
+            font.family: Config.font.family
+            font.pixelSize: 12
+            elide: Text.ElideRight
+            Layout.fillWidth: true
+          }
+        }
+
+        ColumnLayout {
+          Layout.fillWidth: true
+          spacing: 2
+          Text {
+            text: "Power"
+            color: Colors.white
+            font.family: Config.font.family
+            font.pixelSize: 10
+            opacity: 0.55
+            elide: Text.ElideRight
+            Layout.fillWidth: true
+            horizontalAlignment: Text.AlignHCenter
+          }
+          Text {
+            text: root.rateLabel
+            color: root.isCharging ? Colors.waybarCharging : Colors.foreground
+            font.family: Config.font.family
+            font.pixelSize: 12
+            elide: Text.ElideRight
+            Layout.fillWidth: true
+            horizontalAlignment: Text.AlignHCenter
+          }
+        }
+
+        ColumnLayout {
+          Layout.fillWidth: true
+          spacing: 2
+          Text {
+            text: "Health"
+            color: Colors.white
+            font.family: Config.font.family
+            font.pixelSize: 10
+            opacity: 0.55
+            elide: Text.ElideRight
+            Layout.fillWidth: true
+            horizontalAlignment: Text.AlignRight
+          }
+          Text {
+            text: root.healthLabel
+            color: Colors.foreground
+            font.family: Config.font.family
+            font.pixelSize: 12
+            elide: Text.ElideRight
+            Layout.fillWidth: true
+            horizontalAlignment: Text.AlignRight
+          }
         }
       }
     }
