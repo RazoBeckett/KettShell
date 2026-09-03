@@ -82,7 +82,10 @@ PopupCard {
   function signalIcon(network) {
     let s = network ? network.signalStrength : 0
     let tier = s >= 0.75 ? 4 : s >= 0.50 ? 3 : s >= 0.25 ? 2 : 1
-    return String.fromCodePoint(0xF091F + (tier - 1) * 3)
+    if (tier === 4) return "network_wifi"
+    if (tier === 3) return "network_wifi_3_bar"
+    if (tier === 2) return "network_wifi_2_bar"
+    return "network_wifi_1_bar"
   }
 
   function needsSecret(network) {
@@ -274,9 +277,9 @@ PopupCard {
             spacing: 12
             Layout.fillWidth: true
             Text {
-              text: String.fromCodePoint(0xF05AA)
+              text: "signal_wifi_off"
               color: Colors.white
-              font.family: Config.iconFont.family
+              font.family: Config.materialSymbols.family
               font.pixelSize: 22
             }
             ColumnLayout {
@@ -369,7 +372,7 @@ PopupCard {
                       anchors.rightMargin: 12
                       spacing: 12
                       z: 1
-                      Text { text: root.signalIcon(root.effectiveCenter); color: Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 20 }
+                      Text { text: root.signalIcon(root.effectiveCenter); color: Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 20 }
                       ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
@@ -391,7 +394,7 @@ PopupCard {
                           border.color: wifiDiscHover.containsMouse ? Colors.red : Colors.border
                           border.width: 1
                           Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: String.fromCodePoint(0xF0338); color: wifiDiscHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 14 }
+                          Text { anchors.centerIn: parent; text: "link_off"; color: wifiDiscHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 14 }
                           MouseArea { id: wifiDiscHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; enabled: root.wifiCenter !== null; onClicked: root.connectTo(root.effectiveCenter) }
                         }
                         Rectangle {
@@ -403,7 +406,7 @@ PopupCard {
                           border.color: wifiForgetHover.containsMouse ? Colors.yellow : Colors.border
                           border.width: 1
                           Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: String.fromCodePoint(0xEAD0); color: wifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 13 }
+                          Text { anchors.centerIn: parent; text: "delete"; color: wifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
                           MouseArea { id: wifiForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.forgetNetwork(root.effectiveCenter) }
                         }
                       }
@@ -485,14 +488,14 @@ PopupCard {
                       anchors.rightMargin: 12
                       spacing: 12
                       z: 1
-                      Text { text: root.signalIcon(netRow.modelData); color: Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 20 }
+                      Text { text: root.signalIcon(netRow.modelData); color: Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 20 }
                       ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
                         Text { text: netRow.modelData.name || "Hidden Network"; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
                         Text { text: netRow.modelData === root.connectingNetwork ? "Connecting..." : root.statusText(netRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                       }
-                      Text { visible: netRow.modelData && netRow.modelData.security !== WifiSecurityType.Open && netRow.modelData.security !== WifiSecurityType.Owe && !(netRow.modelData.known && (headerMa.containsMouse || root.expandedNetwork === netRow.modelData)); text: String.fromCodePoint(0xF033E); color: Colors.white; font.family: Config.iconFont.family; font.pixelSize: 12 }
+                      Text { visible: netRow.modelData && netRow.modelData.security !== WifiSecurityType.Open && netRow.modelData.security !== WifiSecurityType.Owe && !(netRow.modelData.known && (headerMa.containsMouse || root.expandedNetwork === netRow.modelData)); text: "lock"; color: Colors.white; font.family: Config.materialSymbols.family; font.pixelSize: 12 }
                       Rectangle {
                         visible: netRow.modelData ? netRow.modelData.known && (headerMa.containsMouse || root.expandedNetwork === netRow.modelData) : false
                         width: 28
@@ -502,7 +505,7 @@ PopupCard {
                         border.color: availWifiForgetHover.containsMouse ? Colors.yellow : Colors.border
                         border.width: 1
                         Behavior on color { ColorAnimation { duration: 90 } }
-                        Text { anchors.centerIn: parent; text: String.fromCodePoint(0xEAD0); color: availWifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 13 }
+                        Text { anchors.centerIn: parent; text: "delete"; color: availWifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
                         MouseArea { id: availWifiForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.forgetNetwork(netRow.modelData) }
                       }
                     }
@@ -604,9 +607,9 @@ PopupCard {
                         }
                         Text {
                           id: eyeIcon
-                          text: root.showPassword ? String.fromCodePoint(0xF06D1) : String.fromCodePoint(0xF06D0)
+                          text: root.showPassword ? "visibility" : "visibility_off"
                           color: eyeMa.containsMouse ? Colors.foreground : Colors.white
-                          font.family: Config.iconFont.family
+                          font.family: Config.materialSymbols.family
                           font.pixelSize: 16
                           MouseArea {
                             id: eyeMa
@@ -641,9 +644,9 @@ PopupCard {
                         Text {
                           anchors.centerIn: parent
                           visible: root.connectAutomatically
-                          text: String.fromCodePoint(0xF012C)
+                          text: "check"
                           color: Colors.blue
-                          font.family: Config.iconFont.family
+                          font.family: Config.materialSymbols.family
                           font.pixelSize: 13
                         }
 
