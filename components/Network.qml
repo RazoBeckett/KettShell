@@ -8,32 +8,74 @@ WrapperMouseArea {
   id: root
   hoverEnabled: true
   cursorShape: Qt.PointingHandCursor
+  acceptedButtons: Qt.LeftButton | Qt.RightButton
 
+  property var shell: null
   property var wifiDevice: Networking.devices.values.find(d => d.type === DeviceType.Wifi)
   property var active: wifiDevice ? wifiDevice.networks.values.find(n => n.connected) : null
   readonly property real signal: active ? active.signalStrength : 0
+  readonly property bool wifiOn: Networking.wifiEnabled
+  readonly property bool disconnected: wifiOn && !active
   readonly property string icon: {
-    if (!Networking.wifiEnabled) return String.fromCodePoint(0xF05AA)
-    if (!active) return String.fromCodePoint(0xF092D)
+    if (!wifiOn) return "signal_wifi_off"
+    if (!active) return "signal_wifi_0_bar"
     let tier = signal >= 0.75 ? 4 : signal >= 0.50 ? 3 : signal >= 0.25 ? 2 : 1
-    return String.fromCodePoint(0xF091F + (tier - 1) * 3)
+    if (tier === 4) return "network_wifi"
+    if (tier === 3) return "network_wifi_3_bar"
+    if (tier === 2) return "network_wifi_2_bar"
+    return "network_wifi_1_bar"
+  }
+  readonly property string label: {
+    if (!wifiOn) return "OFF"
+    if (active) return active.name
+    return "Disconnected"
   }
 
-  child: RowLayout {
-    spacing: 6
+  child: Item {
+    implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
+    implicitHeight: Config.barHeight
 
-    Text {
-      text: root.icon
-      color: Networking.wifiEnabled ? Colors.magenta : Colors.white
-      font: Config.iconFont
-    }
+    RowLayout {
+      id: row
+      anchors.centerIn: parent
+      spacing: 6
 
-    Text {
-      text: !Networking.wifiEnabled ? "OFF" : root.active ? root.active.name : "Disconnected"
-      color: Colors.foreground
-      font: Config.font
+      Text {
+        text: root.icon
+        color: root.disconnected ? Colors.waybarDisconnected : Colors.foreground
+        font.family: Config.materialSymbols.family
+        font.pixelSize: Config.iconSize
+      }
+
+      Text {
+        text: root.label
+        color: root.disconnected ? Colors.waybarDisconnected : Colors.foreground
+        font: Config.font
+        elide: Text.ElideRight
+        Layout.maximumWidth: 140
+      }
     }
   }
 
-  onClicked: NetworkMenuState.visible = !NetworkMenuState.visible
+  function togglePopout(kind) {
+    if (root.shell && typeof root.shell.requestPopout === "function" && typeof root.shell.releasePopout === "function") {
+      let active = typeof root.shell.isPopoutActive === "function" ? root.shell.isPopoutActive(kind, root) : false
+      if (active) root.shell.releasePopout(kind, root)
+      else root.shell.requestPopout(kind, root)
+      return
+    }
+
+    if (kind === "bluetooth") {
+      BluetoothMenuState.visible = !BluetoothMenuState.visible
+      if (BluetoothMenuState.visible) NetworkMenuState.visible = false
+    } else if (kind === "wifi") {
+      NetworkMenuState.visible = !NetworkMenuState.visible
+      if (NetworkMenuState.visible) BluetoothMenuState.visible = false
+    }
+  }
+
+  onClicked: mouse => {
+    if (mouse.button === Qt.RightButton) root.togglePopout("bluetooth")
+    else if (mouse.button === Qt.LeftButton) root.togglePopout("wifi")
+  }
 }

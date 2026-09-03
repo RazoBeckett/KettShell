@@ -6,46 +6,48 @@ import QtQuick.Layouts
 
 WrapperMouseArea {
   id: root
-  acceptedButtons: Qt.NoButton
+  acceptedButtons: Qt.LeftButton
   hoverEnabled: true
   cursorShape: Qt.PointingHandCursor
 
-  property var sink: Pipewire.defaultAudioSink
+  property var shell: null
 
+  property var sink: Pipewire.defaultAudioSink
   readonly property bool ready: sink && sink.ready
   readonly property bool muted: ready && sink.audio.muted
   readonly property int vol: ready ? Math.round(sink.audio.volume * 100) : 0
-
-
   readonly property string icon: {
-    if (!ready) return String.fromCodePoint(0xF0581)
-    if (muted) return String.fromCodePoint(0xF0E08)
-    if (vol === 0) return String.fromCodePoint(0xF0E08)
-    if (vol < 34) return String.fromCodePoint(0xF057F)
-    if (vol < 67) return String.fromCodePoint(0xF0580)
-
-    return String.fromCodePoint(0xF057E)
+    if (!ready) return "volume_off"
+    if (muted || vol === 0) return "volume_off"
+    if (vol < 34) return "volume_down"
+    return "volume_up"
   }
 
-  child: RowLayout {
-    spacing: 6
+  child: Item {
+    implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
+    implicitHeight: Config.barHeight
 
-    Text {
-      text: root.icon
-      color: Colors.yellow
-      font: Config.iconFont
-    }
+    RowLayout {
+      id: row
+      anchors.centerIn: parent
+      spacing: 6
 
-    Text {
-      text: {
-        if(!root.ready) return "-"
-        if(root.muted) return "Muted"
-        return root.vol + "%"
+      Text {
+        text: root.icon
+        color: Colors.foreground
+        font.family: Config.materialSymbols.family
+        font.pixelSize: Config.iconSize
       }
 
-      color: root.muted ? Colors.white : Colors.foreground
-
-      font: Config.font
+      Text {
+        text: {
+          if (!root.ready) return "-"
+          if (root.muted) return "00%"
+          return root.vol + "%"
+        }
+        color: Colors.foreground
+        font: Config.font
+      }
     }
   }
 
@@ -55,6 +57,12 @@ WrapperMouseArea {
     root.sink.audio.volume = next
   }
 
+  function togglePopout() {
+    if (root.shell && typeof root.shell.togglePopout === "function") root.shell.togglePopout("volume", root)
+  }
+
+  onClicked: root.togglePopout()
+
   onWheel: wheel => {
     if (wheel.angleDelta.y > 0) root.adjustVolume(5)
     else if (wheel.angleDelta.y < 0) root.adjustVolume(-5)
@@ -63,5 +71,4 @@ WrapperMouseArea {
   PwObjectTracker {
     objects: [root.sink]
   }
-
 }

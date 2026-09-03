@@ -4,7 +4,7 @@ import QtQuick
 QtObject {
   readonly property color transparent: "transparent"
   readonly property color background: "#222436"
-  readonly property color foreground: "#c8d3f5"
+  readonly property color foreground: "#eed5d9"
   readonly property color black: "#1b1d2b"
   readonly property color surface: "#1e2030"
   readonly property color card: "#2a2c40"
@@ -16,4 +16,9 @@ QtObject {
   readonly property color magenta: "#c099ff"
   readonly property color cyan: "#86e1fc"
   readonly property color white: "#828bb8"
+  readonly property color waybarHover: "#241b26"
+  readonly property color waybarActive: "#ffffff"
+  readonly property color waybarCharging: "#6ac38f"
+  readonly property color waybarCriticalBg: "#f53c3c"
+  readonly property color waybarDisconnected: "#de5b44"
 }
