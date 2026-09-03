@@ -406,7 +406,7 @@ PopupCard {
                           border.color: wifiForgetHover.containsMouse ? Colors.yellow : Colors.border
                           border.width: 1
                           Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: "delete"; color: wifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
+                          Text { anchors.centerIn: parent; text: "pill_off"; color: wifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
                           MouseArea { id: wifiForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.forgetNetwork(root.effectiveCenter) }
                         }
                       }
@@ -505,7 +505,7 @@ PopupCard {
                         border.color: availWifiForgetHover.containsMouse ? Colors.red : Colors.border
                         border.width: 1
                         Behavior on color { ColorAnimation { duration: 90 } }
-                        Text { anchors.centerIn: parent; text: "delete"; color: availWifiForgetHover.containsMouse ? Colors.white : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
+                        Text { anchors.centerIn: parent; text: "pill_off"; color: availWifiForgetHover.containsMouse ? Colors.white : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
                         MouseArea { id: availWifiForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.forgetNetwork(netRow.modelData) }
                       }
                     }
