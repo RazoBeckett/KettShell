@@ -7,8 +7,11 @@ import QtQuick.Layouts
 
 WrapperMouseArea {
   id: root
-  acceptedButtons: Qt.NoButton
+  acceptedButtons: Qt.LeftButton
   hoverEnabled: true
+  cursorShape: Qt.PointingHandCursor
+
+  property var shell: null
 
   property string device: "intel_backlight"
   readonly property string dir: `/sys/class/backlight/${device}`
@@ -49,9 +52,15 @@ WrapperMouseArea {
     Quickshell.execDetached(["brightnessctl", "set", `${Math.abs(delta)}%${sign}`])
   }
 
+  function togglePopout() {
+    if (root.shell && typeof root.shell.togglePopout === "function") root.shell.togglePopout("brightness", root)
+  }
+
+  onClicked: root.togglePopout()
+
   onWheel: wheel => {
-    if (wheel.angleDelta.y > 0) root.adjustBrightness(1)
-    else if (wheel.angleDelta.y < 0) root.adjustBrightness(-1)
+    if (wheel.angleDelta.y > 0) root.adjustBrightness(5)
+    else if (wheel.angleDelta.y < 0) root.adjustBrightness(-5)
   }
 
   FileView {

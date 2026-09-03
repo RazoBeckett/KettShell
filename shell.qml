@@ -97,8 +97,14 @@ Scope {
             RowLayout {
               spacing: Config.spacing
 
-              Brightness {}
-              Volume {}
+              Brightness {
+                id: brightnessPill
+                shell: root
+              }
+              Volume {
+                id: volumePill
+                shell: root
+              }
               Network {
                 id: networkPill
                 shell: root
@@ -122,6 +128,20 @@ Scope {
         barWindow: barWindow
         shell: root
         open: root.activePopoutKind === "bluetooth" && root.activePopoutOwner === networkPill && BluetoothMenuState.visible
+      }
+
+      VolumePanel {
+        anchorItem: volumePill
+        barWindow: barWindow
+        shell: root
+        open: root.activePopoutKind === "volume" && root.activePopoutOwner === volumePill
+      }
+
+      BrightnessPanel {
+        anchorItem: brightnessPill
+        barWindow: barWindow
+        shell: root
+        open: root.activePopoutKind === "brightness" && root.activePopoutOwner === brightnessPill
       }
     }
   }

@@ -6,8 +6,11 @@ import QtQuick.Layouts
 
 WrapperMouseArea {
   id: root
-  acceptedButtons: Qt.NoButton
+  acceptedButtons: Qt.LeftButton
   hoverEnabled: true
+  cursorShape: Qt.PointingHandCursor
+
+  property var shell: null
 
   property var sink: Pipewire.defaultAudioSink
   readonly property bool ready: sink && sink.ready
@@ -56,9 +59,15 @@ WrapperMouseArea {
     root.sink.audio.volume = next
   }
 
+  function togglePopout() {
+    if (root.shell && typeof root.shell.togglePopout === "function") root.shell.togglePopout("volume", root)
+  }
+
+  onClicked: root.togglePopout()
+
   onWheel: wheel => {
-    if (wheel.angleDelta.y > 0) root.adjustVolume(1)
-    else if (wheel.angleDelta.y < 0) root.adjustVolume(-1)
+    if (wheel.angleDelta.y > 0) root.adjustVolume(5)
+    else if (wheel.angleDelta.y < 0) root.adjustVolume(-5)
   }
 
   PwObjectTracker {
