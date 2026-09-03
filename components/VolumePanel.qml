@@ -193,6 +193,18 @@ PopupCard {
   PwObjectTracker { objects: root.candidateSources }
   PwObjectTracker { objects: root.audioStreams }
 
+  PwNodePeakMonitor {
+    id: outPeakMonitor
+    node: root.sink
+    enabled: root.open && root.sinkReady
+  }
+
+  PwNodePeakMonitor {
+    id: inPeakMonitor
+    node: root.source
+    enabled: root.open && root.sourceReady
+  }
+
   Rectangle {
     id: bg
     width: 360
@@ -351,6 +363,17 @@ PopupCard {
                 Layout.preferredWidth: 36
                 horizontalAlignment: Text.AlignRight
               }
+            }
+
+            ObsMeter {
+              Layout.fillWidth: true
+              Layout.preferredHeight: 28
+              Layout.leftMargin: 34
+              Layout.rightMargin: 36
+              peaks: outPeakMonitor.peaks
+              muted: root.outMuted || !root.sinkReady
+              showTicks: true
+              visible: root.sinkReady
             }
 
             // output device list
@@ -535,6 +558,17 @@ PopupCard {
               }
             }
 
+            ObsMeter {
+              Layout.fillWidth: true
+              Layout.preferredHeight: 28
+              Layout.leftMargin: 34
+              Layout.rightMargin: 36
+              peaks: inPeakMonitor.peaks
+              muted: root.inMuted || !root.sourceReady
+              showTicks: true
+              visible: root.sourceReady
+            }
+
             Text {
               visible: !root.sourceReady
               text: "No microphone found"
@@ -639,7 +673,7 @@ PopupCard {
                   readonly property real sVol: modelData && modelData.audio ? modelData.audio.volume : 0
                   readonly property real sFraction: sMuted ? 0 : Math.min(1, sVol / 1.5)
                   Layout.fillWidth: true
-                  Layout.preferredHeight: 52
+                  Layout.preferredHeight: 72
                   color: streamHover.hovered ? Colors.surface : Colors.card
                   border.color: Colors.border
                   border.width: 1
@@ -755,6 +789,20 @@ PopupCard {
                         }
                       }
                     }
+
+                    ObsMeter {
+                      Layout.fillWidth: true
+                      Layout.preferredHeight: 9
+                      peaks: streamPeak.peaks
+                      muted: sMuted
+                      showTicks: false
+                    }
+                  }
+
+                  PwNodePeakMonitor {
+                    id: streamPeak
+                    node: modelData
+                    enabled: root.open && modelData && modelData.ready
                   }
                 }
               }
