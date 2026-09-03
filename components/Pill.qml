@@ -27,7 +27,7 @@ Rectangle {
     Text {
       text: root.icon
       color: root.iconColor
-      font.family: Config.iconFont.family
+      font.family: Config.materialSymbols.family
       font.pixelSize: Config.iconSize
       visible: root.icon !== ""
     }

@@ -46,14 +46,14 @@ PopupCard {
 
 
   function deviceIcon(device) {
-    if (!device) return String.fromCodePoint(0xF00AF)
+    if (!device) return "bluetooth"
     let icon = (device.icon || "").toLowerCase()
-    if (icon.includes("headset") || icon.includes("headphone")) return String.fromCodePoint(0xF02CB)
-    if (icon.includes("speaker")) return String.fromCodePoint(0xF04C3)
-    if (icon.includes("audio")) return String.fromCodePoint(0xF00B0)
-    if (icon.includes("keyboard")) return String.fromCodePoint(0xF030C)
-    if (icon.includes("mouse")) return String.fromCodePoint(0xF037D)
-    return String.fromCodePoint(0xF00AF)
+    if (icon.includes("headset") || icon.includes("headphone")) return "headset_mic"
+    if (icon.includes("speaker")) return "speaker"
+    if (icon.includes("audio")) return "speaker"
+    if (icon.includes("keyboard")) return "keyboard"
+    if (icon.includes("mouse")) return "mouse"
+    return "bluetooth"
   }
 
   function statusText(device) {
@@ -181,9 +181,9 @@ PopupCard {
             spacing: 12
             Layout.fillWidth: true
             Text {
-              text: String.fromCodePoint(0xF00BF)
+              text: "bluetooth_searching"
               color: Colors.white
-              font.family: Config.iconFont.family
+              font.family: Config.materialSymbols.family
               font.pixelSize: 22
             }
             ColumnLayout {
@@ -210,9 +210,9 @@ PopupCard {
             spacing: 12
             Layout.fillWidth: true
             Text {
-              text: String.fromCodePoint(0xF00B2)
+              text: "bluetooth_disabled"
               color: Colors.white
-              font.family: Config.iconFont.family
+              font.family: Config.materialSymbols.family
               font.pixelSize: 22
             }
             ColumnLayout {
@@ -306,7 +306,7 @@ PopupCard {
                         anchors.rightMargin: 12
                         spacing: 12
                         z: 1
-                        Text { text: root.deviceIcon(connRow.modelData); color: Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 20 }
+                        Text { text: root.deviceIcon(connRow.modelData); color: Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 20 }
                         ColumnLayout {
                           Layout.fillWidth: true
                           spacing: 1
@@ -326,7 +326,7 @@ PopupCard {
                             border.color: discHover.containsMouse ? Colors.red : Colors.border
                             border.width: 1
                             Behavior on color { ColorAnimation { duration: 90 } }
-                            Text { anchors.centerIn: parent; text: String.fromCodePoint(0xF0338); color: discHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 14 }
+                            Text { anchors.centerIn: parent; text: "link_off"; color: discHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 14 }
                             MouseArea { id: discHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.handleDeviceClick(connRow.modelData) }
                           }
                           Rectangle {
@@ -337,7 +337,7 @@ PopupCard {
                             border.color: forgetHover.containsMouse ? Colors.yellow : Colors.border
                             border.width: 1
                             Behavior on color { ColorAnimation { duration: 90 } }
-                            Text { anchors.centerIn: parent; text: String.fromCodePoint(0xEAD0); color: forgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 13 }
+                            Text { anchors.centerIn: parent; text: "delete"; color: forgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
                             MouseArea { id: forgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { connRow.modelData.forget(); root.expandedDevice = null } }
                           }
                         }
@@ -416,7 +416,7 @@ PopupCard {
                       anchors.rightMargin: 12
                       spacing: 12
                       z: 1
-                      Text { text: root.deviceIcon(availRow.modelData); color: Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 20 }
+                      Text { text: root.deviceIcon(availRow.modelData); color: Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 20 }
                       ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
@@ -436,7 +436,7 @@ PopupCard {
                           border.color: availConnHover.containsMouse ? Colors.foreground : Colors.border
                           border.width: 1
                           Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: availRow.modelData && availRow.modelData.paired ? String.fromCodePoint(0xF0337) : String.fromCodePoint(0xF0C94); color: Colors.black; font.family: Config.iconFont.family; font.pixelSize: 14 }
+                          Text { anchors.centerIn: parent; text: availRow.modelData && availRow.modelData.paired ? "link" : "link_off"; color: Colors.black; font.family: Config.materialSymbols.family; font.pixelSize: 14 }
                           MouseArea { id: availConnHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.handleDeviceClick(availRow.modelData) }
                         }
                         Rectangle {
@@ -448,7 +448,7 @@ PopupCard {
                           border.color: availForgetHover.containsMouse ? Colors.yellow : Colors.border
                           border.width: 1
                           Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: String.fromCodePoint(0xEAD0); color: availForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.iconFont.family; font.pixelSize: 13 }
+                          Text { anchors.centerIn: parent; text: "delete"; color: availForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
                           MouseArea { id: availForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { availRow.modelData.forget(); root.expandedDevice = null } }
                         }
                       }

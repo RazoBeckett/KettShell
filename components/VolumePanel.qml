@@ -14,12 +14,10 @@ PopupCard {
   readonly property bool muted: ready && sink.audio.muted
   readonly property int vol: ready ? Math.round(sink.audio.volume * 100) : 0
   readonly property string icon: {
-    if (!ready) return String.fromCodePoint(0xF0581)
-    if (muted) return String.fromCodePoint(0xF0E08)
-    if (vol === 0) return String.fromCodePoint(0xF0E08)
-    if (vol < 34) return String.fromCodePoint(0xF057F)
-    if (vol < 67) return String.fromCodePoint(0xF0580)
-    return String.fromCodePoint(0xF057E)
+    if (!ready) return "volume_off"
+    if (muted || vol === 0) return "volume_off"
+    if (vol < 34) return "volume_down"
+    return "volume_up"
   }
   readonly property real fraction: ready ? (muted ? 0 : vol / 100) : 0
 
@@ -61,7 +59,7 @@ PopupCard {
           anchors.centerIn: parent
           text: root.icon
           color: iconMa.containsMouse ? Colors.blue : (root.muted ? Colors.white : Colors.foreground)
-          font.family: Config.iconFont.family
+          font.family: Config.materialSymbols.family
           font.pixelSize: 18
         }
         MouseArea {

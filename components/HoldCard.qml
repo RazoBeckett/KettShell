@@ -73,7 +73,7 @@ Rectangle {
     Text {
       text: root.iconText
       color: root.accent ? Colors.black : root.accentColor
-      font.family: Config.iconFont.family
+      font.family: Config.materialSymbols.family
       font.pixelSize: root.iconSize
       Layout.alignment: Qt.AlignHCenter
     }
@@ -105,7 +105,7 @@ Rectangle {
     Text {
       text: root.iconText
       color: root.accent ? Colors.black : root.accentColor
-      font.family: Config.iconFont.family
+      font.family: Config.materialSymbols.family
       font.pixelSize: root.iconSize
     }
 
