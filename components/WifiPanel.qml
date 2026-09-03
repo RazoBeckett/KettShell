@@ -495,7 +495,6 @@ PopupCard {
                         Text { text: netRow.modelData.name || "Hidden Network"; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
                         Text { text: netRow.modelData === root.connectingNetwork ? "Connecting..." : root.statusText(netRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                       }
-                      Text { visible: netRow.modelData && netRow.modelData.security !== WifiSecurityType.Open && netRow.modelData.security !== WifiSecurityType.Owe && !(netRow.modelData.known && (headerMa.containsMouse || root.expandedNetwork === netRow.modelData)); text: "lock"; color: Colors.white; font.family: Config.materialSymbols.family; font.pixelSize: 12 }
                       Rectangle {
                         visible: netRow.modelData ? netRow.modelData.known && (headerMa.containsMouse || root.expandedNetwork === netRow.modelData) : false
                         width: 28
