@@ -19,8 +19,16 @@ WrapperMouseArea {
   readonly property real raw: brightness.loaded ? parseFloat(brightness.text()) : 0
   readonly property real max: maxBrightness.loaded ? parseFloat(maxBrightness.text()) : 1
   readonly property int level: ready ? Math.round((raw / max) * 100) : 0
-  readonly property int moonIndex: Math.min(14, Math.max(0, Math.round((root.level / 100) * 14)))
-  readonly property string icon: String.fromCodePoint(0xe38d + root.moonIndex)
+  readonly property string icon: {
+    if (!ready) return "brightness_4"
+    if (level <= 14) return "brightness_1"
+    if (level <= 28) return "brightness_2"
+    if (level <= 42) return "brightness_3"
+    if (level <= 57) return "brightness_4"
+    if (level <= 71) return "brightness_5"
+    if (level <= 85) return "brightness_6"
+    return "brightness_7"
+  }
 
   child: Item {
     implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
@@ -34,7 +42,7 @@ WrapperMouseArea {
       Text {
         text: root.icon
         color: Colors.foreground
-        font.family: Config.iconFont.family
+        font.family: Config.materialSymbols.family
         font.pixelSize: Config.iconSize
       }
 
