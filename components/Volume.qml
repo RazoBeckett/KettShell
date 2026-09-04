@@ -6,7 +6,7 @@ import QtQuick.Layouts
 
 WrapperMouseArea {
   id: root
-  acceptedButtons: Qt.LeftButton
+  acceptedButtons: Qt.LeftButton | Qt.RightButton
   hoverEnabled: true
   cursorShape: Qt.PointingHandCursor
 
@@ -61,7 +61,15 @@ WrapperMouseArea {
     if (root.shell && typeof root.shell.togglePopout === "function") root.shell.togglePopout("volume", root)
   }
 
-  onClicked: root.togglePopout()
+  function toggleMute() {
+    if (!root.ready) return
+    root.sink.audio.muted = !root.muted
+  }
+
+  onClicked: mouse => {
+    if (mouse.button === Qt.RightButton) root.toggleMute()
+    else if (mouse.button === Qt.LeftButton) root.togglePopout()
+  }
 
   onWheel: wheel => {
     if (wheel.angleDelta.y > 0) root.adjustVolume(5)
