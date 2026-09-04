@@ -66,7 +66,7 @@ Item {
             Rectangle { width: parent.width * root.redFrac; height: parent.height; color: root.muted ? Colors.card : Qt.darker(Colors.red, 2.2) }
           }
 
-          // foreground clipped — smoothed like macOS Control Center (velocity-limited)
+          // foreground clipped
           Item {
             id: fgClip
             height: parent.height
@@ -77,7 +77,7 @@ Item {
               else p = 0
               return bgRow.width * root.fracForPeak(p)
             }
-            Behavior on width { SmoothedAnimation { velocity: 200 } }
+            Behavior on width { NumberAnimation { duration: 70; easing.type: Easing.OutCubic } }
 
             Row {
               width: bgRow.width
