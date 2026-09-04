@@ -28,6 +28,11 @@ PopupCard {
   }
   readonly property real fraction: ready ? level / 100 : 0
   readonly property var presets: [1, 25, 50, 75, 100]
+  readonly property int activePresetIndex: {
+    if (!ready) return -1
+    for (let i = 0; i < presets.length; i++) if (presets[i] === level) return i
+    return -1
+  }
 
   function setBrightnessFraction(f) {
     if (!root.ready) return
@@ -165,23 +170,40 @@ PopupCard {
         }
       }
 
-      RowLayout {
+      Item {
+        id: presetContainer
         Layout.fillWidth: true
-        spacing: 6
+        Layout.preferredHeight: 28
 
-        Repeater {
-          model: root.presets
-          delegate: Rectangle {
-            required property var modelData
-            required property int index
-            readonly property bool isActive: root.ready && root.level === modelData
-            Layout.fillWidth: true
-            Layout.preferredHeight: 28
-            radius: 0
-            color: chipMa.containsMouse ? Colors.surface : (isActive ? Colors.card : Colors.transparent)
-            border.color: isActive ? Colors.blue : Colors.border
-            border.width: 1
-            Behavior on color { ColorAnimation { duration: 90 } }
+        Rectangle {
+          id: presetHighlight
+          visible: root.activePresetIndex >= 0
+          width: (parent.width - 24) / 5
+          height: 28
+          x: root.activePresetIndex * (width + 6)
+          color: Colors.card
+          border.color: Colors.blue
+          border.width: 1
+          Behavior on x { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
+          Behavior on width { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
+        }
+
+        RowLayout {
+          anchors.fill: parent
+          spacing: 6
+
+          Repeater {
+            model: root.presets
+            delegate: Rectangle {
+              required property var modelData
+              required property int index
+              readonly property bool isActive: root.ready && root.level === modelData
+              Layout.fillWidth: true
+              Layout.preferredHeight: 28
+              radius: 0
+              color: (chipMa.containsMouse && !isActive) ? Colors.surface : Colors.transparent
+              border.color: isActive ? Colors.transparent : Colors.border
+              border.width: 1
 
             Text {
               anchors.centerIn: parent
@@ -200,6 +222,7 @@ PopupCard {
               onClicked: root.setBrightnessPct(modelData)
             }
           }
+        }
         }
       }
     }
