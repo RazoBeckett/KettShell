@@ -11,6 +11,7 @@ refer to 'quickshell' skill.
 - When a piece of code needs to be repeated more than twice, follow the DRY principle and refactor it.
 - Comments describe how a thing is used, and move when the code moves. To be used mostly to describe functions, not to annotate every line of behavior.
 - If a rule here fights the task in front of you, say so loudly and get a human sign-off before breaking it.
+- Do not include user-specific or environment-specific information in code, comments, or commit messages, e.g., Wi-Fi SSIDs, Bluetooth device names, usernames, hostnames, file paths, etc.
 
 docs:
 - [Quickshell introduction](https://quickshell.org/docs/v0.3.0/guide/introduction/)
