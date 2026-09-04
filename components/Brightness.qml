@@ -30,9 +30,10 @@ WrapperMouseArea {
     return "brightness_7"
   }
 
-  child: Item {
+  child: PressableItem {
     implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
     implicitHeight: Config.barHeight
+    pressed: root.pressed
 
     RowLayout {
       id: row

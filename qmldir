@@ -9,3 +9,4 @@ HoldCard 1.0 components/HoldCard.qml
 Pill 1.0 components/Pill.qml
 PopupCard 1.0 components/PopupCard.qml
 IOSSlider 1.0 components/IOSSlider.qml
+PressableItem 1.0 components/PressableItem.qml
