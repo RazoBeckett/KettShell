@@ -230,7 +230,24 @@ PopupCard {
             color: Colors.foreground
             anchors.verticalCenter: parent.verticalCenter
             x: root.wifiOn ? parent.width - width - 3 : 3
-            Behavior on x { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+            scale: 1
+            transformOrigin: Item.Center
+            Behavior on x {
+              NumberAnimation {
+                duration: 320
+                easing.type: Easing.OutBack
+                easing.overshoot: 1.16
+              }
+            }
+          }
+          SequentialAnimation {
+            id: thumbScaleAnim
+            NumberAnimation { target: thumb; property: "scale"; to: 1.14; duration: 110; easing.type: Easing.OutCubic }
+            NumberAnimation { target: thumb; property: "scale"; to: 1.0; duration: 220; easing.type: Easing.OutCubic }
+          }
+          Connections {
+            target: root
+            function onWifiOnChanged() { thumbScaleAnim.restart() }
           }
           MouseArea {
             id: toggleMa
