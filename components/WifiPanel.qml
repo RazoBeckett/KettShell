@@ -27,16 +27,19 @@ PopupCard {
   readonly property var wifiAvailable: {
     if (!wifiDevice || !wifiDevice.networks) return []
     let all = [...wifiDevice.networks.values].filter(n => !n.connected).sort((a, b) => b.signalStrength - a.signalStrength)
-    if (effectiveCenter && !wifiCenter && cachedCenter) {
-      let cn = (cachedCenter.name || "").trim()
-      let connName = connectingNetwork ? (connectingNetwork.name || "").trim() : ""
-      all = all.filter(n => (n.name || "").trim() !== cn || (n.name || "").trim() === connName)
-      let seen = new Set()
-      let deduped = []
-      for (let n of all) { let k = (n.name || "").trim(); if (!seen.has(k)) { seen.add(k); deduped.push(n) } }
-      all = deduped
+    // always exclude the current/connecting network (shown in current-connection) and dedupe by name
+    if (effectiveCenter) {
+      let en = (effectiveCenter.name || "").trim()
+      if (en !== "") all = all.filter(n => (n.name || "").trim() !== en)
     }
-    return all
+    let seen = new Set()
+    let deduped = []
+    for (let n of all) {
+      let k = (n.name || "").trim()
+      if (k === "") { deduped.push(n); continue }
+      if (!seen.has(k)) { seen.add(k); deduped.push(n) }
+    }
+    return deduped
   }
   readonly property bool wifiOn: Networking.wifiEnabled
 
