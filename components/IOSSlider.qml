@@ -36,6 +36,38 @@ Item {
   readonly property real thumbXRaw: centerX - effectiveW / 2 + (dragging ? (displayedStretch >= 0 ? 1 : -1) * stretchMag * 0.5 : 0)
   readonly property real thumbX: Math.max(0, Math.min(root.width - effectiveW, thumbXRaw))
 
+  // haptic-tick micro-punch on detents (0 / 50 / 100)
+  property real tickScale: 1
+  property real _prevFrac: fraction
+  readonly property var detents: [0, 0.5, 1]
+
+  function _checkDetents(newF, oldF) {
+    for (let i = 0; i < detents.length; i++) {
+      let t = detents[i]
+      let crossed = (oldF < t && newF >= t) || (oldF > t && newF <= t)
+      // at edges treat near-zero as crossing even if starting exactly on threshold
+      if (!crossed && (t === 0 || t === 1)) {
+        let nearOld = Math.abs(oldF - t) < 0.012
+        let nearNew = Math.abs(newF - t) < 0.012
+        if (!nearOld && nearNew && Math.abs(newF - oldF) > 0.004) crossed = true
+      }
+      if (crossed) { tickAnim.restart(); return }
+    }
+  }
+
+  onFractionChanged: {
+    let prev = _prevFrac
+    let cur = fraction
+    if (Math.abs(cur - prev) > 0.001) _checkDetents(cur, prev)
+    _prevFrac = cur
+  }
+
+  SequentialAnimation {
+    id: tickAnim
+    NumberAnimation { target: root; property: "tickScale"; to: 1.06; duration: 85; easing.type: Easing.OutCubic }
+    NumberAnimation { target: root; property: "tickScale"; to: 1; duration: 150; easing.type: Easing.OutCubic }
+  }
+
   Behavior on grabT { NumberAnimation { duration: 140; easing.type: Easing.OutCubic } }
   Behavior on displayedStretch { NumberAnimation { duration: root.dragging ? 90 : 180; easing.type: Easing.OutCubic } }
 
@@ -123,6 +155,8 @@ Item {
     border.width: 1
     anchors.verticalCenter: parent.verticalCenter
     x: root.thumbX
+    scale: root.tickScale
+    transformOrigin: Item.Center
     opacity: root.ready ? 1 : 0.4
     Behavior on color { ColorAnimation { duration: 90 } }
     Rectangle {
