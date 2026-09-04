@@ -93,7 +93,6 @@ PopupCard {
       anchors.fill: parent
       spacing: 0
 
-      // header with Bluetooth toggle top right
       RowLayout {
         Layout.fillWidth: true
         Layout.preferredHeight: 48
@@ -118,7 +117,6 @@ PopupCard {
           font.family: Config.font.family
         }
 
-        // toggle switch — win10 style
         Item {
           Layout.preferredWidth: 44
           Layout.preferredHeight: 24
@@ -160,13 +158,11 @@ PopupCard {
         color: Colors.border
       }
 
-      // scrollable list area — fixed height so outer panel never resizes
       Item {
         Layout.fillWidth: true
         Layout.fillHeight: true
         clip: true
 
-        // No adapter placeholder
         ColumnLayout {
           visible: root.adapter === null
           anchors.left: parent.left
@@ -195,7 +191,6 @@ PopupCard {
           }
         }
 
-        // Bluetooth off placeholder
         ColumnLayout {
           visible: root.adapter !== null && !root.bluetoothOn
           anchors.left: parent.left
@@ -238,7 +233,6 @@ PopupCard {
           }
         }
 
-        // devices scroll
         Flickable {
           id: flick
           visible: root.adapter !== null && root.bluetoothOn
@@ -252,7 +246,6 @@ PopupCard {
             width: flick.width
             spacing: 0
 
-            // connected section
             ColumnLayout {
               visible: root.connectedDevices.length > 0
               Layout.fillWidth: true
@@ -277,19 +270,20 @@ PopupCard {
                   required property var modelData
                   required property int index
                   Layout.fillWidth: true
-                  Layout.preferredHeight: root.expandedDevice === modelData ? 84 : 62
+                  Layout.preferredHeight: 62 + connDetailWrap.height + 1
                   color: connHover.hovered ? Colors.surface : (root.expandedDevice === modelData ? Colors.card : Colors.transparent)
                   clip: true
                   Behavior on color { ColorAnimation { duration: 90 } }
                   HoverHandler { id: connHover }
 
-                  ColumnLayout {
+                  Item {
                     anchors.fill: parent
-                    spacing: 0
 
                     Item {
-                      Layout.fillWidth: true
-                      Layout.preferredHeight: 62
+                      id: connHeader
+                      width: parent.width
+                      height: 62
+                      anchors.top: parent.top
                       MouseArea {
                         id: connHeaderMa
                         anchors.fill: parent
@@ -344,16 +338,27 @@ PopupCard {
                       }
                     }
 
-                    RowLayout {
-                      visible: root.expandedDevice === connRow.modelData
-                      Layout.fillWidth: true
-                      Layout.leftMargin: 48
-                      Layout.rightMargin: 12
-                      Layout.bottomMargin: 10
-                      spacing: 8
-                      z: 1
-                      Item { Layout.fillWidth: true }
-                      Text { visible: connRow.modelData ? connRow.modelData.address.length > 0 : false; text: connRow.modelData ? connRow.modelData.address : ""; color: Colors.white; font.pixelSize: 10; font.family: Config.font.family; elide: Text.ElideRight; Layout.maximumWidth: 110 }
+                    Item {
+                      id: connDetailWrap
+                      width: parent.width
+                      anchors.top: connHeader.bottom
+                      height: root.expandedDevice === connRow.modelData ? 22 : 0
+                      clip: true
+                      opacity: root.expandedDevice === connRow.modelData ? 1 : 0
+                      Behavior on height { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+                      Behavior on opacity { NumberAnimation { duration: 130; easing.type: Easing.OutCubic } }
+
+                      RowLayout {
+                        width: parent.width - 60
+                        anchors.left: parent.left
+                        anchors.leftMargin: 48
+                        anchors.right: parent.right
+                        anchors.rightMargin: 12
+                        anchors.top: parent.top
+                        spacing: 8
+                        Item { Layout.fillWidth: true }
+                        Text { visible: connRow.modelData ? connRow.modelData.address.length > 0 : false; text: connRow.modelData ? connRow.modelData.address : ""; color: Colors.white; font.pixelSize: 10; font.family: Config.font.family; elide: Text.ElideRight; Layout.maximumWidth: 110 }
+                      }
                     }
                   }
 
@@ -370,7 +375,6 @@ PopupCard {
               Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: Colors.border; visible: root.availableDevices.length > 0 }
             }
 
-            // available rows
             Repeater {
               model: root.bluetoothOn ? root.availableDevices.slice(0, 20) : []
 
@@ -379,7 +383,7 @@ PopupCard {
                 required property var modelData
                 required property int index
                 Layout.fillWidth: true
-                Layout.preferredHeight: root.expandedDevice === modelData ? 84 : 62
+                Layout.preferredHeight: 62 + availDetailWrap.height + 1
                 color: availHover.hovered ? Colors.surface : (root.expandedDevice === modelData ? Colors.card : Colors.transparent)
                 clip: true
                 Behavior on color { ColorAnimation { duration: 90 } }
@@ -393,13 +397,14 @@ PopupCard {
                   color: Colors.border
                 }
 
-                ColumnLayout {
+                Item {
                   anchors.fill: parent
-                  spacing: 0
 
                   Item {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 62
+                    id: availHeader
+                    width: parent.width
+                    height: 62
+                    anchors.top: parent.top
                     MouseArea {
                       id: availHeaderMa
                       anchors.fill: parent
@@ -455,32 +460,41 @@ PopupCard {
                     }
                   }
 
-                  RowLayout {
-                    visible: root.expandedDevice === availRow.modelData
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 48
-                    Layout.rightMargin: 12
-                    Layout.bottomMargin: 10
-                    spacing: 8
-                    z: 1
+                  Item {
+                    id: availDetailWrap
+                    width: parent.width
+                    anchors.top: availHeader.bottom
+                    height: root.expandedDevice === availRow.modelData ? 22 : 0
+                    clip: true
+                    opacity: root.expandedDevice === availRow.modelData ? 1 : 0
+                    Behavior on height { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+                    Behavior on opacity { NumberAnimation { duration: 130; easing.type: Easing.OutCubic } }
 
-                    Text {
-                      text: availRow.modelData ? availRow.modelData.address : ""
-                      color: Colors.white
-                      font.pixelSize: 10
-                      font.family: Config.font.family
-                      elide: Text.ElideRight
-                      Layout.maximumWidth: 120
-                      Layout.fillWidth: true
+                    RowLayout {
+                      width: parent.width - 60
+                      anchors.left: parent.left
+                      anchors.leftMargin: 48
+                      anchors.right: parent.right
+                      anchors.rightMargin: 12
+                      anchors.top: parent.top
+                      spacing: 8
+                      Text {
+                        text: availRow.modelData ? availRow.modelData.address : ""
+                        color: Colors.white
+                        font.pixelSize: 10
+                        font.family: Config.font.family
+                        elide: Text.ElideRight
+                        Layout.maximumWidth: 120
+                        Layout.fillWidth: true
+                      }
+                      Item { Layout.fillWidth: true }
+                      Text { visible: availRow.modelData ? (availRow.modelData.pairing || availRow.modelData.state === BluetoothDeviceState.Connecting) : false; text: "Connecting..."; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                     }
-                    Item { Layout.fillWidth: true }
-                    Text { visible: availRow.modelData ? (availRow.modelData.pairing || availRow.modelData.state === BluetoothDeviceState.Connecting) : false; text: "Connecting..."; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                   }
                 }
               }
             }
 
-            // empty state
             Text {
               visible: root.availableDevices.length === 0 && root.connectedDevices.length === 0
               Layout.alignment: Qt.AlignHCenter
