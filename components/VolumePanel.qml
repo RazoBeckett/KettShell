@@ -73,6 +73,16 @@ PopupCard {
     if (source && list.indexOf(source) < 0) list.unshift(source)
     return list
   }
+  readonly property int activeSinkIndex: {
+    if (!sink) return -1
+    for (let i = 0; i < audioSinks.length; i++) if (audioSinks[i] && audioSinks[i].id === sink.id) return i
+    return -1
+  }
+  readonly property int activeSourceIndex: {
+    if (!source) return -1
+    for (let i = 0; i < audioSources.length; i++) if (audioSources[i] && audioSources[i].id === source.id) return i
+    return -1
+  }
   readonly property var audioStreams: {
     let list = []
     for (let i = 0; i < candidateStreams.length; i++) {
@@ -373,29 +383,46 @@ PopupCard {
               peaks: outPeakMonitor.peaks
               muted: root.outMuted || !root.sinkReady
               showTicks: true
-              visible: root.sinkReady
+              opacity: root.sinkReady ? 1 : 0
+              Behavior on opacity { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
             }
 
-            // output device list
-            ColumnLayout {
+            // output device list - iOS style sliding highlight
+            Item {
+              id: sinkListContainer
               Layout.fillWidth: true
               Layout.topMargin: 4
-              spacing: 2
+              implicitHeight: sinkListColumn.implicitHeight
               visible: root.audioSinks.length > 0
 
-              Repeater {
-                model: root.audioSinks
-                delegate: Rectangle {
-                  required property var modelData
-                  required property int index
-                  readonly property bool isActive: root.sink && modelData && root.sink.id === modelData.id
-                  Layout.fillWidth: true
-                  Layout.preferredHeight: 36
-                  color: devHover.hovered ? Colors.surface : (isActive ? Colors.card : Colors.transparent)
-                  border.color: isActive ? Colors.blue : Colors.transparent
-                  border.width: isActive ? 1 : 0
-                  Behavior on color { ColorAnimation { duration: 90 } }
-                  HoverHandler { id: devHover }
+              Rectangle {
+                id: sinkHighlight
+                visible: root.activeSinkIndex >= 0
+                width: parent.width
+                height: 36
+                y: root.activeSinkIndex * 38
+                color: Colors.card
+                border.color: Colors.blue
+                border.width: 1
+                Behavior on y { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
+                Behavior on opacity { NumberAnimation { duration: 150 } }
+              }
+
+              ColumnLayout {
+                id: sinkListColumn
+                anchors.fill: parent
+                spacing: 2
+
+                Repeater {
+                  model: root.audioSinks
+                  delegate: Rectangle {
+                    required property var modelData
+                    required property int index
+                    readonly property bool isActive: root.sink && modelData && root.sink.id === modelData.id
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 36
+                    color: (devHover.hovered && !isActive) ? Colors.surface : Colors.transparent
+                    HoverHandler { id: devHover }
 
                   RowLayout {
                     anchors.fill: parent
@@ -416,13 +443,6 @@ PopupCard {
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
-                    Text {
-                      visible: isActive
-                      text: "check"
-                      color: Colors.blue
-                      font.family: Config.materialSymbols.family
-                      font.pixelSize: 14
-                    }
                   }
                   MouseArea {
                     anchors.fill: parent
@@ -432,6 +452,7 @@ PopupCard {
                   }
                 }
               }
+            }
             }
           }
 
@@ -566,7 +587,8 @@ PopupCard {
               peaks: inPeakMonitor.peaks
               muted: root.inMuted || !root.sourceReady
               showTicks: true
-              visible: root.sourceReady
+              opacity: root.sourceReady ? 1 : 0
+              Behavior on opacity { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
             }
 
             Text {
@@ -577,25 +599,41 @@ PopupCard {
               font.family: Config.font.family
             }
 
-            ColumnLayout {
+            Item {
+              id: sourceListContainer
               Layout.fillWidth: true
               Layout.topMargin: 4
-              spacing: 2
+              implicitHeight: sourceListColumn.implicitHeight
               visible: root.audioSources.length > 0
 
-              Repeater {
-                model: root.audioSources
-                delegate: Rectangle {
-                  required property var modelData
-                  required property int index
-                  readonly property bool isActive: root.source && modelData && root.source.id === modelData.id
-                  Layout.fillWidth: true
-                  Layout.preferredHeight: 36
-                  color: inDevHover.hovered ? Colors.surface : (isActive ? Colors.card : Colors.transparent)
-                  border.color: isActive ? Colors.blue : Colors.transparent
-                  border.width: isActive ? 1 : 0
-                  Behavior on color { ColorAnimation { duration: 90 } }
-                  HoverHandler { id: inDevHover }
+              Rectangle {
+                id: sourceHighlight
+                visible: root.activeSourceIndex >= 0
+                width: parent.width
+                height: 36
+                y: root.activeSourceIndex * 38
+                color: Colors.card
+                border.color: Colors.blue
+                border.width: 1
+                Behavior on y { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
+                Behavior on opacity { NumberAnimation { duration: 150 } }
+              }
+
+              ColumnLayout {
+                id: sourceListColumn
+                anchors.fill: parent
+                spacing: 2
+
+                Repeater {
+                  model: root.audioSources
+                  delegate: Rectangle {
+                    required property var modelData
+                    required property int index
+                    readonly property bool isActive: root.source && modelData && root.source.id === modelData.id
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 36
+                    color: (inDevHover.hovered && !isActive) ? Colors.surface : Colors.transparent
+                    HoverHandler { id: inDevHover }
 
                   RowLayout {
                     anchors.fill: parent
@@ -616,13 +654,6 @@ PopupCard {
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
-                    Text {
-                      visible: isActive
-                      text: "check"
-                      color: Colors.blue
-                      font.family: Config.materialSymbols.family
-                      font.pixelSize: 14
-                    }
                   }
                   MouseArea {
                     anchors.fill: parent
@@ -632,6 +663,7 @@ PopupCard {
                   }
                 }
               }
+            }
             }
           }
 
