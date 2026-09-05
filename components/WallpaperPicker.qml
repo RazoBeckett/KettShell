@@ -92,7 +92,9 @@ Scope {
         (pickerVisibleCount - 1) * pickerGap
 
       property int currentIndex: -1
-      readonly property var filteredModel: Wallpapers.query(searchField.text) || []
+      property int lastDir: 0
+      property string debouncedText: ""
+      readonly property var filteredModel: Wallpapers.query(debouncedText) || []
 
       readonly property var windowModel: {
         if (!filteredModel || filteredModel.length === 0)
@@ -110,12 +112,25 @@ Scope {
         ]
       }
 
-      // Preload 3 left + 3 right off-screen, keep in image cache until picker closes
+      // Directional preload: when moving right, warm 4 right / 2 left, and vice versa
       readonly property var leftPreloadModel: {
         if (!filteredModel || filteredModel.length <= 6) return []
         let n = filteredModel.length
         let ci = currentIndex
         if (ci < 0) return []
+        if (lastDir === 1) {
+          return [
+            filteredModel[(ci - 3 + n) % n],
+            filteredModel[(ci - 2 + n) % n]
+          ]
+        } else if (lastDir === -1) {
+          return [
+            filteredModel[(ci - 5 + n) % n],
+            filteredModel[(ci - 4 + n) % n],
+            filteredModel[(ci - 3 + n) % n],
+            filteredModel[(ci - 2 + n) % n]
+          ]
+        }
         return [
           filteredModel[(ci - 4 + n) % n],
           filteredModel[(ci - 3 + n) % n],
@@ -128,6 +143,19 @@ Scope {
         let n = filteredModel.length
         let ci = currentIndex
         if (ci < 0) return []
+        if (lastDir === 1) {
+          return [
+            filteredModel[(ci + 2) % n],
+            filteredModel[(ci + 3) % n],
+            filteredModel[(ci + 4) % n],
+            filteredModel[(ci + 5) % n]
+          ]
+        } else if (lastDir === -1) {
+          return [
+            filteredModel[(ci + 2) % n],
+            filteredModel[(ci + 3) % n]
+          ]
+        }
         return [
           filteredModel[(ci + 2) % n],
           filteredModel[(ci + 3) % n],
@@ -136,23 +164,47 @@ Scope {
       }
 
       property var seenCache: []
+      readonly property int seenCacheCap: 15
 
       function cachePreviews(list) {
         if (!list || list.length === 0) return
         let changed = false
         for (let i = 0; i < list.length; i++) {
           let p = list[i]
-          if (seenCache.indexOf(p) === -1) {
+          let idx = seenCache.indexOf(p)
+          if (idx !== -1) {
+            seenCache.splice(idx, 1)
+            seenCache.push(p)
+            changed = true
+          } else {
             seenCache.push(p)
             changed = true
           }
         }
-        if (changed) seenCache = seenCache.slice()
+        let trimmed = false
+        while (seenCache.length > seenCacheCap) {
+          seenCache.shift()
+          trimmed = true
+        }
+        if (changed || trimmed) seenCache = seenCache.slice()
       }
 
       onWindowModelChanged: cachePreviews(windowModel)
       onLeftPreloadModelChanged: cachePreviews(leftPreloadModel)
       onRightPreloadModelChanged: cachePreviews(rightPreloadModel)
+
+      onFilteredModelChanged: {
+        Qt.callLater(() => {
+          let m = filteredModel
+          if (!m || m.length === 0) {
+            currentIndex = -1
+            return
+          }
+          let cur = Wallpapers.current
+          let idx = m.indexOf(cur)
+          currentIndex = idx >= 0 ? idx : 0
+        })
+      }
 
       onShouldShowChanged: {
         animProgress = shouldShow ? 1 : 0
@@ -290,18 +342,12 @@ Scope {
               }
             }
 
-            onTextChanged: {
-              Qt.callLater(() => {
-                let m = win.filteredModel
-                if (!m || m.length === 0) {
-                  win.currentIndex = -1
-                  return
-                }
-                let cur = Wallpapers.current
-                let idx = m.indexOf(cur)
-                win.currentIndex = idx >= 0 ? idx : 0
-              })
+            Timer {
+              id: searchDebounce
+              interval: 100
+              onTriggered: win.debouncedText = searchField.text
             }
+            onTextChanged: { if (searchDebounce) searchDebounce.restart() }
 
             Keys.onPressed: event => {
               if (
@@ -413,6 +459,12 @@ Scope {
                 onClicked: {
                   let g = win.filteredModel.indexOf(modelData)
                   if (g >= 0) {
+                    let n = win.filteredModel.length
+                    let cur = win.currentIndex
+                    if (n > 0 && cur >= 0) {
+                      let dist = (g - cur + n) % n
+                      if (dist !== 0) win.lastDir = dist <= n / 2 ? 1 : -1
+                    }
                     win.currentIndex = g
                   }
                 }
@@ -451,7 +503,7 @@ Scope {
       function selectPrevious(): void {
         if (!filteredModel || filteredModel.length === 0)
           return
-
+        lastDir = -1
         if (
           currentIndex <= 0 ||
           currentIndex >= filteredModel.length
@@ -465,7 +517,7 @@ Scope {
       function selectNext(): void {
         if (!filteredModel || filteredModel.length === 0)
           return
-
+        lastDir = 1
         if (
           currentIndex < 0 ||
           currentIndex >= filteredModel.length - 1
@@ -483,6 +535,8 @@ Scope {
         }
 
         searchField.text = ""
+        debouncedText = ""
+        if (searchDebounce) searchDebounce.stop()
 
         let start = Wallpapers.current
         let all = Wallpapers.all

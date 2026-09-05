@@ -34,6 +34,7 @@ Singleton {
     "/.cache/quickshell/wallpaper"
 
   property list<string> all: []
+  property var allLower: []
   property string current: ""
 
   function fileName(path: string): string {
@@ -44,15 +45,13 @@ Singleton {
       : path
   }
 
-  // Fuzzy score: higher is better, 0 = no match. Exact substring gets 100 bonus, sequential chars get gap/consecutive/boundary bonuses.
+  // Fuzzy score expects already lowercased pattern/text. Higher is better, 0 = no match.
   function fuzzyScore(pattern: string, text: string): real {
     if (!pattern || pattern.length === 0) return 1
-    let p = pattern.toLowerCase()
-    let t = text.toLowerCase()
-    let pLen = p.length
-    let tLen = t.length
+    let pLen = pattern.length
+    let tLen = text.length
     if (pLen > tLen) return 0
-    let idx = t.indexOf(p)
+    let idx = text.indexOf(pattern)
     if (idx !== -1) {
       return 100 - idx
     }
@@ -60,8 +59,8 @@ Singleton {
     let prev = -1
     let consecutive = 0
     for (let i = 0; i < pLen; i++) {
-      let ch = p[i]
-      let found = t.indexOf(ch, prev + 1)
+      let ch = pattern[i]
+      let found = text.indexOf(ch, prev + 1)
       if (found === -1) return 0
       if (prev !== -1 && found === prev + 1) {
         consecutive++
@@ -70,7 +69,7 @@ Singleton {
         consecutive = 0
         let gap = found - prev - 1
         score -= gap * 1.5
-        if (found === 0 || t[found - 1] === "_" || t[found - 1] === "-" || t[found - 1] === " " || t[found - 1] === "." || t[found - 1] === "/") {
+        if (found === 0 || text[found - 1] === "_" || text[found - 1] === "-" || text[found - 1] === " " || text[found - 1] === "." || text[found - 1] === "/") {
           score += 6
         }
       }
@@ -83,13 +82,11 @@ Singleton {
   function query(filter: string): list<string> {
     if (!filter || filter.trim() === "")
       return all
-    let q = filter.trim()
+    let q = filter.trim().toLowerCase()
     let scored = []
     for (let i = 0; i < all.length; i++) {
-      let p = all[i]
-      let name = fileName(p)
-      let s = fuzzyScore(q, name)
-      if (s > 0) scored.push([p, s])
+      let s = fuzzyScore(q, allLower[i])
+      if (s > 0) scored.push([all[i], s])
     }
     scored.sort((a, b) => b[1] - a[1])
     let out = []
@@ -155,6 +152,9 @@ Singleton {
    * Fallback when the state file has not loaded yet.
    */
   onAllChanged: {
+    let lower = []
+    for (let i = 0; i < all.length; i++) lower.push(fileName(all[i]).toLowerCase())
+    allLower = lower
     if (
       !root.current &&
       root.all.length > 0
