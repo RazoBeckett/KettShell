@@ -24,11 +24,19 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  opacity: root.isCurrent ? 1 : 0.78
+  // Entrance state, same as caelestia: delegate starts small/invisible and
+  // the Behaviors below animate it to its resting values once bound.
+  // scale/opacity are transforms — they never affect the Row's layout.
+  opacity: 0
   z: root.isCurrent ? 1 : 0
 
   // Middle (isCurrent) is the one that gets set on Enter
-  scale: root.isCurrent ? 1.07 : 0.90
+  scale: 0.85
+
+  Component.onCompleted: {
+    scale = Qt.binding(() => root.isCurrent ? 1.07 : 0.90)
+    opacity = Qt.binding(() => root.isCurrent ? 1 : 0.78)
+  }
 
   Behavior on scale {
     NumberAnimation {
@@ -102,6 +110,18 @@ Item {
       smooth: true
       mipmap: false
       autoTransform: false
+      retainWhileLoading: true
+
+      // Caelestia-style fade-in: thumb stays hidden until the image is
+      // actually decoded, then crossfades over the placeholder icon.
+      opacity: status === Image.Ready ? 1 : 0
+
+      Behavior on opacity {
+        NumberAnimation {
+          duration: 220
+          easing.type: Easing.OutCubic
+        }
+      }
 
       onStatusChanged: {
         if (status === Image.Error) {

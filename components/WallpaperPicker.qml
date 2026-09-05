@@ -91,118 +91,17 @@ Scope {
         pickerVisibleCount * pickerItemW +
         (pickerVisibleCount - 1) * pickerGap
 
-      property int currentIndex: -1
-      property int lastDir: 0
       property string debouncedText: ""
       readonly property var filteredModel: Wallpapers.query(debouncedText) || []
-
-      readonly property var windowModel: {
-        if (!filteredModel || filteredModel.length === 0)
-          return []
-        if (filteredModel.length <= pickerVisibleCount)
-          return filteredModel
-        let n = filteredModel.length
-        let ci = currentIndex
-        if (ci < 0) ci = 0
-        if (ci >= n) ci = n - 1
-        return [
-          filteredModel[(ci - 1 + n) % n],
-          filteredModel[ci],
-          filteredModel[(ci + 1) % n]
-        ]
-      }
-
-      // Directional preload: when moving right, warm 4 right / 2 left, and vice versa
-      readonly property var leftPreloadModel: {
-        if (!filteredModel || filteredModel.length <= 6) return []
-        let n = filteredModel.length
-        let ci = currentIndex
-        if (ci < 0) return []
-        if (lastDir === 1) {
-          return [
-            filteredModel[(ci - 3 + n) % n],
-            filteredModel[(ci - 2 + n) % n]
-          ]
-        } else if (lastDir === -1) {
-          return [
-            filteredModel[(ci - 5 + n) % n],
-            filteredModel[(ci - 4 + n) % n],
-            filteredModel[(ci - 3 + n) % n],
-            filteredModel[(ci - 2 + n) % n]
-          ]
-        }
-        return [
-          filteredModel[(ci - 4 + n) % n],
-          filteredModel[(ci - 3 + n) % n],
-          filteredModel[(ci - 2 + n) % n]
-        ]
-      }
-
-      readonly property var rightPreloadModel: {
-        if (!filteredModel || filteredModel.length <= 6) return []
-        let n = filteredModel.length
-        let ci = currentIndex
-        if (ci < 0) return []
-        if (lastDir === 1) {
-          return [
-            filteredModel[(ci + 2) % n],
-            filteredModel[(ci + 3) % n],
-            filteredModel[(ci + 4) % n],
-            filteredModel[(ci + 5) % n]
-          ]
-        } else if (lastDir === -1) {
-          return [
-            filteredModel[(ci + 2) % n],
-            filteredModel[(ci + 3) % n]
-          ]
-        }
-        return [
-          filteredModel[(ci + 2) % n],
-          filteredModel[(ci + 3) % n],
-          filteredModel[(ci + 4) % n]
-        ]
-      }
-
-      property var seenCache: []
-      readonly property int seenCacheCap: 15
-
-      function cachePreviews(list) {
-        if (!list || list.length === 0) return
-        let changed = false
-        for (let i = 0; i < list.length; i++) {
-          let p = list[i]
-          let idx = seenCache.indexOf(p)
-          if (idx !== -1) {
-            seenCache.splice(idx, 1)
-            seenCache.push(p)
-            changed = true
-          } else {
-            seenCache.push(p)
-            changed = true
-          }
-        }
-        let trimmed = false
-        while (seenCache.length > seenCacheCap) {
-          seenCache.shift()
-          trimmed = true
-        }
-        if (changed || trimmed) seenCache = seenCache.slice()
-      }
-
-      onWindowModelChanged: cachePreviews(windowModel)
-      onLeftPreloadModelChanged: cachePreviews(leftPreloadModel)
-      onRightPreloadModelChanged: cachePreviews(rightPreloadModel)
 
       onFilteredModelChanged: {
         Qt.callLater(() => {
           let m = filteredModel
-          if (!m || m.length === 0) {
-            currentIndex = -1
+          if (!m || m.length === 0)
             return
-          }
           let cur = Wallpapers.current
           let idx = m.indexOf(cur)
-          currentIndex = idx >= 0 ? idx : 0
+          carousel.currentIndex = idx >= 0 ? idx : 0
         })
       }
 
@@ -232,9 +131,12 @@ Scope {
       }
 
       function commitCurrent(): void {
-        if (win.currentIndex < 0 || win.currentIndex >= win.filteredModel.length)
+        if (
+          carousel.currentIndex < 0 ||
+          carousel.currentIndex >= win.filteredModel.length
+        )
           return
-        Wallpapers.setWallpaper(win.filteredModel[win.currentIndex])
+        Wallpapers.setWallpaper(win.filteredModel[carousel.currentIndex])
         root.close()
       }
 
@@ -368,8 +270,13 @@ Scope {
                 event.key === Qt.Key_Return ||
                 event.key === Qt.Key_Enter
               ) {
-                if (win.currentIndex >= 0 && win.currentIndex < win.filteredModel.length) {
-                  Wallpapers.setWallpaper(win.filteredModel[win.currentIndex])
+                if (
+                  carousel.currentIndex >= 0 &&
+                  carousel.currentIndex < win.filteredModel.length
+                ) {
+                  Wallpapers.setWallpaper(
+                    win.filteredModel[carousel.currentIndex]
+                  )
                 }
                 root.close()
                 event.accepted = true
@@ -378,15 +285,6 @@ Scope {
           }
         }
 
-        /*
-         * Wallpaper previews.
-         *
-         * No PathView.
-         *
-         * The Row controls the spacing exactly:
-         *
-         * [300][4][300][4][300]
-         */
         Item {
           id: carouselHost
 
@@ -394,7 +292,7 @@ Scope {
 
           height: 280
 
-          clip: false
+          clip: true
 
           Text {
             anchors.centerIn: parent
@@ -420,101 +318,113 @@ Scope {
             visible: text !== ""
           }
 
-          Row {
-            id: wallpaperRow
+        /*
+         * Wallpaper previews — PathView carousel, like caelestia's launcher.
+         *
+         * Delegates slide along the path; only delegates created at the path
+         * edge play the entrance pop, so existing previews glide instead of
+         * re-popping on every navigation.
+         *
+         * Path length = 3 * (item + gap) with the current item snapped to the
+         * middle, so visible spacing between previews is exactly pickerGap.
+         */
+        PathView {
+          id: carousel
 
-            anchors.horizontalCenter: parent.horizontalCenter
-            anchors.top: parent.top
+          anchors.horizontalCenter: parent.horizontalCenter
+          anchors.verticalCenter: parent.verticalCenter
 
-            spacing: win.pickerGap
+          width: win.pickerVisibleCount * (win.pickerItemW + win.pickerGap)
+          height: 260
 
-            visible: win.filteredModel ? win.filteredModel.length > 0 : false
+          visible: win.filteredModel ? win.filteredModel.length > 0 : false
 
-            Repeater {
-              model: win.windowModel
+          model: win.filteredModel
 
-              delegate: WallpaperItem {
-                width: win.pickerItemW
+          pathItemCount: win.pickerVisibleCount
+          cacheItemCount: 4
 
-                isCurrent: modelData === win.filteredModel[win.currentIndex]
+          highlightRangeMode: PathView.StrictlyEnforceRange
+          preferredHighlightBegin: 0.5
+          preferredHighlightEnd: 0.5
+          snapMode: PathView.SnapToItem
+          highlightMoveDuration: 220
 
-                onClicked: {
-                  let g = win.filteredModel.indexOf(modelData)
-                  if (g >= 0) {
-                    let n = win.filteredModel.length
-                    let cur = win.currentIndex
-                    if (n > 0 && cur >= 0) {
-                      let dist = (g - cur + n) % n
-                      if (dist !== 0) win.lastDir = dist <= n / 2 ? 1 : -1
-                    }
-                    win.currentIndex = g
-                  }
-                }
-              }
+          interactive: true
+          flickDeceleration: 2000
+
+          path: Path {
+            startY: carousel.height / 2
+
+            PathAttribute { name: "z"; value: 0 }
+
+            PathLine {
+              x: carousel.width / 2
+              relativeY: 0
+            }
+
+            PathAttribute { name: "z"; value: 1 }
+
+            PathLine {
+              x: carousel.width
+              relativeY: 0
+            }
+
+            PathAttribute { name: "z"; value: 0 }
+          }
+
+          delegate: WallpaperItem {
+            id: del
+
+            width: win.pickerItemW
+
+            isCurrent: PathView.isCurrentItem
+            z: del.PathView.z ?? 0
+
+            /*
+             * Entrance state (caelestia-style): new delegates start small
+             * and invisible, then the Behaviors in WallpaperItem animate
+             * them to their resting values. Scale/opacity are transforms —
+             * the path layout is never disturbed.
+             */
+            scale: 0.5
+            opacity: 0
+
+            Component.onCompleted: {
+              scale = Qt.binding(() =>
+                PathView.onPath
+                  ? (PathView.isCurrentItem ? 1.07 : 0.90)
+                  : 0
+              )
+              opacity = Qt.binding(() => PathView.onPath ? 1 : 0)
+            }
+
+            onClicked: {
+              if (PathView.isCurrentItem)
+                win.commitCurrent()
+              else
+                carousel.currentIndex = del.index
             }
           }
         }
-
-        // Preload 3 left + 3 right neighbours in background (Image async, not LazyLoader inside Variants)
-        // Keep every preview that was ever in window/neighbours until picker closes, then free
-        Item {
-          id: preloadCache
-          visible: true
-          opacity: 0.001
-          width: 1
-          height: 1
-          // model empty when closed frees the Images
-          Repeater {
-            model: root.open ? win.seenCache : []
-            delegate: Item {
-              id: cacheDel
-              required property string modelData
-              Image {
-                source: "file://" + cacheDel.modelData
-                sourceSize.width: 400
-                sourceSize.height: 225
-                asynchronous: true
-                cache: true
-                autoTransform: false
-              }
-            }
-          }
-        }
+      }
       }
 
       function selectPrevious(): void {
         if (!filteredModel || filteredModel.length === 0)
           return
-        lastDir = -1
-        if (
-          currentIndex <= 0 ||
-          currentIndex >= filteredModel.length
-        ) {
-          currentIndex = filteredModel.length - 1
-        } else {
-          currentIndex--
-        }
+        carousel.decrementCurrentIndex()
       }
 
       function selectNext(): void {
         if (!filteredModel || filteredModel.length === 0)
           return
-        lastDir = 1
-        if (
-          currentIndex < 0 ||
-          currentIndex >= filteredModel.length - 1
-        ) {
-          currentIndex = 0
-        } else {
-          currentIndex++
-        }
+        carousel.incrementCurrentIndex()
       }
 
       onVisibleChanged: {
-        if (!root.open) {
-          seenCache = []
+        if (!root.open)
           return
-        }
 
         searchField.text = ""
         debouncedText = ""
@@ -525,11 +435,11 @@ Scope {
         let idx = all.indexOf(start)
 
         if (idx >= 0) {
-          currentIndex = idx
+          carousel.currentIndex = idx
         } else if (all.length > 0) {
-          currentIndex = 0
+          carousel.currentIndex = 0
         } else {
-          currentIndex = -1
+          carousel.currentIndex = -1
         }
 
         Qt.callLater(() => {
