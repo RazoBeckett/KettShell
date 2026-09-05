@@ -73,7 +73,7 @@ Scope {
       WlrLayershell.exclusionMode: ExclusionMode.Ignore
 
       WlrLayershell.keyboardFocus:
-        root.open
+        (root.open || win.animProgress > 0)
           ? WlrKeyboardFocus.Exclusive
           : WlrKeyboardFocus.None
 
@@ -210,33 +210,32 @@ Scope {
         animProgress = shouldShow ? 1 : 0
       }
 
+      // Scale in and out are mirrored — same curve reversed for exit/Enter.
       Behavior on animProgress {
         NumberAnimation {
-          duration: 220
+          duration: 280
           easing.type: Easing.InOutCubic
         }
       }
 
       Rectangle {
         id: dim
-
         anchors.fill: parent
-
         color: "#000000"
-        opacity: win.animProgress * 0.45
+        opacity: win.animProgress * 0.32
         visible: opacity > 0.01
-
-        Behavior on opacity {
-          NumberAnimation {
-            duration: 180
-            easing.type: Easing.OutCubic
-          }
-        }
-
+        // no Behavior — dim is pure derivative of animProgress (single progress)
         TapHandler {
           acceptedButtons: Qt.LeftButton
           onTapped: root.close()
         }
+      }
+
+      function commitCurrent(): void {
+        if (win.currentIndex < 0 || win.currentIndex >= win.filteredModel.length)
+          return
+        Wallpapers.setWallpaper(win.filteredModel[win.currentIndex])
+        root.close()
       }
 
       Column {
@@ -246,6 +245,9 @@ Scope {
 
         /*
          * Keep the whole picker centered and compact.
+         * Opacity/scale are derived from animProgress — single progress
+         * drives the whole exit so the reverse mirrors the entrance without
+         * the chase stutter (see Quickshell Motion guide).
          */
         width: Math.min(
           win.pickerRowW,
@@ -255,23 +257,9 @@ Scope {
         spacing: 8
 
         opacity: win.animProgress
-        scale: 0.98 + win.animProgress * 0.02
+        scale: 0.96 + win.animProgress * 0.04
 
         visible: win.animProgress > 0.01
-
-        Behavior on opacity {
-          NumberAnimation {
-            duration: 200
-            easing.type: Easing.OutCubic
-          }
-        }
-
-        Behavior on scale {
-          NumberAnimation {
-            duration: 240
-            easing.type: Easing.OutCubic
-          }
-        }
 
         /*
          * Search
@@ -380,15 +368,9 @@ Scope {
                 event.key === Qt.Key_Return ||
                 event.key === Qt.Key_Enter
               ) {
-                if (
-                  win.currentIndex >= 0 &&
-                  win.currentIndex < win.filteredModel.length
-                ) {
-                  Wallpapers.setWallpaper(
-                    win.filteredModel[win.currentIndex]
-                  )
+                if (win.currentIndex >= 0 && win.currentIndex < win.filteredModel.length) {
+                  Wallpapers.setWallpaper(win.filteredModel[win.currentIndex])
                 }
-
                 root.close()
                 event.accepted = true
               }
@@ -577,7 +559,7 @@ Scope {
       }
 
       HyprlandFocusGrab {
-        active: root.open
+        active: root.open || win.animProgress > 0
 
         windows: [win]
 
