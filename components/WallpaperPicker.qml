@@ -82,14 +82,9 @@ Scope {
       property real animProgress: 0
       property bool shouldShow: root.open
 
-      /*
-       * Three large thumbnails with a very small gap.
-       *
-       * WallpaperItem is exactly 300px wide.
-       * 3 * 300 + 2 * 4 = 908px
-       */
-      readonly property int pickerItemW: 300
-      readonly property int pickerGap: 4
+      // 3-up, bigger for readability — fits 1080p+ and clamps on smaller screens
+      readonly property int pickerItemW: 400
+      readonly property int pickerGap: 12
       readonly property int pickerVisibleCount: 3
 
       readonly property int pickerRowW:
@@ -97,7 +92,7 @@ Scope {
         (pickerVisibleCount - 1) * pickerGap
 
       property int currentIndex: -1
-      property var filteredModel: []
+      readonly property var filteredModel: Wallpapers.query(searchField.text) || []
 
       readonly property var windowModel: {
         if (!filteredModel || filteredModel.length === 0)
@@ -105,10 +100,14 @@ Scope {
         if (filteredModel.length <= pickerVisibleCount)
           return filteredModel
         let n = filteredModel.length
-        if (currentIndex < 0)
-          return [filteredModel[0], filteredModel[1], filteredModel[2]]
-        let start = Math.max(0, Math.min(currentIndex - 1, n - pickerVisibleCount))
-        return [filteredModel[start], filteredModel[start + 1], filteredModel[start + 2]]
+        let ci = currentIndex
+        if (ci < 0) ci = 0
+        if (ci >= n) ci = n - 1
+        return [
+          filteredModel[(ci - 1 + n) % n],
+          filteredModel[ci],
+          filteredModel[(ci + 1) % n]
+        ]
       }
 
       onShouldShowChanged: {
@@ -185,9 +184,9 @@ Scope {
           id: searchWrap
 
           width: parent.width
-          height: 34
+          height: 44
 
-          radius: 10
+          radius: 0
 
           color: "transparent"
 
@@ -208,7 +207,7 @@ Scope {
             selectedTextColor: Colors.background
 
             font.family: Config.font.family
-            font.pixelSize: 13
+            font.pixelSize: 14
             font.weight: Config.font.weight
 
             property string placeholderText:
@@ -319,7 +318,7 @@ Scope {
 
           width: parent.width
 
-          height: 185
+          height: 280
 
           clip: false
 
@@ -376,12 +375,6 @@ Scope {
           }
         }
 
-      }
-
-      Binding {
-        target: win
-        property: "filteredModel"
-        value: Wallpapers.query(searchField.text) || []
       }
 
       function selectPrevious(): void {

@@ -13,12 +13,8 @@ Item {
     return i >= 0 ? p.slice(i + 1) : p
   }
 
-  /*
-   * The thumbnail itself is exactly 300px wide.
-   *
-   * There is no extra horizontal "chrome" around it.
-   * The Row in WallpaperPicker controls the gap.
-   */
+  // Size is driven by the picker (delegate width); thumb fills it
+
   implicitWidth: thumb.width
   implicitHeight:
     thumb.height +
@@ -28,15 +24,11 @@ Item {
   width: implicitWidth
   height: implicitHeight
 
-  opacity: 1
+  opacity: root.isCurrent ? 1 : 0.78
+  z: root.isCurrent ? 1 : 0
 
-  /*
-   * Only a very subtle difference between the current
-   * wallpaper and the other items.
-   *
-   * Do not use PathView for positioning or animation.
-   */
-  scale: root.isCurrent ? 1.0 : 0.96
+  // Middle (isCurrent) is the one that gets set on Enter
+  scale: root.isCurrent ? 1.07 : 0.90
 
   Behavior on scale {
     NumberAnimation {
@@ -58,10 +50,10 @@ Item {
     anchors.top: parent.top
     anchors.horizontalCenter: parent.horizontalCenter
 
-    width: 300
-    height: 300 / 16 * 9
+    width: root.width
+    height: root.width / 16 * 9
 
-    radius: 10
+    radius: 0
 
     color: Colors.surface
 
@@ -71,7 +63,7 @@ Item {
         : "transparent"
 
     border.width:
-      root.isCurrent ? 1.2 : 0
+      root.isCurrent ? 2 : 0
 
     clip: true
 
@@ -102,11 +94,14 @@ Item {
           : ""
 
       fillMode: Image.PreserveAspectCrop
+      sourceSize.width: 400
+      sourceSize.height: 225
 
       asynchronous: true
       cache: true
       smooth: true
-      mipmap: true
+      mipmap: false
+      autoTransform: true
 
       onStatusChanged: {
         if (status === Image.Error) {
@@ -144,7 +139,7 @@ Item {
         : Colors.white
 
     font.family: Config.font.family
-    font.pixelSize: 10
+    font.pixelSize: 12
     font.weight: Config.font.weight
 
     opacity:

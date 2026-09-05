@@ -30,10 +30,14 @@ Scope {
         anchors.fill: parent
         source: Wallpapers.current ? "file://" + Wallpapers.current : ""
         fillMode: Image.PreserveAspectCrop
+        // decode only to screen size, not full 4K+
+        sourceSize.width: win.screen ? win.screen.width : 1920
+        sourceSize.height: win.screen ? win.screen.height : 1080
         asynchronous: true
         cache: true
         smooth: true
-        mipmap: true
+        mipmap: false
+        autoTransform: true
 
         opacity: status === Image.Ready ? 1 : 0
         Behavior on opacity {
