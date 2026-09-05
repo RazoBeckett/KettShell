@@ -14,7 +14,8 @@ QtObject {
   readonly property int moduleHMargin: 3
   readonly property int iconSize: 14
   readonly property int spacing: 4
-  readonly property bool genie: true
+  readonly property bool genie: false
+  readonly property string wallDir: "~/Pictures/Wallpapers/MyWallpapers/"
 
   readonly property font font: Qt.font({
     family: "SF Pro Text",
