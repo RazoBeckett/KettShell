@@ -7,6 +7,8 @@ declarative, and consistent with the existing bar components.
 
 - Keep the root shell composition in `shell.qml`.
 - Keep reusable bar widgets in `components/`.
+- Keep shared UI state singletons in `states/`.
+- Keep system-truth singletons in `services/`.
 - Keep shared style and sizing values in the singleton files:
   - `Colors.qml` for color tokens.
   - `Config.qml` for spacing, dimensions, and fonts.

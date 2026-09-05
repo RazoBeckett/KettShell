@@ -1,11 +1,11 @@
 Brightness 1.0 Brightness.qml
 Clock 1.0 Clock.qml
-singleton NetworkMenuState 1.0 NetworkMenuState.qml
-singleton BluetoothMenuState 1.0 BluetoothMenuState.qml
+singleton NetworkMenuState 1.0 states/NetworkMenuState.qml
+singleton BluetoothMenuState 1.0 states/BluetoothMenuState.qml
 Workspaces 1.0 Workspaces.qml
 singleton Colors 1.0 Colors.qml
 singleton Config 1.0 Config.qml
-singleton Wallpapers 1.0 Wallpapers.qml
+singleton Wallpapers 1.0 services/Wallpapers.qml
 HoldCard 1.0 components/HoldCard.qml
 Pill 1.0 components/Pill.qml
 PopupCard 1.0 components/PopupCard.qml
