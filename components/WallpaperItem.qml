@@ -13,15 +13,14 @@ Item {
     return i >= 0 ? p.slice(i + 1) : p
   }
 
-  // Size is driven by the picker (delegate width); thumb fills it
-
-  implicitWidth: thumb.width
+  // Size is driven by the picker (delegate width); thumb fills it.
+  // Keep implicitWidth out of the chain — width is set externally by the
+  // PathView delegate, and deriving it from thumb would close a binding loop.
   implicitHeight:
     thumb.height +
     label.implicitHeight +
     8
 
-  width: implicitWidth
   height: implicitHeight
 
   // Entrance state, same as caelestia: delegate starts small/invisible and

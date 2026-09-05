@@ -100,16 +100,16 @@ Singleton {
 
     current = path
 
+    // Paths go in as positional parameters ($1..$3) so bash never re-parses
+    // their content — quoting them into the script would break on $/backticks.
     saveProc.command = [
       "bash",
       "-c",
-      "mkdir -p \"" +
-        stateDir.replace(/"/g, "\\\"") +
-        "\" && printf '%s' \"" +
-        path.replace(/"/g, "\\\"") +
-        "\" > \"" +
-        statePath.replace(/"/g, "\\\"") +
-        "\""
+      'mkdir -p "$1" && printf \'%s\' "$2" > "$3"',
+      "save-wallpaper",
+      stateDir,
+      path,
+      statePath
     ]
 
     saveProc.running = true
@@ -169,12 +169,11 @@ Singleton {
   Process {
     id: listProc
 
+    // Directory comes in as $1 so bash never re-parses its content.
     command: [
       "bash",
       "-c",
-      "dir=\"" +
-        root.expandedWallDir.replace(/"/g, "\\\"") +
-        "\"; " +
+      "dir=\"$1\"; " +
         "[ -d \"$dir\" ] || exit 0; " +
         "find \"$dir\" -type f " +
         "\\( " +
@@ -184,7 +183,9 @@ Singleton {
         "-iname \"*.webp\" -o " +
         "-iname \"*.bmp\" -o " +
         "-iname \"*.gif\" " +
-        "\\) 2>/dev/null | sort"
+        "\\) 2>/dev/null | sort",
+      "list-wallpapers",
+      root.expandedWallDir
     ]
 
     running: true

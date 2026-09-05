@@ -334,7 +334,9 @@ Scope {
           anchors.horizontalCenter: parent.horizontalCenter
           anchors.verticalCenter: parent.verticalCenter
 
-          width: win.pickerVisibleCount * (win.pickerItemW + win.pickerGap)
+          width:
+            win.pickerVisibleCount * win.pickerItemW +
+            (win.pickerVisibleCount - 1) * win.pickerGap
           height: 260
 
           visible: win.filteredModel ? win.filteredModel.length > 0 : false
