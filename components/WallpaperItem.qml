@@ -101,7 +101,7 @@ Item {
       cache: true
       smooth: true
       mipmap: false
-      autoTransform: true
+      autoTransform: false
 
       onStatusChanged: {
         if (status === Image.Error) {

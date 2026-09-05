@@ -110,6 +110,50 @@ Scope {
         ]
       }
 
+      // Preload 3 left + 3 right off-screen, keep in image cache until picker closes
+      readonly property var leftPreloadModel: {
+        if (!filteredModel || filteredModel.length <= 6) return []
+        let n = filteredModel.length
+        let ci = currentIndex
+        if (ci < 0) return []
+        return [
+          filteredModel[(ci - 4 + n) % n],
+          filteredModel[(ci - 3 + n) % n],
+          filteredModel[(ci - 2 + n) % n]
+        ]
+      }
+
+      readonly property var rightPreloadModel: {
+        if (!filteredModel || filteredModel.length <= 6) return []
+        let n = filteredModel.length
+        let ci = currentIndex
+        if (ci < 0) return []
+        return [
+          filteredModel[(ci + 2) % n],
+          filteredModel[(ci + 3) % n],
+          filteredModel[(ci + 4) % n]
+        ]
+      }
+
+      property var seenCache: []
+
+      function cachePreviews(list) {
+        if (!list || list.length === 0) return
+        let changed = false
+        for (let i = 0; i < list.length; i++) {
+          let p = list[i]
+          if (seenCache.indexOf(p) === -1) {
+            seenCache.push(p)
+            changed = true
+          }
+        }
+        if (changed) seenCache = seenCache.slice()
+      }
+
+      onWindowModelChanged: cachePreviews(windowModel)
+      onLeftPreloadModelChanged: cachePreviews(leftPreloadModel)
+      onRightPreloadModelChanged: cachePreviews(rightPreloadModel)
+
       onShouldShowChanged: {
         animProgress = shouldShow ? 1 : 0
       }
@@ -249,11 +293,13 @@ Scope {
             onTextChanged: {
               Qt.callLater(() => {
                 let m = win.filteredModel
-                if (m && m.length > 0) {
-                  win.currentIndex = 0
-                } else {
+                if (!m || m.length === 0) {
                   win.currentIndex = -1
+                  return
                 }
+                let cur = Wallpapers.current
+                let idx = m.indexOf(cur)
+                win.currentIndex = idx >= 0 ? idx : 0
               })
             }
 
@@ -375,6 +421,31 @@ Scope {
           }
         }
 
+        // Preload 3 left + 3 right neighbours in background (Image async, not LazyLoader inside Variants)
+        // Keep every preview that was ever in window/neighbours until picker closes, then free
+        Item {
+          id: preloadCache
+          visible: true
+          opacity: 0.001
+          width: 1
+          height: 1
+          // model empty when closed frees the Images
+          Repeater {
+            model: root.open ? win.seenCache : []
+            delegate: Item {
+              id: cacheDel
+              required property string modelData
+              Image {
+                source: "file://" + cacheDel.modelData
+                sourceSize.width: 400
+                sourceSize.height: 225
+                asynchronous: true
+                cache: true
+                autoTransform: false
+              }
+            }
+          }
+        }
       }
 
       function selectPrevious(): void {
@@ -406,8 +477,10 @@ Scope {
       }
 
       onVisibleChanged: {
-        if (!root.open)
+        if (!root.open) {
+          seenCache = []
           return
+        }
 
         searchField.text = ""
 

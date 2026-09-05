@@ -37,7 +37,7 @@ Scope {
         cache: true
         smooth: true
         mipmap: false
-        autoTransform: true
+        autoTransform: false
 
         opacity: status === Image.Ready ? 1 : 0
         Behavior on opacity {
