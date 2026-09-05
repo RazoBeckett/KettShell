@@ -44,25 +44,56 @@ Singleton {
       : path
   }
 
+  // Fuzzy score: higher is better, 0 = no match. Exact substring gets 100 bonus, sequential chars get gap/consecutive/boundary bonuses.
+  function fuzzyScore(pattern: string, text: string): real {
+    if (!pattern || pattern.length === 0) return 1
+    let p = pattern.toLowerCase()
+    let t = text.toLowerCase()
+    let pLen = p.length
+    let tLen = t.length
+    if (pLen > tLen) return 0
+    let idx = t.indexOf(p)
+    if (idx !== -1) {
+      return 100 - idx
+    }
+    let score = 0
+    let prev = -1
+    let consecutive = 0
+    for (let i = 0; i < pLen; i++) {
+      let ch = p[i]
+      let found = t.indexOf(ch, prev + 1)
+      if (found === -1) return 0
+      if (prev !== -1 && found === prev + 1) {
+        consecutive++
+        score += 8 + consecutive * 2
+      } else {
+        consecutive = 0
+        let gap = found - prev - 1
+        score -= gap * 1.5
+        if (found === 0 || t[found - 1] === "_" || t[found - 1] === "-" || t[found - 1] === " " || t[found - 1] === "." || t[found - 1] === "/") {
+          score += 6
+        }
+      }
+      if (i === 0 && found === 0) score += 10
+      prev = found
+    }
+    return score > 0 ? score : 0.5
+  }
+
   function query(filter: string): list<string> {
     if (!filter || filter.trim() === "")
       return all
-
-    let q = filter.toLowerCase().trim()
-    let out = []
-
+    let q = filter.trim()
+    let scored = []
     for (let i = 0; i < all.length; i++) {
       let p = all[i]
-
-      if (
-        fileName(p)
-          .toLowerCase()
-          .includes(q)
-      ) {
-        out.push(p)
-      }
+      let name = fileName(p)
+      let s = fuzzyScore(q, name)
+      if (s > 0) scored.push([p, s])
     }
-
+    scored.sort((a, b) => b[1] - a[1])
+    let out = []
+    for (let i = 0; i < scored.length; i++) out.push(scored[i][0])
     return out
   }
 
