@@ -51,6 +51,9 @@ Scope {
     }
   }
 
+  Background {}
+  WallpaperPicker { id: wallpaperPicker }
+
   Component.onCompleted: closePopouts()
 
   Variants {
