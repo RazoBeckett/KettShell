@@ -73,6 +73,16 @@ PopupCard {
     if (source && list.indexOf(source) < 0) list.unshift(source)
     return list
   }
+  readonly property int activeSinkIndex: {
+    if (!sink) return -1
+    for (let i = 0; i < audioSinks.length; i++) if (audioSinks[i] && audioSinks[i].id === sink.id) return i
+    return -1
+  }
+  readonly property int activeSourceIndex: {
+    if (!source) return -1
+    for (let i = 0; i < audioSources.length; i++) if (audioSources[i] && audioSources[i].id === source.id) return i
+    return -1
+  }
   readonly property var audioStreams: {
     let list = []
     for (let i = 0; i < candidateStreams.length; i++) {
@@ -290,69 +300,18 @@ PopupCard {
                 }
               }
 
-              Item {
+              IOSSlider {
                 id: outSliderRoot
                 Layout.fillWidth: true
                 Layout.preferredHeight: 24
-                readonly property int trackHeight: 4
-                readonly property int thumbSize: 16
-
-                Rectangle {
-                  anchors.verticalCenter: parent.verticalCenter
-                  width: parent.width
-                  height: outSliderRoot.trackHeight
-                  radius: 0
-                  color: Colors.card
-                }
-                Rectangle {
-                  anchors.verticalCenter: parent.verticalCenter
-                  anchors.left: parent.left
-                  width: Math.round(parent.width * root.outFraction)
-                  height: outSliderRoot.trackHeight
-                  radius: 0
-                  color: root.outMuted ? Colors.white : Colors.blue
-                  opacity: root.sinkReady ? 1 : 0.4
-                  Behavior on width { NumberAnimation { duration: 40; easing.type: Easing.Linear } }
-                }
-                Rectangle {
-                  width: outSliderRoot.thumbSize
-                  height: outSliderRoot.thumbSize
-                  radius: width / 2
-                  color: outSliderMa.containsMouse || outSliderMa.pressed ? Colors.blue : Colors.foreground
-                  border.color: outSliderMa.pressed ? Colors.foreground : Colors.transparent
-                  border.width: 1
-                  anchors.verticalCenter: parent.verticalCenter
-                  x: Math.max(0, Math.min(parent.width - width, Math.round(parent.width * root.outFraction - width / 2)))
-                  opacity: root.sinkReady ? 1 : 0.4
-                  Behavior on color { ColorAnimation { duration: 90 } }
-                  Rectangle {
-                    anchors.fill: parent
-                    radius: parent.radius
-                    color: "transparent"
-                    border.color: Colors.black
-                    border.width: 1
-                    opacity: 0.15
-                    z: -1
-                  }
-                }
-                MouseArea {
-                  id: outSliderMa
-                  anchors.fill: parent
-                  hoverEnabled: true
-                  cursorShape: Qt.PointingHandCursor
-                  preventStealing: true
-                  enabled: root.sinkReady
-                  function updateFromMouse(mouse) {
-                    let f = mouse.x / outSliderRoot.width
-                    root.setOutputFraction(f)
-                  }
-                  onPressed: mouse => updateFromMouse(mouse)
-                  onPositionChanged: mouse => { if (pressed) updateFromMouse(mouse) }
-                  onWheel: wheel => {
-                    if (wheel.angleDelta.y > 0) root.setOutputFraction(root.outFraction + 0.05)
-                    else if (wheel.angleDelta.y < 0) root.setOutputFraction(root.outFraction - 0.05)
-                  }
-                }
+                fraction: root.outFraction
+                ready: root.sinkReady
+                trackHeight: 4
+                thumbBaseWidth: 20
+                thumbBaseHeight: 14
+                thumbRadius: 3
+                fillColor: root.outMuted ? Colors.white : Colors.blue
+                onMoved: f => root.setOutputFraction(f)
               }
 
               Text {
@@ -373,29 +332,46 @@ PopupCard {
               peaks: outPeakMonitor.peaks
               muted: root.outMuted || !root.sinkReady
               showTicks: true
-              visible: root.sinkReady
+              opacity: root.sinkReady ? 1 : 0
+              Behavior on opacity { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
             }
 
-            // output device list
-            ColumnLayout {
+            // output device list - iOS style sliding highlight
+            Item {
+              id: sinkListContainer
               Layout.fillWidth: true
               Layout.topMargin: 4
-              spacing: 2
+              implicitHeight: sinkListColumn.implicitHeight
               visible: root.audioSinks.length > 0
 
-              Repeater {
-                model: root.audioSinks
-                delegate: Rectangle {
-                  required property var modelData
-                  required property int index
-                  readonly property bool isActive: root.sink && modelData && root.sink.id === modelData.id
-                  Layout.fillWidth: true
-                  Layout.preferredHeight: 36
-                  color: devHover.hovered ? Colors.surface : (isActive ? Colors.card : Colors.transparent)
-                  border.color: isActive ? Colors.blue : Colors.transparent
-                  border.width: isActive ? 1 : 0
-                  Behavior on color { ColorAnimation { duration: 90 } }
-                  HoverHandler { id: devHover }
+              Rectangle {
+                id: sinkHighlight
+                visible: root.activeSinkIndex >= 0
+                width: parent.width
+                height: 36
+                y: root.activeSinkIndex * 38
+                color: Colors.card
+                border.color: Colors.blue
+                border.width: 1
+                Behavior on y { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
+                Behavior on opacity { NumberAnimation { duration: 150 } }
+              }
+
+              ColumnLayout {
+                id: sinkListColumn
+                anchors.fill: parent
+                spacing: 2
+
+                Repeater {
+                  model: root.audioSinks
+                  delegate: Rectangle {
+                    required property var modelData
+                    required property int index
+                    readonly property bool isActive: root.sink && modelData && root.sink.id === modelData.id
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 36
+                    color: (devHover.hovered && !isActive) ? Colors.surface : Colors.transparent
+                    HoverHandler { id: devHover }
 
                   RowLayout {
                     anchors.fill: parent
@@ -416,13 +392,6 @@ PopupCard {
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
-                    Text {
-                      visible: isActive
-                      text: "check"
-                      color: Colors.blue
-                      font.family: Config.materialSymbols.family
-                      font.pixelSize: 14
-                    }
                   }
                   MouseArea {
                     anchors.fill: parent
@@ -432,6 +401,7 @@ PopupCard {
                   }
                 }
               }
+            }
             }
           }
 
@@ -483,69 +453,18 @@ PopupCard {
                 }
               }
 
-              Item {
+              IOSSlider {
                 id: inSliderRoot
                 Layout.fillWidth: true
                 Layout.preferredHeight: 24
-                readonly property int trackHeight: 4
-                readonly property int thumbSize: 16
-
-                Rectangle {
-                  anchors.verticalCenter: parent.verticalCenter
-                  width: parent.width
-                  height: inSliderRoot.trackHeight
-                  radius: 0
-                  color: Colors.card
-                }
-                Rectangle {
-                  anchors.verticalCenter: parent.verticalCenter
-                  anchors.left: parent.left
-                  width: Math.round(parent.width * root.inFraction)
-                  height: inSliderRoot.trackHeight
-                  radius: 0
-                  color: root.inMuted ? Colors.white : Colors.blue
-                  opacity: root.sourceReady ? 1 : 0.4
-                  Behavior on width { NumberAnimation { duration: 40; easing.type: Easing.Linear } }
-                }
-                Rectangle {
-                  width: inSliderRoot.thumbSize
-                  height: inSliderRoot.thumbSize
-                  radius: width / 2
-                  color: inSliderMa.containsMouse || inSliderMa.pressed ? Colors.blue : Colors.foreground
-                  border.color: inSliderMa.pressed ? Colors.foreground : Colors.transparent
-                  border.width: 1
-                  anchors.verticalCenter: parent.verticalCenter
-                  x: Math.max(0, Math.min(parent.width - width, Math.round(parent.width * root.inFraction - width / 2)))
-                  opacity: root.sourceReady ? 1 : 0.4
-                  Behavior on color { ColorAnimation { duration: 90 } }
-                  Rectangle {
-                    anchors.fill: parent
-                    radius: parent.radius
-                    color: "transparent"
-                    border.color: Colors.black
-                    border.width: 1
-                    opacity: 0.15
-                    z: -1
-                  }
-                }
-                MouseArea {
-                  id: inSliderMa
-                  anchors.fill: parent
-                  hoverEnabled: true
-                  cursorShape: Qt.PointingHandCursor
-                  preventStealing: true
-                  enabled: root.sourceReady
-                  function updateFromMouse(mouse) {
-                    let f = mouse.x / inSliderRoot.width
-                    root.setInputFraction(f)
-                  }
-                  onPressed: mouse => updateFromMouse(mouse)
-                  onPositionChanged: mouse => { if (pressed) updateFromMouse(mouse) }
-                  onWheel: wheel => {
-                    if (wheel.angleDelta.y > 0) root.setInputFraction(root.inFraction + 0.05)
-                    else if (wheel.angleDelta.y < 0) root.setInputFraction(root.inFraction - 0.05)
-                  }
-                }
+                fraction: root.inFraction
+                ready: root.sourceReady
+                trackHeight: 4
+                thumbBaseWidth: 20
+                thumbBaseHeight: 14
+                thumbRadius: 3
+                fillColor: root.inMuted ? Colors.white : Colors.blue
+                onMoved: f => root.setInputFraction(f)
               }
 
               Text {
@@ -566,7 +485,8 @@ PopupCard {
               peaks: inPeakMonitor.peaks
               muted: root.inMuted || !root.sourceReady
               showTicks: true
-              visible: root.sourceReady
+              opacity: root.sourceReady ? 1 : 0
+              Behavior on opacity { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
             }
 
             Text {
@@ -577,25 +497,41 @@ PopupCard {
               font.family: Config.font.family
             }
 
-            ColumnLayout {
+            Item {
+              id: sourceListContainer
               Layout.fillWidth: true
               Layout.topMargin: 4
-              spacing: 2
+              implicitHeight: sourceListColumn.implicitHeight
               visible: root.audioSources.length > 0
 
-              Repeater {
-                model: root.audioSources
-                delegate: Rectangle {
-                  required property var modelData
-                  required property int index
-                  readonly property bool isActive: root.source && modelData && root.source.id === modelData.id
-                  Layout.fillWidth: true
-                  Layout.preferredHeight: 36
-                  color: inDevHover.hovered ? Colors.surface : (isActive ? Colors.card : Colors.transparent)
-                  border.color: isActive ? Colors.blue : Colors.transparent
-                  border.width: isActive ? 1 : 0
-                  Behavior on color { ColorAnimation { duration: 90 } }
-                  HoverHandler { id: inDevHover }
+              Rectangle {
+                id: sourceHighlight
+                visible: root.activeSourceIndex >= 0
+                width: parent.width
+                height: 36
+                y: root.activeSourceIndex * 38
+                color: Colors.card
+                border.color: Colors.blue
+                border.width: 1
+                Behavior on y { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
+                Behavior on opacity { NumberAnimation { duration: 150 } }
+              }
+
+              ColumnLayout {
+                id: sourceListColumn
+                anchors.fill: parent
+                spacing: 2
+
+                Repeater {
+                  model: root.audioSources
+                  delegate: Rectangle {
+                    required property var modelData
+                    required property int index
+                    readonly property bool isActive: root.source && modelData && root.source.id === modelData.id
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: 36
+                    color: (inDevHover.hovered && !isActive) ? Colors.surface : Colors.transparent
+                    HoverHandler { id: inDevHover }
 
                   RowLayout {
                     anchors.fill: parent
@@ -616,13 +552,6 @@ PopupCard {
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
-                    Text {
-                      visible: isActive
-                      text: "check"
-                      color: Colors.blue
-                      font.family: Config.materialSymbols.family
-                      font.pixelSize: 14
-                    }
                   }
                   MouseArea {
                     anchors.fill: parent
@@ -632,6 +561,7 @@ PopupCard {
                   }
                 }
               }
+            }
             }
           }
 
@@ -732,60 +662,24 @@ PopupCard {
                       }
                     }
 
-                    Item {
+                    IOSSlider {
                       id: streamSliderRoot
                       Layout.fillWidth: true
                       Layout.preferredHeight: 16
-                      readonly property int trackHeight: 3
-                      readonly property int thumbSize: 12
-
-                      Rectangle {
-                        anchors.verticalCenter: parent.verticalCenter
-                        width: parent.width
-                        height: streamSliderRoot.trackHeight
-                        radius: 0
-                        color: Colors.background
-                      }
-                      Rectangle {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.left: parent.left
-                        width: Math.round(parent.width * sFraction)
-                        height: streamSliderRoot.trackHeight
-                        radius: 0
-                        color: sMuted ? Colors.white : Colors.blue
-                        Behavior on width { NumberAnimation { duration: 40; easing.type: Easing.Linear } }
-                      }
-                      Rectangle {
-                        width: streamSliderRoot.thumbSize
-                        height: streamSliderRoot.thumbSize
-                        radius: width / 2
-                        color: streamSliderMa.containsMouse || streamSliderMa.pressed ? Colors.blue : Colors.foreground
-                        border.color: streamSliderMa.pressed ? Colors.foreground : Colors.transparent
-                        border.width: 1
-                        anchors.verticalCenter: parent.verticalCenter
-                        x: Math.max(0, Math.min(parent.width - width, Math.round(parent.width * sFraction - width / 2)))
-                        Behavior on color { ColorAnimation { duration: 90 } }
-                      }
-                      MouseArea {
-                        id: streamSliderMa
-                        anchors.fill: parent
-                        hoverEnabled: true
-                        cursorShape: Qt.PointingHandCursor
-                        preventStealing: true
-                        function updateFromMouse(mouse) {
-                          let f = mouse.x / streamSliderRoot.width
-                          let clamped = Math.max(0, Math.min(1.5, f * 1.5))
-                          if (modelData && modelData.audio) {
-                            modelData.audio.volume = clamped
-                            if (sMuted && clamped > 0) modelData.audio.muted = false
-                          }
-                        }
-                        onPressed: mouse => updateFromMouse(mouse)
-                        onPositionChanged: mouse => { if (pressed) updateFromMouse(mouse) }
-                        onWheel: wheel => {
-                          if (!modelData || !modelData.audio) return
-                          let next = sVol + (wheel.angleDelta.y > 0 ? 0.05 : -0.05)
-                          modelData.audio.volume = Math.max(0, Math.min(1.5, next))
+                      fraction: sFraction
+                      ready: true
+                      trackHeight: 3
+                      thumbBaseWidth: 16
+                      thumbBaseHeight: 10
+                      thumbRadius: 2
+                      maxStretch: 8
+                      trackColor: Colors.background
+                      fillColor: sMuted ? Colors.white : Colors.blue
+                      onMoved: f => {
+                        let clamped = Math.max(0, Math.min(1.5, f * 1.5))
+                        if (modelData && modelData.audio) {
+                          modelData.audio.volume = clamped
+                          if (sMuted && clamped > 0) modelData.audio.muted = false
                         }
                       }
                     }

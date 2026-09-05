@@ -264,6 +264,20 @@ PopupCard {
         }
 
         Rectangle {
+          id: energyGlow
+          visible: root.isCharging
+          anchors.left: energyTrack.left
+          anchors.verticalCenter: energyTrack.verticalCenter
+          height: energyTrack.height + 10
+          width: energyFill.width
+          radius: 6
+          color: Colors.waybarCharging
+          opacity: 0.18
+          z: -1
+          Behavior on width { NumberAnimation { duration: 220; easing.type: Easing.OutCubic } }
+        }
+
+        Rectangle {
           id: energyFill
           anchors.left: energyTrack.left
           anchors.verticalCenter: energyTrack.verticalCenter
@@ -271,7 +285,30 @@ PopupCard {
           radius: 3
           width: Math.max(energyTrack.height, Math.round(energyTrack.width * root.fraction))
           color: root.isCharging ? Colors.waybarCharging : root.level <= 15 && !root.isFullyCharged ? Colors.waybarCriticalBg : Colors.foreground
+          transformOrigin: Item.Left
+          scale: 1
           Behavior on width { NumberAnimation { duration: 220; easing.type: Easing.OutCubic } }
+        }
+
+        // macOS battery menu breathe — slow 0.92 -> 1.02 scale + glow
+        SequentialAnimation {
+          id: chargePulse
+          running: root.isCharging
+          loops: Animation.Infinite
+          NumberAnimation { target: energyFill; property: "scale"; from: 0.92; to: 1.02; duration: 1200; easing.type: Easing.InOutSine }
+          NumberAnimation { target: energyFill; property: "scale"; from: 1.02; to: 0.92; duration: 1200; easing.type: Easing.InOutSine }
+        }
+        SequentialAnimation {
+          id: chargeGlowPulse
+          running: root.isCharging
+          loops: Animation.Infinite
+          NumberAnimation { target: energyGlow; property: "opacity"; from: 0.10; to: 0.30; duration: 1200; easing.type: Easing.InOutSine }
+          NumberAnimation { target: energyGlow; property: "opacity"; from: 0.30; to: 0.10; duration: 1200; easing.type: Easing.InOutSine }
+        }
+
+        Connections {
+          target: root
+          function onIsChargingChanged() { if (!root.isCharging) { energyFill.scale = 1; energyGlow.opacity = 0.18 } }
         }
       }
 

@@ -7,7 +7,8 @@ Item {
   property var peaks: []
   property bool muted: false
   property bool showTicks: true
-  property int channelCount: peaks && peaks.length > 0 ? Math.min(peaks.length, 2) : 1
+  // fixed stereo (2) — avoids recalculation flicker when switching devices (was 1↔2 based on peaks.length)
+  property int channelCount: 2
   // OBS levels
   property real minimumDb: -60
   property real warningDb: -20
@@ -73,7 +74,6 @@ Item {
             width: {
               let p = 0
               if (root.peaks && root.peaks.length > index) p = root.peaks[index]
-              else if (root.peaks && root.peaks.length === 1) p = root.peaks[0]
               else p = 0
               return bgRow.width * root.fracForPeak(p)
             }

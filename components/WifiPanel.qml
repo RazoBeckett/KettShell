@@ -24,24 +24,22 @@ PopupCard {
   readonly property var connectingNetwork: wifiDevice && wifiDevice.networks ? wifiDevice.networks.values.find(n => n.stateChanging) : null
   readonly property var effectiveCenter: wifiCenter ?? (connectingNetwork && cachedCenter ? cachedCenter : connectingNetwork)
   readonly property bool hasCenter: !!effectiveCenter && (wifiCenter !== null || connectingNetwork !== null) && (((effectiveCenter.name || "").trim()) !== "")
-  // Keep previous center visible while switching, hide it from the available list.
-  // Use name-based filtering because NetworkManager may recreate objects on rescan.
   readonly property var wifiAvailable: {
     if (!wifiDevice || !wifiDevice.networks) return []
     let all = [...wifiDevice.networks.values].filter(n => !n.connected).sort((a, b) => b.signalStrength - a.signalStrength)
-    if (effectiveCenter && !wifiCenter && cachedCenter) {
-      let cn = (cachedCenter.name || "").trim()
-      let connName = connectingNetwork ? (connectingNetwork.name || "").trim() : ""
-      // hide cached from list, keep the actual connecting target in the list
-      all = all.filter(n => (n.name || "").trim() !== cn || (n.name || "").trim() === connName)
-      // if both Aqua bands share a base SSID, ensure only the targeted one shows as connecting
-      // deduplicate by exact name — keep only first occurrence
-      let seen = new Set()
-      let deduped = []
-      for (let n of all) { let k = (n.name || "").trim(); if (!seen.has(k)) { seen.add(k); deduped.push(n) } }
-      all = deduped
+    // always exclude the current/connecting network (shown in current-connection) and dedupe by name
+    if (effectiveCenter) {
+      let en = (effectiveCenter.name || "").trim()
+      if (en !== "") all = all.filter(n => (n.name || "").trim() !== en)
     }
-    return all
+    let seen = new Set()
+    let deduped = []
+    for (let n of all) {
+      let k = (n.name || "").trim()
+      if (k === "") { deduped.push(n); continue }
+      if (!seen.has(k)) { seen.add(k); deduped.push(n) }
+    }
+    return deduped
   }
   readonly property bool wifiOn: Networking.wifiEnabled
 
@@ -129,7 +127,6 @@ PopupCard {
 
   function writeAutoconnect(network, enabled) {
     if (!network || !network.nmSettings || network.nmSettings.length === 0) return false
-
     let wrote = false
     for (let settings of network.nmSettings) {
       if (!settings || typeof settings.write !== "function") continue
@@ -199,7 +196,6 @@ PopupCard {
       anchors.fill: parent
       spacing: 0
 
-      // header with Wi-Fi toggle top right
       RowLayout {
         Layout.fillWidth: true
         Layout.preferredHeight: 48
@@ -216,7 +212,6 @@ PopupCard {
         }
         Item { Layout.fillWidth: true }
 
-        // toggle switch — win10 style
         Item {
           Layout.preferredWidth: 44
           Layout.preferredHeight: 24
@@ -238,7 +233,24 @@ PopupCard {
             color: Colors.foreground
             anchors.verticalCenter: parent.verticalCenter
             x: root.wifiOn ? parent.width - width - 3 : 3
-            Behavior on x { NumberAnimation { duration: 150; easing.type: Easing.OutCubic } }
+            scale: 1
+            transformOrigin: Item.Center
+            Behavior on x {
+              NumberAnimation {
+                duration: 320
+                easing.type: Easing.OutBack
+                easing.overshoot: 1.16
+              }
+            }
+          }
+          SequentialAnimation {
+            id: thumbScaleAnim
+            NumberAnimation { target: thumb; property: "scale"; to: 1.14; duration: 110; easing.type: Easing.OutCubic }
+            NumberAnimation { target: thumb; property: "scale"; to: 1.0; duration: 220; easing.type: Easing.OutCubic }
+          }
+          Connections {
+            target: root
+            function onWifiOnChanged() { thumbScaleAnim.restart() }
           }
           MouseArea {
             id: toggleMa
@@ -256,13 +268,11 @@ PopupCard {
         color: Colors.border
       }
 
-      // scrollable list area — fixed height so outer panel never resizes
       Item {
         Layout.fillWidth: true
         Layout.fillHeight: true
         clip: true
 
-        // Wi-Fi off placeholder
         ColumnLayout {
           visible: !root.wifiOn
           anchors.left: parent.left
@@ -305,7 +315,6 @@ PopupCard {
           }
         }
 
-        // networks scroll
         Flickable {
           id: flick
           visible: root.wifiOn
@@ -320,7 +329,6 @@ PopupCard {
             width: flick.width
             spacing: 0
 
-            // connected section — keeps showing cached network while switching so it never goes blank
             ColumnLayout {
               visible: root.hasCenter
               Layout.fillWidth: true
@@ -337,25 +345,24 @@ PopupCard {
                 Layout.bottomMargin: 4
               }
 
-              // connected row — header is clickable, expanded part is separate
               Rectangle {
                 id: connectedRow
                 Layout.fillWidth: true
-                Layout.preferredHeight: mainCol.implicitHeight
+                Layout.preferredHeight: 62 + expandedInfoWrap.height
                 color: connHover.hovered ? Colors.surface : (root.expandedNetwork === root.effectiveCenter ? Colors.card : Colors.transparent)
                 opacity: root.wifiCenter ? 1.0 : 0.72
                 Behavior on color { ColorAnimation { duration: 90 } }
                 clip: true
                 HoverHandler { id: connHover }
 
-                ColumnLayout {
-                  id: mainCol
+                Item {
                   anchors.fill: parent
-                  spacing: 0
 
                   Item {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 62
+                    id: connectedHeader
+                    width: parent.width
+                    height: 62
+                    anchors.top: parent.top
                     MouseArea {
                       id: connectedHeaderMa
                       anchors.fill: parent
@@ -412,38 +419,49 @@ PopupCard {
                       }
                     }
                   }
-                  ColumnLayout {
-                    id: expandedInfo
-                    visible: root.expandedNetwork === root.effectiveCenter
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 48
-                    Layout.rightMargin: 12
-                    Layout.topMargin: 6
-                    Layout.bottomMargin: 10
-                    spacing: 4
-                    RowLayout {
-                      Layout.fillWidth: true
-                      spacing: 8
-                      Text { text: "Interface"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
-                      Text { text: root.wifiDevice ? root.wifiDevice.name : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
-                    }
-                    RowLayout {
-                      Layout.fillWidth: true
-                      spacing: 8
-                      Text { text: "MAC"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
-                      Text { text: root.wifiDevice ? root.wifiDevice.address : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
-                    }
-                    RowLayout {
-                      Layout.fillWidth: true
-                      spacing: 8
-                      Text { text: "Signal"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
-                      Text { text: root.effectiveCenter ? Math.round(root.effectiveCenter.signalStrength * 100) + "%" : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; Layout.fillWidth: true }
-                    }
-                    RowLayout {
-                      Layout.fillWidth: true
-                      spacing: 8
-                      Text { text: "Security"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
-                      Text { text: root.effectiveCenter ? securityLabel(root.effectiveCenter) : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
+                  Item {
+                    id: expandedInfoWrap
+                    width: parent.width
+                    anchors.top: connectedHeader.bottom
+                    height: root.expandedNetwork === root.effectiveCenter ? expandedInfo.implicitHeight + 16 : 0
+                    clip: true
+                    opacity: root.expandedNetwork === root.effectiveCenter ? 1 : 0
+                    Behavior on height { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+                    Behavior on opacity { NumberAnimation { duration: 130; easing.type: Easing.OutCubic } }
+                    ColumnLayout {
+                      id: expandedInfo
+                      width: parent.width - 60
+                      anchors.left: parent.left
+                      anchors.leftMargin: 48
+                      anchors.right: parent.right
+                      anchors.rightMargin: 12
+                      anchors.top: parent.top
+                      anchors.topMargin: 6
+                      spacing: 4
+                      RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        Text { text: "Interface"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
+                        Text { text: root.wifiDevice ? root.wifiDevice.name : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
+                      }
+                      RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        Text { text: "MAC"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
+                        Text { text: root.wifiDevice ? root.wifiDevice.address : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
+                      }
+                      RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        Text { text: "Signal"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
+                        Text { text: root.effectiveCenter ? Math.round(root.effectiveCenter.signalStrength * 100) + "%" : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; Layout.fillWidth: true }
+                      }
+                      RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        Text { text: "Security"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
+                        Text { text: root.effectiveCenter ? securityLabel(root.effectiveCenter) : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
+                      }
                     }
                   }
                 }
@@ -452,7 +470,6 @@ PopupCard {
               Rectangle { Layout.fillWidth: true; Layout.preferredHeight: 1; color: Colors.border; visible: root.wifiAvailable.length > 0 }
             }
 
-            // available rows
             Repeater {
               model: root.wifiOn ? root.wifiAvailable.slice(0, 20) : []
 
@@ -461,7 +478,7 @@ PopupCard {
                 required property var modelData
                 required property int index
                 Layout.fillWidth: true
-                Layout.preferredHeight: !modelData ? 62 : root.expandedNetwork === modelData ? (root.needsSecret(modelData) ? 136 : 100) : 62
+                Layout.preferredHeight: 62 + netDetailWrap.height + 1
                 color: rowHover.hovered ? Colors.surface : (root.expandedNetwork === modelData ? Colors.card : Colors.transparent)
                 clip: true
                 Behavior on color { ColorAnimation { duration: 90 } }
@@ -475,14 +492,14 @@ PopupCard {
                   color: Colors.border
                 }
 
-                ColumnLayout {
+                Item {
                   anchors.fill: parent
-                  spacing: 0
 
-                  // header — only this part toggles expand
                   Item {
-                    Layout.fillWidth: true
-                    Layout.preferredHeight: 62
+                    id: netHeader
+                    width: parent.width
+                    height: 62
+                    anchors.top: parent.top
                     RowLayout {
                       anchors.fill: parent
                       anchors.leftMargin: 16
@@ -528,160 +545,165 @@ PopupCard {
                     }
                   }
 
-                  // expanded detail — sits above header hit area
-                  ColumnLayout {
-                    visible: root.expandedNetwork === netRow.modelData
-                    Layout.fillWidth: true
-                    Layout.leftMargin: 48
-                    Layout.rightMargin: 12
-                    Layout.bottomMargin: 10
-                    spacing: 8
-                    z: 1
+                  Item {
+                    id: netDetailWrap
+                    width: parent.width
+                    anchors.top: netHeader.bottom
+                    height: root.expandedNetwork === netRow.modelData ? netDetailContent.implicitHeight + 10 : 0
+                    clip: true
+                    opacity: root.expandedNetwork === netRow.modelData ? 1 : 0
+                    Behavior on height { NumberAnimation { duration: 180; easing.type: Easing.OutCubic } }
+                    Behavior on opacity { NumberAnimation { duration: 130; easing.type: Easing.OutCubic } }
 
-                    // password field
-                    Rectangle {
-                      visible: netRow.modelData ? root.needsSecret(netRow.modelData) : false
-                      Layout.fillWidth: true
-                      Layout.preferredHeight: 30
-                      color: Colors.surface
-                      border.color: passInput.activeFocus ? Colors.blue : Colors.border
-                      border.width: passInput.activeFocus ? 2 : 1
+                    ColumnLayout {
+                      id: netDetailContent
+                      width: parent.width - 60
+                      anchors.left: parent.left
+                      anchors.leftMargin: 48
+                      anchors.right: parent.right
+                      anchors.rightMargin: 12
+                      anchors.top: parent.top
+                      spacing: 8
 
-                      RowLayout {
-                        anchors.fill: parent
-                        anchors.leftMargin: 8
-                        anchors.rightMargin: 6
-                        spacing: 6
+                      Rectangle {
+                        visible: netRow.modelData ? root.needsSecret(netRow.modelData) : false
+                        Layout.fillWidth: true
+                        Layout.preferredHeight: 30
+                        color: Colors.surface
+                        border.color: passInput.activeFocus ? Colors.blue : Colors.border
+                        border.width: passInput.activeFocus ? 2 : 1
 
-                        TextInput {
-                          id: passInput
-                          Layout.fillWidth: true
-                          text: root.pendingNetwork === netRow.modelData ? root.password : ""
-                          color: Colors.foreground
-                          font.pixelSize: 13
-                          font.family: Config.font.family
-                          echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
-                          passwordCharacter: "•"
-                          selectByMouse: true
-                          readonly property bool wantsFocus: netRow.modelData ? (root.expandedNetwork === netRow.modelData && root.needsSecret(netRow.modelData)) : false
-                          property int focusAttempts: 0
-                          focus: wantsFocus
-                          activeFocusOnTab: true
-                          onWantsFocusChanged: if (wantsFocus) { focusAttempts = 0; focusTimer.restart() } else focusTimer.stop()
-                          onVisibleChanged: if (visible && wantsFocus) { focusAttempts = 0; focusTimer.restart() }
-                          Component.onCompleted: if (visible && wantsFocus) { focusAttempts = 0; focusTimer.restart() }
-                          onTextChanged: if (root.pendingNetwork === netRow.modelData) root.password = text
-                          onAccepted: root.confirmConnect()
+                        RowLayout {
+                          anchors.fill: parent
+                          anchors.leftMargin: 8
+                          anchors.rightMargin: 6
+                          spacing: 6
 
-                          Timer {
-                            id: focusTimer
-                            interval: 30
-                            repeat: true
-                            onTriggered: {
-                              if (!passInput.visible || !passInput.wantsFocus) { stop(); return }
-                              if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus()
-                              passInput.forceActiveFocus()
-                              passInput.focusAttempts += 1
-                              if (passInput.activeFocus || passInput.focusAttempts > 20) stop()
+                          TextInput {
+                            id: passInput
+                            Layout.fillWidth: true
+                            text: root.pendingNetwork === netRow.modelData ? root.password : ""
+                            color: Colors.foreground
+                            font.pixelSize: 13
+                            font.family: Config.font.family
+                            echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
+                            passwordCharacter: "•"
+                            selectByMouse: true
+                            readonly property bool wantsFocus: netRow.modelData ? (root.expandedNetwork === netRow.modelData && root.needsSecret(netRow.modelData)) : false
+                            property int focusAttempts: 0
+                            focus: wantsFocus
+                            activeFocusOnTab: true
+                            onWantsFocusChanged: if (wantsFocus) { focusAttempts = 0; focusTimer.restart() } else focusTimer.stop()
+                            onVisibleChanged: if (visible && wantsFocus) { focusAttempts = 0; focusTimer.restart() }
+                            Component.onCompleted: if (visible && wantsFocus) { focusAttempts = 0; focusTimer.restart() }
+                            onTextChanged: if (root.pendingNetwork === netRow.modelData) root.password = text
+                            onAccepted: root.confirmConnect()
+
+                            Timer {
+                              id: focusTimer
+                              interval: 30
+                              repeat: true
+                              onTriggered: {
+                                if (!passInput.visible || !passInput.wantsFocus) { stop(); return }
+                                if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus()
+                                passInput.forceActiveFocus()
+                                passInput.focusAttempts += 1
+                                if (passInput.activeFocus || passInput.focusAttempts > 20) stop()
+                              }
+                            }
+                            Text {
+                              anchors.verticalCenter: parent.verticalCenter
+                              text: "Enter network security key"
+                              color: Colors.white
+                              opacity: 0.6
+                              font.pixelSize: 12
+                              font.family: Config.font.family
+                              visible: passInput.text.length === 0 && !passInput.activeFocus
+                            }
+                            MouseArea {
+                              anchors.fill: parent
+                              cursorShape: Qt.IBeamCursor
+                              preventStealing: true
+                              propagateComposedEvents: true
+                              onPressed: mouse => { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus(); mouse.accepted = false }
+                              onClicked: mouse => { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus(); mouse.accepted = false }
                             }
                           }
-                          // placeholder
                           Text {
-                            anchors.verticalCenter: parent.verticalCenter
-                            text: "Enter network security key"
-                            color: Colors.white
-                            opacity: 0.6
-                            font.pixelSize: 12
-                            font.family: Config.font.family
-                            visible: passInput.text.length === 0 && !passInput.activeFocus
-                          }
-                          // ensure click on the field itself gains focus even inside Flickable (preventStealing)
-                          MouseArea {
-                            anchors.fill: parent
-                            cursorShape: Qt.IBeamCursor
-                            preventStealing: true
-                            propagateComposedEvents: true
-                            onPressed: mouse => { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus(); mouse.accepted = false }
-                            onClicked: mouse => { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus(); mouse.accepted = false }
+                            id: eyeIcon
+                            text: root.showPassword ? "visibility" : "visibility_off"
+                            color: eyeMa.containsMouse ? Colors.foreground : Colors.white
+                            font.family: Config.materialSymbols.family
+                            font.pixelSize: 16
+                            MouseArea {
+                              id: eyeMa
+                              anchors.fill: parent
+                              hoverEnabled: true
+                              cursorShape: Qt.PointingHandCursor
+                              onClicked: root.showPassword = !root.showPassword
+                            }
                           }
                         }
-                        Text {
-                          id: eyeIcon
-                          text: root.showPassword ? "visibility" : "visibility_off"
-                          color: eyeMa.containsMouse ? Colors.foreground : Colors.white
-                          font.family: Config.materialSymbols.family
-                          font.pixelSize: 16
+                        MouseArea {
+                          anchors.fill: parent
+                          z: -1
+                          cursorShape: Qt.IBeamCursor
+                          preventStealing: true
+                          onPressed: { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus() }
+                          onClicked: { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus() }
+                        }
+                      }
+
+                      RowLayout {
+                        Layout.fillWidth: true
+                        spacing: 8
+                        Rectangle {
+                          width: 16
+                          height: 16
+                          color: autoConnectHover.containsMouse ? Colors.surface : Colors.transparent
+                          border.color: root.connectAutomatically ? Colors.blue : Colors.white
+                          border.width: 1
+                          Behavior on color { ColorAnimation { duration: 90 } }
+                          Text {
+                            anchors.centerIn: parent
+                            visible: root.connectAutomatically
+                            text: "check"
+                            color: Colors.blue
+                            font.family: Config.materialSymbols.family
+                            font.pixelSize: 13
+                          }
                           MouseArea {
-                            id: eyeMa
+                            id: autoConnectHover
                             anchors.fill: parent
                             hoverEnabled: true
                             cursorShape: Qt.PointingHandCursor
-                            onClicked: root.showPassword = !root.showPassword
+                            onClicked: root.connectAutomatically = !root.connectAutomatically
                           }
                         }
-                      }
-                      MouseArea {
-                        anchors.fill: parent
-                        z: -1
-                        cursorShape: Qt.IBeamCursor
-                        preventStealing: true
-                        onPressed: { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus() }
-                        onClicked: { if (root && typeof root.forceActiveFocus === "function") root.forceActiveFocus(); passInput.forceActiveFocus() }
-                      }
-                    }
-
-                    RowLayout {
-                      Layout.fillWidth: true
-                      spacing: 8
-                      Rectangle {
-                        width: 16
-                        height: 16
-                        color: autoConnectHover.containsMouse ? Colors.surface : Colors.transparent
-                        border.color: root.connectAutomatically ? Colors.blue : Colors.white
-                        border.width: 1
-                        Behavior on color { ColorAnimation { duration: 90 } }
-
                         Text {
-                          anchors.centerIn: parent
-                          visible: root.connectAutomatically
-                          text: "check"
-                          color: Colors.blue
-                          font.family: Config.materialSymbols.family
-                          font.pixelSize: 13
+                          text: "Connect automatically"
+                          color: autoLabelHover.containsMouse ? Colors.foreground : Colors.white
+                          font.pixelSize: 12
+                          font.family: Config.font.family
+                          MouseArea {
+                            id: autoLabelHover
+                            anchors.fill: parent
+                            hoverEnabled: true
+                            cursorShape: Qt.PointingHandCursor
+                            onClicked: root.connectAutomatically = !root.connectAutomatically
+                          }
                         }
-
-                        MouseArea {
-                          id: autoConnectHover
-                          anchors.fill: parent
-                          hoverEnabled: true
-                          cursorShape: Qt.PointingHandCursor
-                          onClicked: root.connectAutomatically = !root.connectAutomatically
+                        Item { Layout.fillWidth: true }
+                        Rectangle {
+                          Layout.preferredWidth: 72
+                          Layout.preferredHeight: 28
+                          color: connMa.containsMouse ? Qt.lighter(Colors.blue, 1.08) : Colors.blue
+                          visible: netRow.modelData ? !netRow.modelData.stateChanging : true
+                          Text { anchors.centerIn: parent; text: "Connect"; color: Colors.black; font.pixelSize: 12; font.family: Config.font.family }
+                          MouseArea { id: connMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { if (root.needsSecret(netRow.modelData)) root.confirmConnect(); else root.connectTo(netRow.modelData) } }
                         }
+                        Text { visible: netRow.modelData ? netRow.modelData.stateChanging : false; text: "Connecting..."; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                       }
-                      Text {
-                        text: "Connect automatically"
-                        color: autoLabelHover.containsMouse ? Colors.foreground : Colors.white
-                        font.pixelSize: 12
-                        font.family: Config.font.family
-
-                        MouseArea {
-                          id: autoLabelHover
-                          anchors.fill: parent
-                          hoverEnabled: true
-                          cursorShape: Qt.PointingHandCursor
-                          onClicked: root.connectAutomatically = !root.connectAutomatically
-                        }
-                      }
-                      Item { Layout.fillWidth: true }
-                      Rectangle {
-                        Layout.preferredWidth: 72
-                        Layout.preferredHeight: 28
-                        color: connMa.containsMouse ? Qt.lighter(Colors.blue, 1.08) : Colors.blue
-                        visible: netRow.modelData ? !netRow.modelData.stateChanging : true
-                        Text { anchors.centerIn: parent; text: "Connect"; color: Colors.black; font.pixelSize: 12; font.family: Config.font.family }
-                        MouseArea { id: connMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { if (root.needsSecret(netRow.modelData)) root.confirmConnect(); else root.connectTo(netRow.modelData) } }
-                      }
-                      Text { visible: netRow.modelData ? netRow.modelData.stateChanging : false; text: "Connecting..."; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
                     }
                   }
                 }

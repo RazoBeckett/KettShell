@@ -45,10 +45,12 @@ WrapperMouseArea {
 
   onClicked: root.togglePopout()
 
-  child: Item {
+  child: PressableItem {
     id: blinkTarget
     implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
     implicitHeight: Config.barHeight
+    pressed: root.pressed
+    dimOnPress: !root.critical
 
     Rectangle {
       anchors.fill: parent
