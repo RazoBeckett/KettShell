@@ -11,8 +11,8 @@ Item {
 
   readonly property var sortedWorkspaces: [...Hyprland.workspaces.values].sort((a, b) => a.id - b.id)
   readonly property int focusedId: Hyprland.focusedWorkspace?.id ?? -1
-  property int _prevFocusedId: -1
   property int _pendingPopId: -1
+  property var _knownIds: []
   // active delegate for sliding indicator
   readonly property int activeIndex: {
     for (let i = 0; i < sortedWorkspaces.length; i++) if (sortedWorkspaces[i].id === focusedId) return i
@@ -35,17 +35,24 @@ Item {
     Qt.callLater(_tryPop)
   }
 
+  // pop only numbers that just appeared — a workspace exists once a window maps on it
+  onSortedWorkspacesChanged: {
+    for (const ws of sortedWorkspaces) {
+      if (!_knownIds.includes(ws.id)) {
+        _pendingPopId = ws.id
+        Qt.callLater(_tryPop)
+      }
+    }
+    _knownIds = sortedWorkspaces.map(ws => ws.id)
+  }
+
   onFocusedIdChanged: {
-    if (_prevFocusedId === -1) { _prevFocusedId = focusedId; showIndicator = true; hideTimer.restart(); return }
     if (focusedId === -1) return
-    _pendingPopId = focusedId
-    Qt.callLater(_tryPop)
-    _prevFocusedId = focusedId
     showIndicator = true
     hideTimer.restart()
   }
 
-  Component.onCompleted: { _prevFocusedId = focusedId; if (focusedId !== -1) { showIndicator = true; hideTimer.restart() } }
+  Component.onCompleted: if (focusedId !== -1) { showIndicator = true; hideTimer.restart() }
 
   RowLayout {
     id: layout
