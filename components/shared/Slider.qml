@@ -18,6 +18,9 @@ Item {
   property color thumbColor: Colors.foreground
   property color thumbActiveColor: Colors.blue
   property color thumbPressedBorder: Colors.foreground
+  property int trackRadius: 0
+  property real wheelStep: 0.05
+  property real wheelFineStep: 0.01
 
   signal moved(real fraction)
 
@@ -38,7 +41,7 @@ Item {
 
   property real tickScale: 1
   property real _prevFrac: fraction
-  readonly property var detents: [0, 0.5, 1]
+  property var detents: [0, 0.5, 1]
 
   function _checkDetents(newF, oldF) {
     for (let i = 0; i < detents.length; i++) {
@@ -127,7 +130,7 @@ Item {
     anchors.verticalCenter: parent.verticalCenter
     width: parent.width
     height: root.trackHeight
-    radius: 0
+    radius: root.trackRadius
     color: root.trackColor
   }
 
@@ -137,7 +140,7 @@ Item {
     anchors.left: parent.left
     width: Math.round(parent.width * root.clampFraction(root.fraction))
     height: root.trackHeight
-    radius: 0
+    radius: root.trackRadius
     color: root.fillColor
     opacity: root.ready ? 1 : 0.4
     Behavior on width { enabled: !root.dragging; NumberAnimation { duration: 40; easing.type: Easing.Linear } }
@@ -216,7 +219,7 @@ Item {
       root.momentumVel = 0
     }
     onWheel: wheel => {
-      let step = (wheel.modifiers & Qt.AltModifier) ? 0.01 : 0.05
+      let step = (wheel.modifiers & Qt.AltModifier) ? root.wheelFineStep : root.wheelStep
       if (wheel.angleDelta.y > 0) root.moved(root.clampFraction(root.fraction + step))
       else if (wheel.angleDelta.y < 0) root.moved(root.clampFraction(root.fraction - step))
     }
