@@ -212,7 +212,7 @@ PopupCard {
         }
         Item { Layout.fillWidth: true }
 
-        ToggleButton {
+        Toggle {
           Layout.preferredWidth: 44
           Layout.preferredHeight: 24
           checked: root.wifiOn

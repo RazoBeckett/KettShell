@@ -63,18 +63,24 @@ SettingsRow {
   subtitle: "What it does, in a few words"
   Layout.fillWidth: true
 
-  /* one control goes here: Text, IOSSlider, a toggle Rectangle... */
+  /* one control goes here: Text, Slider, Toggle... */
 }
 ```
 
 Three control patterns already in use:
 
 - Static text, right aligned: `WallpaperTab.qml` library row.
-- Toggle switch: `UiTab.qml` genie row. A 46x24 track with a knob whose `x`
-  and colors bind to the bool, `MouseArea` flips it.
-- Slider: `WallpaperTab.qml` wipe row. `IOSSlider` with
-  `anchors.fill: parent`, `fraction` bound to the value, `onMoved` writes
-  back with rounding: `onMoved: f => Settings.wallpaper.wipeDeg = Math.round(f * 360)`.
+- Toggle switch: `UiTab.qml` genie row. Shared `Toggle` from
+  `components/shared/` with `checked` bound to the bool, `onToggled`
+  writes back: `onToggled: c => Settings.ui.genie = c`.
+- Slider: `WallpaperTab.qml` wipe row. Shared `Slider` with
+  `Layout.fillWidth: true`, `Layout.preferredHeight: 32`, `fraction` bound
+  to the value, `onMoved` writes back with rounding:
+  `onMoved: f => Settings.wallpaper.wipeDeg = Math.round(f * 360)`.
+
+Size row controls with `Layout` props. Anchored controls inside the row
+slot do not render reliably, so the slot is a right-aligned `RowLayout`
+and every control carries its own `Layout.preferredWidth/Height`.
 
 Keep the control inside the row's box. If you need a label plus slider side
 by side, wrap them in an `Item` with `anchors.fill: parent` first.

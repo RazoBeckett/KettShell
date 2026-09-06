@@ -117,7 +117,7 @@ PopupCard {
           font.family: Config.font.family
         }
 
-        ToggleButton {
+        Toggle {
           Layout.preferredWidth: 44
           Layout.preferredHeight: 24
           checked: root.bluetoothOn
