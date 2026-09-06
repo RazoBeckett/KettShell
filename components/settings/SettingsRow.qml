@@ -46,11 +46,12 @@ Rectangle {
       }
     }
 
-    Item {
+    RowLayout {
       id: controlBox
       Layout.preferredWidth: 240
-      Layout.preferredHeight: 32
-      Layout.alignment: Qt.AlignVCenter
+      Layout.fillHeight: true
+      layoutDirection: Qt.RightToLeft
+      spacing: 8
     }
   }
 }

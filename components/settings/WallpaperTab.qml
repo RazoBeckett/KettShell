@@ -179,7 +179,9 @@ ColumnLayout {
     Layout.fillWidth: true
 
     Slider {
-      anchors.fill: parent
+      Layout.fillWidth: true
+      Layout.preferredHeight: 32
+      Layout.alignment: Qt.AlignVCenter
       fraction: Settings.wallpaper.wipeDeg / 360
       onMoved: f => Settings.wallpaper.wipeDeg = Math.round(f * 360)
     }
