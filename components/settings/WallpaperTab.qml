@@ -7,6 +7,8 @@ ColumnLayout {
   spacing: 4
 
   property bool editingDir: false
+  property real editProgress: editingDir ? 1 : 0
+  Behavior on editProgress { NumberAnimation { duration: 260; easing.type: Easing.OutCubic } }
 
   function commitDir(): void {
     let t = dirField.text.trim()
@@ -18,6 +20,13 @@ ColumnLayout {
   function cancelDir(): void {
     dirField.text = Settings.wallpaper.directory
     editingDir = false
+  }
+
+  function startEdit(): void {
+    dirField.text = Settings.wallpaper.directory
+    dirField.cursorPosition = dirField.text.length
+    editingDir = true
+    dirField.forceActiveFocus()
   }
 
   ColumnLayout {
@@ -44,12 +53,13 @@ ColumnLayout {
 
     RowLayout {
       Layout.fillWidth: true
-      spacing: 8
+      spacing: 0
 
       Rectangle {
+        id: dirBox
         Layout.fillWidth: true
         Layout.preferredHeight: 32
-        color: root.editingDir ? Colors.surface : Colors.transparent
+        color: root.editingDir || fieldMa.containsMouse ? Colors.surface : Colors.transparent
         border.color: root.editingDir ? Colors.blue : Colors.border
         border.width: 1
         Behavior on color { ColorAnimation { duration: 150 } }
@@ -62,6 +72,7 @@ ColumnLayout {
           anchors.rightMargin: 10
           clip: true
           enabled: root.editingDir
+          selectByMouse: true
           text: Settings.wallpaper.directory
           verticalAlignment: TextInput.AlignVCenter
           color: Colors.foreground
@@ -76,92 +87,81 @@ ColumnLayout {
             event.accepted = true
           }
         }
-      }
-
-      Rectangle {
-        id: editBtn
-        Layout.preferredWidth: 32
-        Layout.preferredHeight: 32
-        visible: !root.editingDir
-        color: editMa.containsMouse ? Colors.surface : Colors.transparent
-        border.color: Colors.border
-        border.width: 1
-        Behavior on color { ColorAnimation { duration: 150 } }
-
-        Text {
-          anchors.centerIn: parent
-          text: "edit"
-          color: editMa.containsMouse ? Colors.foreground : Colors.white
-          font.family: Config.materialSymbols.family
-          font.pixelSize: 16
-          Behavior on color { ColorAnimation { duration: 150 } }
-        }
 
         MouseArea {
-          id: editMa
+          id: fieldMa
           anchors.fill: parent
+          enabled: !root.editingDir
           hoverEnabled: true
           cursorShape: Qt.PointingHandCursor
-          onClicked: {
-            dirField.text = Settings.wallpaper.directory
-            dirField.cursorPosition = dirField.text.length
-            root.editingDir = true
-            dirField.forceActiveFocus()
+          onClicked: root.startEdit()
+        }
+      }
+
+      Item {
+        id: buttonsWrap
+        Layout.preferredWidth: 80 * root.editProgress
+        Layout.preferredHeight: 32
+        clip: true
+        visible: root.editingDir || root.editProgress > 0.01
+
+        Row {
+          spacing: 8
+          height: 32
+          anchors.verticalCenter: parent.verticalCenter
+          x: parent.width - 72 + (1 - root.editProgress) * 28
+
+          Rectangle {
+            width: 32
+            height: 32
+            color: cancelMa.containsMouse ? Colors.red : Colors.transparent
+            border.color: cancelMa.containsMouse ? Colors.red : Colors.border
+            border.width: 1
+            Behavior on color { ColorAnimation { duration: 150 } }
+
+            Text {
+              anchors.centerIn: parent
+              text: "close"
+              color: cancelMa.containsMouse ? Colors.black : Colors.white
+              font.family: Config.materialSymbols.family
+              font.pixelSize: 16
+              Behavior on color { ColorAnimation { duration: 150 } }
+            }
+
+            MouseArea {
+              id: cancelMa
+              anchors.fill: parent
+              hoverEnabled: true
+              cursorShape: Qt.PointingHandCursor
+              onClicked: root.cancelDir()
+            }
           }
-        }
-      }
 
-      Rectangle {
-        Layout.preferredWidth: 32
-        Layout.preferredHeight: 32
-        visible: root.editingDir
-        color: cancelMa.containsMouse ? Colors.surface : Colors.transparent
-        border.color: Colors.border
-        border.width: 1
-        Behavior on color { ColorAnimation { duration: 150 } }
+          Rectangle {
+            width: 32
+            height: 32
+            color: saveMa.containsMouse ? Colors.green : Colors.transparent
+            border.color: saveMa.containsMouse ? Colors.green : Colors.border
+            border.width: 1
+            Behavior on color { ColorAnimation { duration: 150 } }
 
-        Text {
-          anchors.centerIn: parent
-          text: "close"
-          color: cancelMa.containsMouse ? Colors.foreground : Colors.white
-          font.family: Config.materialSymbols.family
-          font.pixelSize: 16
-          Behavior on color { ColorAnimation { duration: 150 } }
-        }
+            Text {
+              anchors.centerIn: parent
+              text: "check"
+              color: saveMa.containsMouse ? Colors.black : Colors.white
+              font.family: Config.materialSymbols.family
+              font.pixelSize: 16
+              Behavior on color { ColorAnimation { duration: 150 } }
+            }
 
-        MouseArea {
-          id: cancelMa
-          anchors.fill: parent
-          hoverEnabled: true
-          cursorShape: Qt.PointingHandCursor
-          onClicked: root.cancelDir()
-        }
-      }
-
-      Rectangle {
-        Layout.preferredWidth: 32
-        Layout.preferredHeight: 32
-        visible: root.editingDir
-        color: saveMa.containsMouse ? Colors.surface : Colors.transparent
-        border.color: Colors.border
-        border.width: 1
-        Behavior on color { ColorAnimation { duration: 150 } }
-
-        Text {
-          anchors.centerIn: parent
-          text: "check"
-          color: saveMa.containsMouse ? Colors.foreground : Colors.white
-          font.family: Config.materialSymbols.family
-          font.pixelSize: 16
-          Behavior on color { ColorAnimation { duration: 150 } }
-        }
-
-        MouseArea {
-          id: saveMa
-          anchors.fill: parent
-          hoverEnabled: true
-          cursorShape: Qt.PointingHandCursor
-          onClicked: root.commitDir()
+            MouseArea {
+              id: saveMa
+              anchors.fill: parent
+              hoverEnabled: true
+              cursorShape: Qt.PointingHandCursor
+              onClicked: root.commitDir()
+            }
+          }
         }
       }
     }
@@ -187,5 +187,3 @@ ColumnLayout {
     }
   }
 }
-
-
