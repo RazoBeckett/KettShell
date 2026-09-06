@@ -1,4 +1,5 @@
 import ".."
+import Quickshell
 import Quickshell.Services.Pipewire
 import QtQuick
 import QtQuick.Layouts
@@ -363,7 +364,9 @@ PopupCard {
                 spacing: 2
 
                 Repeater {
-                  model: root.audioSinks
+                  model: ScriptModel {
+                    values: root.showing ? root.audioSinks : []
+                  }
                   delegate: Rectangle {
                     required property var modelData
                     required property int index
@@ -523,7 +526,9 @@ PopupCard {
                 spacing: 2
 
                 Repeater {
-                  model: root.audioSources
+                  model: ScriptModel {
+                    values: root.showing ? root.audioSources : []
+                  }
                   delegate: Rectangle {
                     required property var modelData
                     required property int index
@@ -595,7 +600,9 @@ PopupCard {
               spacing: 6
 
               Repeater {
-                model: root.audioStreams
+                model: ScriptModel {
+                  values: root.showing ? root.audioStreams : []
+                }
                 delegate: Rectangle {
                   required property var modelData
                   required property int index

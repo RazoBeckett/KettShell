@@ -16,7 +16,9 @@ PopupWindow {
 
   default property alias contentItem: contentHolder.data
 
-  visible: open || contentHolder.opacity > 0
+  readonly property bool showing: open || contentHolder.opacity > 0
+
+  visible: showing
   color: Colors.transparent
   implicitWidth: contentWidth
   implicitHeight: contentHeight
