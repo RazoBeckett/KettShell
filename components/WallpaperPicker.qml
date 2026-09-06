@@ -192,9 +192,9 @@ Scope {
             selectionColor: Colors.blue
             selectedTextColor: Colors.background
 
-            font.family: Config.font.family
+            font.family: Typography.font.family
             font.pixelSize: 14
-            font.weight: Config.font.weight
+            font.weight: Typography.font.weight
 
             property string placeholderText:
               "Search by filename"
@@ -310,7 +310,7 @@ Scope {
 
             opacity: 0.6
 
-            font.family: Config.font.family
+            font.family: Typography.font.family
             font.pixelSize: 13
 
             horizontalAlignment: Text.AlignHCenter

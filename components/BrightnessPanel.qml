@@ -83,7 +83,7 @@ PopupCard {
         Text {
           text: root.icon
           color: Colors.foreground
-          font.family: Config.materialSymbols.family
+          font.family: Typography.materialSymbols.family
           font.pixelSize: 18
           Layout.preferredWidth: 22
         }
@@ -106,7 +106,7 @@ PopupCard {
           text: root.ready ? root.level + "%" : "-"
           color: Colors.white
           font.pixelSize: 12
-          font.family: Config.font.family
+          font.family: Typography.font.family
           Layout.preferredWidth: 36
           horizontalAlignment: Text.AlignRight
         }
@@ -152,7 +152,7 @@ PopupCard {
               text: modelData + "%"
               color: isActive ? Colors.blue : (chipMa.containsMouse ? Colors.foreground : Colors.white)
               font.pixelSize: 12
-              font.family: Config.font.family
+              font.family: Typography.font.family
             }
 
             MouseArea {

@@ -237,7 +237,7 @@ PopupCard {
           text: "Audio"
           color: Colors.foreground
           font.pixelSize: 14
-          font.family: Config.font.family
+          font.family: Typography.font.family
           font.weight: Font.Normal
         }
         Item { Layout.fillWidth: true }
@@ -274,7 +274,7 @@ PopupCard {
               text: "OUTPUT"
               color: Colors.white
               font.pixelSize: 11
-              font.family: Config.font.family
+              font.family: Typography.font.family
             }
 
             RowLayout {
@@ -288,7 +288,7 @@ PopupCard {
                   anchors.centerIn: parent
                   text: root.outIcon
                   color: outIconMa.containsMouse ? Colors.blue : (root.outMuted ? Colors.white : Colors.foreground)
-                  font.family: Config.materialSymbols.family
+                  font.family: Typography.materialSymbols.family
                   font.pixelSize: 18
                 }
                 MouseArea {
@@ -318,7 +318,7 @@ PopupCard {
                 text: root.sinkReady ? (root.outMuted ? "0%" : root.outVol + "%") : "-"
                 color: Colors.white
                 font.pixelSize: 12
-                font.family: Config.font.family
+                font.family: Typography.font.family
                 Layout.preferredWidth: 36
                 horizontalAlignment: Text.AlignRight
               }
@@ -381,14 +381,14 @@ PopupCard {
                     Text {
                       text: root.sinkIcon(modelData)
                       color: isActive ? Colors.blue : Colors.foreground
-                      font.family: Config.materialSymbols.family
+                      font.family: Typography.materialSymbols.family
                       font.pixelSize: 16
                     }
                     Text {
                       text: root.nodeLabel(modelData)
                       color: isActive ? Colors.foreground : Colors.white
                       font.pixelSize: 12
-                      font.family: Config.font.family
+                      font.family: Typography.font.family
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
@@ -425,7 +425,7 @@ PopupCard {
               text: "INPUT"
               color: Colors.white
               font.pixelSize: 11
-              font.family: Config.font.family
+              font.family: Typography.font.family
             }
 
             RowLayout {
@@ -440,7 +440,7 @@ PopupCard {
                   anchors.centerIn: parent
                   text: root.inIcon
                   color: inIconMa.containsMouse ? Colors.blue : (root.inMuted ? Colors.white : Colors.foreground)
-                  font.family: Config.materialSymbols.family
+                  font.family: Typography.materialSymbols.family
                   font.pixelSize: 18
                 }
                 MouseArea {
@@ -471,7 +471,7 @@ PopupCard {
                 text: root.sourceReady ? (root.inMuted ? "0%" : root.inVol + "%") : "-"
                 color: Colors.white
                 font.pixelSize: 12
-                font.family: Config.font.family
+                font.family: Typography.font.family
                 Layout.preferredWidth: 36
                 horizontalAlignment: Text.AlignRight
               }
@@ -494,7 +494,7 @@ PopupCard {
               text: "No microphone found"
               color: Colors.white
               font.pixelSize: 12
-              font.family: Config.font.family
+              font.family: Typography.font.family
             }
 
             Item {
@@ -541,14 +541,14 @@ PopupCard {
                     Text {
                       text: root.sourceIcon(modelData)
                       color: isActive ? Colors.blue : Colors.foreground
-                      font.family: Config.materialSymbols.family
+                      font.family: Typography.materialSymbols.family
                       font.pixelSize: 16
                     }
                     Text {
                       text: root.nodeLabel(modelData)
                       color: isActive ? Colors.foreground : Colors.white
                       font.pixelSize: 12
-                      font.family: Config.font.family
+                      font.family: Typography.font.family
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
@@ -587,7 +587,7 @@ PopupCard {
               text: "APPS"
               color: Colors.white
               font.pixelSize: 11
-              font.family: Config.font.family
+              font.family: Typography.font.family
             }
 
             ColumnLayout {
@@ -629,7 +629,7 @@ PopupCard {
                           anchors.centerIn: parent
                           text: sMuted ? "volume_off" : "volume_up"
                           color: streamIconMa.containsMouse ? Colors.blue : (sMuted ? Colors.white : Colors.foreground)
-                          font.family: Config.materialSymbols.family
+                          font.family: Typography.materialSymbols.family
                           font.pixelSize: 14
                         }
                         MouseArea {
@@ -647,7 +647,7 @@ PopupCard {
                         text: root.streamLabel(modelData)
                         color: Colors.foreground
                         font.pixelSize: 12
-                        font.family: Config.font.family
+                        font.family: Typography.font.family
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                       }
@@ -656,7 +656,7 @@ PopupCard {
                         text: sMuted ? "0%" : Math.round(sVol * 100) + "%"
                         color: Colors.white
                         font.pixelSize: 11
-                        font.family: Config.font.family
+                        font.family: Typography.font.family
                         Layout.preferredWidth: 36
                         horizontalAlignment: Text.AlignRight
                       }

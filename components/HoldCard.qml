@@ -73,7 +73,7 @@ Rectangle {
     Text {
       text: root.iconText
       color: root.accent ? Colors.black : root.accentColor
-      font.family: Config.materialSymbols.family
+      font.family: Typography.materialSymbols.family
       font.pixelSize: root.iconSize
       Layout.alignment: Qt.AlignHCenter
     }
@@ -81,7 +81,7 @@ Rectangle {
     Text {
       text: root.label
       color: root.accent ? Colors.black : Colors.foreground
-      font: Config.font
+      font: Typography.font
       horizontalAlignment: Text.AlignHCenter
       Layout.alignment: Qt.AlignHCenter
       Layout.maximumWidth: root.width - 28
@@ -91,7 +91,7 @@ Rectangle {
     Text {
       text: root.hint
       color: root.accent ? Colors.black : Colors.white
-      font: Config.font
+      font: Typography.font
       Layout.alignment: Qt.AlignHCenter
     }
   }
@@ -105,7 +105,7 @@ Rectangle {
     Text {
       text: root.iconText
       color: root.accent ? Colors.black : root.accentColor
-      font.family: Config.materialSymbols.family
+      font.family: Typography.materialSymbols.family
       font.pixelSize: root.iconSize
     }
 
@@ -117,14 +117,14 @@ Rectangle {
         Layout.fillWidth: true
         text: root.label
         color: root.accent ? Colors.black : Colors.foreground
-        font: Config.font
+        font: Typography.font
         elide: Text.ElideRight
       }
 
       Text {
         text: root.hint
         color: root.accent ? Colors.black : Colors.white
-        font: Config.font
+        font: Typography.font
       }
     }
   }

@@ -31,7 +31,7 @@ Item {
         anchors.centerIn: parent
         text: root.displayText
         color: Colors.foreground
-        font: Config.font
+        font: Typography.font
         opacity: 1
         y: 0
       }
@@ -41,7 +41,7 @@ Item {
         anchors.centerIn: parent
         text: root.displayText
         color: Colors.foreground
-        font: Config.font
+        font: Typography.font
         opacity: 0
         y: 6
         visible: false

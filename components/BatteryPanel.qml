@@ -137,7 +137,7 @@ PopupCard {
           anchors.centerIn: parent
           text: "power"
           color: Colors.foreground
-          font.family: Config.materialSymbols.family
+          font.family: Typography.materialSymbols.family
           font.pixelSize: 28
         }
 
@@ -147,7 +147,7 @@ PopupCard {
           anchors.centerIn: parent
           text: root.chargingIcon
           color: Colors.foreground
-          font.family: Config.materialSymbols.family
+          font.family: Typography.materialSymbols.family
           font.pixelSize: 28
         }
 
@@ -157,7 +157,7 @@ PopupCard {
           anchors.centerIn: parent
           text: "battery_android_full"
           color: Colors.foreground
-          font.family: Config.materialSymbols.family
+          font.family: Typography.materialSymbols.family
           font.pixelSize: 28
         }
 
@@ -207,7 +207,7 @@ PopupCard {
         id: percentText
         text: root.ready ? root.level + "%" : "--"
         color: Colors.foreground
-        font.family: Config.font.family
+        font.family: Typography.font.family
         font.pixelSize: 32
         font.weight: Font.Light
         font.letterSpacing: -0.5
@@ -226,7 +226,7 @@ PopupCard {
           id: line1
           text: root.statusLine1
           color: root.isFullyCharged ? Colors.white : Colors.foreground
-          font.family: Config.font.family
+          font.family: Typography.font.family
           font.pixelSize: 13
           font.weight: Font.Normal
           elide: Text.ElideRight
@@ -239,7 +239,7 @@ PopupCard {
           id: line2
           text: root.statusLine2
           color: Colors.white
-          font.family: Config.font.family
+          font.family: Typography.font.family
           font.pixelSize: 13
           font.weight: Font.Normal
           elide: Text.ElideRight
@@ -323,7 +323,7 @@ PopupCard {
           Text {
             text: "Energy"
             color: Colors.white
-            font.family: Config.font.family
+            font.family: Typography.font.family
             font.pixelSize: 10
             opacity: 0.55
             elide: Text.ElideRight
@@ -332,7 +332,7 @@ PopupCard {
           Text {
             text: root.energyLabel
             color: Colors.foreground
-            font.family: Config.font.family
+            font.family: Typography.font.family
             font.pixelSize: 12
             elide: Text.ElideRight
             Layout.fillWidth: true
@@ -345,7 +345,7 @@ PopupCard {
           Text {
             text: "Power"
             color: Colors.white
-            font.family: Config.font.family
+            font.family: Typography.font.family
             font.pixelSize: 10
             opacity: 0.55
             elide: Text.ElideRight
@@ -355,7 +355,7 @@ PopupCard {
           Text {
             text: root.rateLabel
             color: root.isCharging ? Colors.waybarCharging : Colors.foreground
-            font.family: Config.font.family
+            font.family: Typography.font.family
             font.pixelSize: 12
             elide: Text.ElideRight
             Layout.fillWidth: true
@@ -369,7 +369,7 @@ PopupCard {
           Text {
             text: "Health"
             color: Colors.white
-            font.family: Config.font.family
+            font.family: Typography.font.family
             font.pixelSize: 10
             opacity: 0.55
             elide: Text.ElideRight
@@ -379,7 +379,7 @@ PopupCard {
           Text {
             text: root.healthLabel
             color: Colors.foreground
-            font.family: Config.font.family
+            font.family: Typography.font.family
             font.pixelSize: 12
             elide: Text.ElideRight
             Layout.fillWidth: true

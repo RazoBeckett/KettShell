@@ -43,14 +43,14 @@ WrapperMouseArea {
       Text {
         text: root.icon
         color: Colors.foreground
-        font.family: Config.materialSymbols.family
+        font.family: Typography.materialSymbols.family
         font.pixelSize: 14
       }
 
       Text {
         text: root.ready ? root.level + "%" : "-"
         color: Colors.foreground
-        font: Config.font
+        font: Typography.font
       }
     }
   }

@@ -44,14 +44,14 @@ WrapperMouseArea {
       Text {
         text: root.icon
         color: root.disconnected ? Colors.waybarDisconnected : Colors.foreground
-        font.family: Config.materialSymbols.family
+        font.family: Typography.materialSymbols.family
         font.pixelSize: 14
       }
 
       Text {
         text: root.label
         color: root.disconnected ? Colors.waybarDisconnected : Colors.foreground
-        font: Config.font
+        font: Typography.font
         elide: Text.ElideRight
         Layout.maximumWidth: 140
       }

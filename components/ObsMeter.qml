@@ -149,7 +149,7 @@ Item {
             text: modelData.label
             color: Colors.white
             font.pixelSize: 7
-            font.family: Config.font.family
+            font.family: Typography.font.family
             opacity: 0.9
           }
         }

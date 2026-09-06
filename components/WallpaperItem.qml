@@ -82,7 +82,7 @@ Item {
       color: Colors.white
       opacity: 0.25
 
-      font.family: Config.materialSymbols.family
+      font.family: Typography.materialSymbols.family
       font.pixelSize: 28
 
       visible:
@@ -157,9 +157,9 @@ Item {
         ? Colors.foreground
         : Colors.white
 
-    font.family: Config.font.family
+    font.family: Typography.font.family
     font.pixelSize: 12
-    font.weight: Config.font.weight
+    font.weight: Typography.font.weight
 
     opacity:
       root.isCurrent

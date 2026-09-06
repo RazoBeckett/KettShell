@@ -13,9 +13,4 @@ QtObject {
     pixelSize: 16,
     weight: Font.Normal
   })
-
-
-  readonly property font iconFont: Qt.font({
-    family: "JetBrainsMono Nerd Font Propo",
-  })
 }

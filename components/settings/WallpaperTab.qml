@@ -41,14 +41,14 @@ ColumnLayout {
       Text {
         text: "Library"
         color: Colors.foreground
-        font: Config.font
+        font: Typography.font
         Layout.fillWidth: true
       }
 
       Text {
         text: Wallpapers.all.length + " images"
         color: Colors.white
-        font: Config.font
+        font: Typography.font
       }
     }
 
@@ -79,9 +79,9 @@ ColumnLayout {
           color: Colors.foreground
           selectionColor: Colors.blue
           selectedTextColor: Colors.black
-          font.family: Config.font.family
-          font.pixelSize: Config.font.pixelSize
-          font.weight: Config.font.weight
+          font.family: Typography.font.family
+          font.pixelSize: Typography.font.pixelSize
+          font.weight: Typography.font.weight
           onAccepted: root.commitDir()
           Keys.onEscapePressed: event => {
             root.cancelDir()
@@ -124,7 +124,7 @@ ColumnLayout {
               anchors.centerIn: parent
               text: "close"
               color: cancelMa.containsMouse ? Colors.black : Colors.white
-              font.family: Config.materialSymbols.family
+              font.family: Typography.materialSymbols.family
               font.pixelSize: 16
               Behavior on color { ColorAnimation { duration: 150 } }
             }
@@ -150,7 +150,7 @@ ColumnLayout {
               anchors.centerIn: parent
               text: "check"
               color: saveMa.containsMouse ? Colors.black : Colors.white
-              font.family: Config.materialSymbols.family
+              font.family: Typography.materialSymbols.family
               font.pixelSize: 16
               Behavior on color { ColorAnimation { duration: 150 } }
             }
@@ -187,7 +187,7 @@ ColumnLayout {
       Text {
         text: "Wipe direction"
         color: Colors.foreground
-        font: Config.font
+        font: Typography.font
         Layout.fillWidth: true
         elide: Text.ElideRight
       }
@@ -195,7 +195,7 @@ ColumnLayout {
       Text {
         text: Settings.wallpaper.wipeDeg + "°"
         color: Colors.foreground
-        font: Config.font
+        font: Typography.font
         horizontalAlignment: Text.AlignRight
       }
     }
@@ -203,7 +203,7 @@ ColumnLayout {
     Text {
       text: "Choose from which direction the new wallpaper will appear."
       color: Colors.white
-      font: Config.font
+      font: Typography.font
       Layout.fillWidth: true
       wrapMode: Text.WordWrap
       elide: Text.ElideRight
@@ -251,7 +251,7 @@ ColumnLayout {
           text: "image"
           color: Colors.white
           opacity: 0.28
-          font.family: Config.materialSymbols.family
+          font.family: Typography.materialSymbols.family
           font.pixelSize: 28
         }
       }
@@ -304,7 +304,7 @@ ColumnLayout {
             text: "image"
             color: Colors.blue
             opacity: 0.35
-            font.family: Config.materialSymbols.family
+            font.family: Typography.materialSymbols.family
             font.pixelSize: 28
           }
         }
@@ -381,7 +381,7 @@ ColumnLayout {
             anchors.centerIn: parent
             text: "arrow_forward"
             color: Colors.blue
-            font.family: Config.materialSymbols.family
+            font.family: Typography.materialSymbols.family
             font.pixelSize: 14
             rotation: 180 - previewBox.deg
             Behavior on rotation { enabled: !previewMa.pressed; NumberAnimation { duration: 220; easing.type: Easing.OutCubic } }
@@ -429,7 +429,7 @@ ColumnLayout {
             required property var modelData
             text: "CURRENT"
             color: Colors.black
-            font.family: Config.font.family
+            font.family: Typography.font.family
             font.pixelSize: 10
             font.weight: Font.Bold
             anchors.centerIn: parent
@@ -442,7 +442,7 @@ ColumnLayout {
           id: oldLabelFront
           text: "CURRENT"
           color: Colors.foreground
-          font.family: Config.font.family
+          font.family: Typography.font.family
           font.pixelSize: 10
           font.weight: Font.Bold
           opacity: 0.88
@@ -464,7 +464,7 @@ ColumnLayout {
             required property var modelData
             text: "NEW"
             color: Colors.black
-            font.family: Config.font.family
+            font.family: Typography.font.family
             font.pixelSize: 10
             font.weight: Font.Bold
             anchors.centerIn: parent
@@ -477,7 +477,7 @@ ColumnLayout {
           id: newLabelFront
           text: "NEW"
           color: Colors.blue
-          font.family: Config.font.family
+          font.family: Typography.font.family
           font.pixelSize: 10
           font.weight: Font.Bold
           opacity: 1

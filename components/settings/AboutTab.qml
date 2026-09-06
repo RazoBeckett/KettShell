@@ -19,7 +19,7 @@ ColumnLayout {
 
   SettingsRow {
     title: "Theme"
-    subtitle: "Config.qml and Colors.qml"
+    subtitle: "Typography.qml and Colors.qml"
     Layout.fillWidth: true
   }
 }

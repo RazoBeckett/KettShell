@@ -104,7 +104,7 @@ PopupCard {
           text: "Bluetooth"
           color: Colors.foreground
           font.pixelSize: 14
-          font.family: Config.font.family
+          font.family: Typography.font.family
           font.weight: Font.Normal
         }
         Item { Layout.fillWidth: true }
@@ -114,7 +114,7 @@ PopupCard {
           text: "Scanning..."
           color: Colors.white
           font.pixelSize: 11
-          font.family: Config.font.family
+          font.family: Typography.font.family
         }
 
         Toggle {
@@ -154,14 +154,14 @@ PopupCard {
             Text {
               text: "bluetooth_searching"
               color: Colors.white
-              font.family: Config.materialSymbols.family
+              font.family: Typography.materialSymbols.family
               font.pixelSize: 22
             }
             ColumnLayout {
               spacing: 1
               Layout.fillWidth: true
-              Text { text: "No Bluetooth adapter found"; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family }
-              Text { text: "Bluetooth hardware not detected"; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
+              Text { text: "No Bluetooth adapter found"; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.font.family }
+              Text { text: "Bluetooth hardware not detected"; color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
             }
           }
         }
@@ -182,21 +182,21 @@ PopupCard {
             Text {
               text: "bluetooth_disabled"
               color: Colors.white
-              font.family: Config.materialSymbols.family
+              font.family: Typography.materialSymbols.family
               font.pixelSize: 22
             }
             ColumnLayout {
               spacing: 1
               Layout.fillWidth: true
-              Text { text: "Bluetooth is turned off"; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family }
-              Text { text: "Turn on to see available devices"; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
+              Text { text: "Bluetooth is turned off"; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.font.family }
+              Text { text: "Turn on to see available devices"; color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
             }
           }
           Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 32
             color: Colors.blue
-            Text { anchors.centerIn: parent; text: "Turn Bluetooth back on"; color: Colors.black; font.pixelSize: 13; font.family: Config.font.family }
+            Text { anchors.centerIn: parent; text: "Turn Bluetooth back on"; color: Colors.black; font.pixelSize: 13; font.family: Typography.font.family }
             MouseArea {
               anchors.fill: parent
               cursorShape: Qt.PointingHandCursor
@@ -231,7 +231,7 @@ PopupCard {
                 text: "Connected devices"
                 color: Colors.white
                 font.pixelSize: 11
-                font.family: Config.font.family
+                font.family: Typography.font.family
                 Layout.leftMargin: 16
                 Layout.topMargin: 8
                 Layout.bottomMargin: 4
@@ -275,12 +275,12 @@ PopupCard {
                         anchors.rightMargin: 12
                         spacing: 12
                         z: 1
-                        Text { text: root.deviceIcon(connRow.modelData); color: Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 20 }
+                        Text { text: root.deviceIcon(connRow.modelData); color: Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 20 }
                         ColumnLayout {
                           Layout.fillWidth: true
                           spacing: 1
-                          Text { text: connRow.modelData.name || connRow.modelData.deviceName || connRow.modelData.address; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
-                          Text { text: root.statusText(connRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
+                          Text { text: connRow.modelData.name || connRow.modelData.deviceName || connRow.modelData.address; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
+                          Text { text: root.statusText(connRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
                         }
                         Item { Layout.fillWidth: true }
                         RowLayout {
@@ -295,7 +295,7 @@ PopupCard {
                             border.color: discHover.containsMouse ? Colors.red : Colors.border
                             border.width: 1
                             Behavior on color { ColorAnimation { duration: 90 } }
-                            Text { anchors.centerIn: parent; text: "link_off"; color: discHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 14 }
+                            Text { anchors.centerIn: parent; text: "link_off"; color: discHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 14 }
                             MouseArea { id: discHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.handleDeviceClick(connRow.modelData) }
                           }
                           Rectangle {
@@ -306,7 +306,7 @@ PopupCard {
                             border.color: forgetHover.containsMouse ? Colors.yellow : Colors.border
                             border.width: 1
                             Behavior on color { ColorAnimation { duration: 90 } }
-                            Text { anchors.centerIn: parent; text: "delete"; color: forgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
+                            Text { anchors.centerIn: parent; text: "delete"; color: forgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 13 }
                             MouseArea { id: forgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { connRow.modelData.forget(); root.expandedDevice = null } }
                           }
                         }
@@ -332,7 +332,7 @@ PopupCard {
                         anchors.top: parent.top
                         spacing: 8
                         Item { Layout.fillWidth: true }
-                        Text { visible: connRow.modelData ? connRow.modelData.address.length > 0 : false; text: connRow.modelData ? connRow.modelData.address : ""; color: Colors.white; font.pixelSize: 10; font.family: Config.font.family; elide: Text.ElideRight; Layout.maximumWidth: 110 }
+                        Text { visible: connRow.modelData ? connRow.modelData.address.length > 0 : false; text: connRow.modelData ? connRow.modelData.address : ""; color: Colors.white; font.pixelSize: 10; font.family: Typography.font.family; elide: Text.ElideRight; Layout.maximumWidth: 110 }
                       }
                     }
                   }
@@ -396,12 +396,12 @@ PopupCard {
                       anchors.rightMargin: 12
                       spacing: 12
                       z: 1
-                      Text { text: root.deviceIcon(availRow.modelData); color: Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 20 }
+                      Text { text: root.deviceIcon(availRow.modelData); color: Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 20 }
                       ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
-                        Text { text: availRow.modelData.name || availRow.modelData.deviceName || availRow.modelData.address; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
-                        Text { text: availRow.modelData === null ? "" : root.statusText(availRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
+                        Text { text: availRow.modelData.name || availRow.modelData.deviceName || availRow.modelData.address; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: availRow.modelData === null ? "" : root.statusText(availRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
                       }
                       Item { Layout.fillWidth: true; visible: availHover.hovered }
                       RowLayout {
@@ -416,7 +416,7 @@ PopupCard {
                           border.color: availConnHover.containsMouse ? Colors.foreground : Colors.border
                           border.width: 1
                           Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: availRow.modelData && availRow.modelData.paired ? "link" : "link_off"; color: Colors.black; font.family: Config.materialSymbols.family; font.pixelSize: 14 }
+                          Text { anchors.centerIn: parent; text: availRow.modelData && availRow.modelData.paired ? "link" : "link_off"; color: Colors.black; font.family: Typography.materialSymbols.family; font.pixelSize: 14 }
                           MouseArea { id: availConnHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.handleDeviceClick(availRow.modelData) }
                         }
                         Rectangle {
@@ -428,7 +428,7 @@ PopupCard {
                           border.color: availForgetHover.containsMouse ? Colors.yellow : Colors.border
                           border.width: 1
                           Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: "delete"; color: availForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
+                          Text { anchors.centerIn: parent; text: "delete"; color: availForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 13 }
                           MouseArea { id: availForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { availRow.modelData.forget(); root.expandedDevice = null } }
                         }
                       }
@@ -457,13 +457,13 @@ PopupCard {
                         text: availRow.modelData ? availRow.modelData.address : ""
                         color: Colors.white
                         font.pixelSize: 10
-                        font.family: Config.font.family
+                        font.family: Typography.font.family
                         elide: Text.ElideRight
                         Layout.maximumWidth: 120
                         Layout.fillWidth: true
                       }
                       Item { Layout.fillWidth: true }
-                      Text { visible: availRow.modelData ? (availRow.modelData.pairing || availRow.modelData.state === BluetoothDeviceState.Connecting) : false; text: "Connecting..."; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
+                      Text { visible: availRow.modelData ? (availRow.modelData.pairing || availRow.modelData.state === BluetoothDeviceState.Connecting) : false; text: "Connecting..."; color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
                     }
                   }
                 }
@@ -477,7 +477,7 @@ PopupCard {
               text: root.discovering ? "Scanning for devices..." : "No Bluetooth devices found"
               color: Colors.white
               font.pixelSize: 12
-              font.family: Config.font.family
+              font.family: Typography.font.family
             }
           }
         }

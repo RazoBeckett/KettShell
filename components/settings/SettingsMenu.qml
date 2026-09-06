@@ -189,14 +189,14 @@ Item {
               Text {
                 text: "settings"
                 color: Colors.blue
-                font.family: Config.materialSymbols.family
+                font.family: Typography.materialSymbols.family
                 font.pixelSize: 20
               }
 
               Text {
                 text: "Settings"
                 color: Colors.foreground
-                font: Config.font
+                font: Typography.font
                 Layout.fillWidth: true
               }
             }
@@ -244,7 +244,7 @@ Item {
                       Text {
                         text: modelData.icon
                         color: active ? Colors.black : Colors.white
-                        font.family: Config.materialSymbols.family
+                        font.family: Typography.materialSymbols.family
                         font.pixelSize: 18
                         Behavior on color { ColorAnimation { duration: 150 } }
                       }
@@ -252,7 +252,7 @@ Item {
                       Text {
                         text: modelData.name
                         color: active ? Colors.black : Colors.white
-                        font: Config.font
+                        font: Typography.font
                         Layout.fillWidth: true
                         elide: Text.ElideRight
                         Behavior on color { ColorAnimation { duration: 150 } }
@@ -299,7 +299,7 @@ Item {
             Text {
               text: root.tabsModel[root.currentTab].name
               color: Colors.foreground
-              font: Config.font
+              font: Typography.font
             }
 
             Rectangle {

@@ -31,7 +31,7 @@ Rectangle {
       Text {
         text: root.title
         color: Colors.foreground
-        font: Config.font
+        font: Typography.font
         elide: Text.ElideRight
         Layout.fillWidth: true
       }
@@ -39,7 +39,7 @@ Rectangle {
       Text {
         text: root.subtitle
         color: Colors.white
-        font: Config.font
+        font: Typography.font
         elide: Text.ElideRight
         visible: root.subtitle !== ""
         Layout.fillWidth: true

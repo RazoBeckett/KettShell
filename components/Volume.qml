@@ -36,7 +36,7 @@ WrapperMouseArea {
       Text {
         text: root.icon
         color: Colors.foreground
-        font.family: Config.materialSymbols.family
+        font.family: Typography.materialSymbols.family
         font.pixelSize: 14
       }
 
@@ -47,7 +47,7 @@ WrapperMouseArea {
           return root.vol + "%"
         }
         color: Colors.foreground
-        font: Config.font
+        font: Typography.font
       }
     }
   }

@@ -85,7 +85,7 @@ Item {
           anchors.centerIn: parent
           text: wsButton.ws.id
           color: wsButton.isActive ? Colors.waybarActive : Colors.foreground
-          font: Config.font
+          font: Typography.font
           transformOrigin: Item.Center
           scale: 1
           Behavior on color { ColorAnimation { duration: 180; easing.type: Easing.OutCubic } }

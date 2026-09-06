@@ -36,7 +36,7 @@ PressableItem {
       Text {
         text: root.icon
         color: root.iconColor
-        font.family: Config.materialSymbols.family
+        font.family: Typography.materialSymbols.family
         font.pixelSize: 14
         visible: root.icon !== ""
       }
@@ -44,7 +44,7 @@ PressableItem {
       Text {
         text: root.label
         color: root.labelColor
-        font: Config.font
+        font: Typography.font
         elide: Text.ElideRight
         Layout.maximumWidth: root.maxLabelWidth
         visible: root.showLabel && root.label !== ""

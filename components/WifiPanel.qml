@@ -207,7 +207,7 @@ PopupCard {
           text: "Wi-Fi"
           color: Colors.foreground
           font.pixelSize: 14
-          font.family: Config.font.family
+          font.family: Typography.font.family
           font.weight: Font.Normal
         }
         Item { Layout.fillWidth: true }
@@ -247,21 +247,21 @@ PopupCard {
             Text {
               text: "signal_wifi_off"
               color: Colors.white
-              font.family: Config.materialSymbols.family
+              font.family: Typography.materialSymbols.family
               font.pixelSize: 22
             }
             ColumnLayout {
               spacing: 1
               Layout.fillWidth: true
-              Text { text: "Wi-Fi is turned off"; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family }
-              Text { text: "Turn on to see available networks"; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
+              Text { text: "Wi-Fi is turned off"; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.font.family }
+              Text { text: "Turn on to see available networks"; color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
             }
           }
           Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 32
             color: Colors.blue
-            Text { anchors.centerIn: parent; text: "Turn Wi-Fi back on"; color: Colors.black; font.pixelSize: 13; font.family: Config.font.family }
+            Text { anchors.centerIn: parent; text: "Turn Wi-Fi back on"; color: Colors.black; font.pixelSize: 13; font.family: Typography.font.family }
             MouseArea {
               anchors.fill: parent
               cursorShape: Qt.PointingHandCursor
@@ -297,7 +297,7 @@ PopupCard {
                 text: "Current connection"
                 color: Colors.white
                 font.pixelSize: 11
-                font.family: Config.font.family
+                font.family: Typography.font.family
                 Layout.leftMargin: 16
                 Layout.topMargin: 8
                 Layout.bottomMargin: 4
@@ -337,12 +337,12 @@ PopupCard {
                       anchors.rightMargin: 12
                       spacing: 12
                       z: 1
-                      Text { text: root.signalIcon(root.effectiveCenter); color: Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 20 }
+                      Text { text: root.signalIcon(root.effectiveCenter); color: Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 20 }
                       ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
-                        Text { text: root.effectiveCenter ? ((root.effectiveCenter.name || "").trim() || "Hidden Network") : ""; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
-                        Text { text: root.statusText(root.effectiveCenter); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
+                        Text { text: root.effectiveCenter ? ((root.effectiveCenter.name || "").trim() || "Hidden Network") : ""; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: root.statusText(root.effectiveCenter); color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
                       }
                       Item { Layout.fillWidth: true }
                       RowLayout {
@@ -359,7 +359,7 @@ PopupCard {
                           border.color: wifiDiscHover.containsMouse ? Colors.red : Colors.border
                           border.width: 1
                           Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: "link_off"; color: wifiDiscHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 14 }
+                          Text { anchors.centerIn: parent; text: "link_off"; color: wifiDiscHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 14 }
                           MouseArea { id: wifiDiscHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; enabled: root.wifiCenter !== null; onClicked: root.connectTo(root.effectiveCenter) }
                         }
                         Rectangle {
@@ -371,7 +371,7 @@ PopupCard {
                           border.color: wifiForgetHover.containsMouse ? Colors.yellow : Colors.border
                           border.width: 1
                           Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: "pill_off"; color: wifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
+                          Text { anchors.centerIn: parent; text: "pill_off"; color: wifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 13 }
                           MouseArea { id: wifiForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.forgetNetwork(root.effectiveCenter) }
                         }
                       }
@@ -399,26 +399,26 @@ PopupCard {
                       RowLayout {
                         Layout.fillWidth: true
                         spacing: 8
-                        Text { text: "Interface"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
-                        Text { text: root.wifiDevice ? root.wifiDevice.name : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
+                        Text { text: "Interface"; color: Colors.white; font.pixelSize: 11; font.family: Typography.font.family; Layout.preferredWidth: 72 }
+                        Text { text: root.wifiDevice ? root.wifiDevice.name : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
                       }
                       RowLayout {
                         Layout.fillWidth: true
                         spacing: 8
-                        Text { text: "MAC"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
-                        Text { text: root.wifiDevice ? root.wifiDevice.address : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
+                        Text { text: "MAC"; color: Colors.white; font.pixelSize: 11; font.family: Typography.font.family; Layout.preferredWidth: 72 }
+                        Text { text: root.wifiDevice ? root.wifiDevice.address : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
                       }
                       RowLayout {
                         Layout.fillWidth: true
                         spacing: 8
-                        Text { text: "Signal"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
-                        Text { text: root.effectiveCenter ? Math.round(root.effectiveCenter.signalStrength * 100) + "%" : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; Layout.fillWidth: true }
+                        Text { text: "Signal"; color: Colors.white; font.pixelSize: 11; font.family: Typography.font.family; Layout.preferredWidth: 72 }
+                        Text { text: root.effectiveCenter ? Math.round(root.effectiveCenter.signalStrength * 100) + "%" : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.font.family; Layout.fillWidth: true }
                       }
                       RowLayout {
                         Layout.fillWidth: true
                         spacing: 8
-                        Text { text: "Security"; color: Colors.white; font.pixelSize: 11; font.family: Config.font.family; Layout.preferredWidth: 72 }
-                        Text { text: root.effectiveCenter ? securityLabel(root.effectiveCenter) : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
+                        Text { text: "Security"; color: Colors.white; font.pixelSize: 11; font.family: Typography.font.family; Layout.preferredWidth: 72 }
+                        Text { text: root.effectiveCenter ? securityLabel(root.effectiveCenter) : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
                       }
                     }
                   }
@@ -464,12 +464,12 @@ PopupCard {
                       anchors.rightMargin: 12
                       spacing: 12
                       z: 1
-                      Text { text: root.signalIcon(netRow.modelData); color: Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 20 }
+                      Text { text: root.signalIcon(netRow.modelData); color: Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 20 }
                       ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
-                        Text { text: netRow.modelData.name || "Hidden Network"; color: Colors.foreground; font.pixelSize: 13; font.family: Config.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
-                        Text { text: netRow.modelData === root.connectingNetwork ? "Connecting..." : root.statusText(netRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
+                        Text { text: netRow.modelData.name || "Hidden Network"; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: netRow.modelData === root.connectingNetwork ? "Connecting..." : root.statusText(netRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
                       }
                       Rectangle {
                         visible: netRow.modelData ? netRow.modelData.known && (rowHover.hovered || root.expandedNetwork === netRow.modelData) : false
@@ -480,7 +480,7 @@ PopupCard {
                         border.color: availWifiForgetHover.containsMouse ? Colors.red : Colors.border
                         border.width: 1
                         Behavior on color { ColorAnimation { duration: 90 } }
-                        Text { anchors.centerIn: parent; text: "pill_off"; color: availWifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Config.materialSymbols.family; font.pixelSize: 13 }
+                        Text { anchors.centerIn: parent; text: "pill_off"; color: availWifiForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 13 }
                         MouseArea { id: availWifiForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.forgetNetwork(netRow.modelData) }
                       }
                     }
@@ -543,7 +543,7 @@ PopupCard {
                             text: root.pendingNetwork === netRow.modelData ? root.password : ""
                             color: Colors.foreground
                             font.pixelSize: 13
-                            font.family: Config.font.family
+                            font.family: Typography.font.family
                             echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
                             passwordCharacter: "•"
                             selectByMouse: true
@@ -575,7 +575,7 @@ PopupCard {
                               color: Colors.white
                               opacity: 0.6
                               font.pixelSize: 12
-                              font.family: Config.font.family
+                              font.family: Typography.font.family
                               visible: passInput.text.length === 0 && !passInput.activeFocus
                             }
                             MouseArea {
@@ -591,7 +591,7 @@ PopupCard {
                             id: eyeIcon
                             text: root.showPassword ? "visibility" : "visibility_off"
                             color: eyeMa.containsMouse ? Colors.foreground : Colors.white
-                            font.family: Config.materialSymbols.family
+                            font.family: Typography.materialSymbols.family
                             font.pixelSize: 16
                             MouseArea {
                               id: eyeMa
@@ -627,7 +627,7 @@ PopupCard {
                             visible: root.connectAutomatically
                             text: "check"
                             color: Colors.blue
-                            font.family: Config.materialSymbols.family
+                            font.family: Typography.materialSymbols.family
                             font.pixelSize: 13
                           }
                           MouseArea {
@@ -642,7 +642,7 @@ PopupCard {
                           text: "Connect automatically"
                           color: autoLabelHover.containsMouse ? Colors.foreground : Colors.white
                           font.pixelSize: 12
-                          font.family: Config.font.family
+                          font.family: Typography.font.family
                           MouseArea {
                             id: autoLabelHover
                             anchors.fill: parent
@@ -657,10 +657,10 @@ PopupCard {
                           Layout.preferredHeight: 28
                           color: connMa.containsMouse ? Qt.lighter(Colors.blue, 1.08) : Colors.blue
                           visible: netRow.modelData ? !netRow.modelData.stateChanging : true
-                          Text { anchors.centerIn: parent; text: "Connect"; color: Colors.black; font.pixelSize: 12; font.family: Config.font.family }
+                          Text { anchors.centerIn: parent; text: "Connect"; color: Colors.black; font.pixelSize: 12; font.family: Typography.font.family }
                           MouseArea { id: connMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { if (root.needsSecret(netRow.modelData)) root.confirmConnect(); else root.connectTo(netRow.modelData) } }
                         }
-                        Text { visible: netRow.modelData ? netRow.modelData.stateChanging : false; text: "Connecting..."; color: Colors.white; font.pixelSize: 12; font.family: Config.font.family }
+                        Text { visible: netRow.modelData ? netRow.modelData.stateChanging : false; text: "Connecting..."; color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
                       }
                     }
                   }
@@ -675,7 +675,7 @@ PopupCard {
               text: "No Wi-Fi networks found"
               color: Colors.white
               font.pixelSize: 12
-              font.family: Config.font.family
+              font.family: Typography.font.family
             }
           }
         }
