@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import QtQuick
 
 Item {
@@ -36,7 +36,6 @@ Item {
   readonly property real thumbXRaw: centerX - effectiveW / 2 + (dragging ? (displayedStretch >= 0 ? 1 : -1) * stretchMag * 0.5 : 0)
   readonly property real thumbX: Math.max(0, Math.min(root.width - effectiveW, thumbXRaw))
 
-  // haptic-tick micro-punch on detents (0 / 50 / 100)
   property real tickScale: 1
   property real _prevFrac: fraction
   readonly property var detents: [0, 0.5, 1]
@@ -45,7 +44,6 @@ Item {
     for (let i = 0; i < detents.length; i++) {
       let t = detents[i]
       let crossed = (oldF < t && newF >= t) || (oldF > t && newF <= t)
-      // at edges treat near-zero as crossing even if starting exactly on threshold
       if (!crossed && (t === 0 || t === 1)) {
         let nearOld = Math.abs(oldF - t) < 0.012
         let nearNew = Math.abs(newF - t) < 0.012

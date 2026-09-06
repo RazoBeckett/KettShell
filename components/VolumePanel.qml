@@ -300,7 +300,7 @@ PopupCard {
                 }
               }
 
-              IOSSlider {
+              Slider {
                 id: outSliderRoot
                 Layout.fillWidth: true
                 Layout.preferredHeight: 24
@@ -453,7 +453,7 @@ PopupCard {
                 }
               }
 
-              IOSSlider {
+              Slider {
                 id: inSliderRoot
                 Layout.fillWidth: true
                 Layout.preferredHeight: 24
@@ -662,7 +662,7 @@ PopupCard {
                       }
                     }
 
-                    IOSSlider {
+                    Slider {
                       id: streamSliderRoot
                       Layout.fillWidth: true
                       Layout.preferredHeight: 16

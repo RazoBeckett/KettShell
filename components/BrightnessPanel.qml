@@ -88,7 +88,7 @@ PopupCard {
           Layout.preferredWidth: 22
         }
 
-        IOSSlider {
+        Slider {
           id: sliderRoot
           Layout.fillWidth: true
           Layout.preferredHeight: 24

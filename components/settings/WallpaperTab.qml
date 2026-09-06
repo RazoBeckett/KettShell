@@ -178,7 +178,7 @@ ColumnLayout {
     subtitle: Settings.wallpaper.wipeDeg + " degrees"
     Layout.fillWidth: true
 
-    IOSSlider {
+    Slider {
       anchors.fill: parent
       fraction: Settings.wallpaper.wipeDeg / 360
       onMoved: f => Settings.wallpaper.wipeDeg = Math.round(f * 360)

@@ -10,7 +10,9 @@ singleton Wallpapers 1.0 services/Wallpapers.qml
 HoldCard 1.0 components/HoldCard.qml
 Pill 1.0 components/Pill.qml
 PopupCard 1.0 components/PopupCard.qml
-IOSSlider 1.0 components/IOSSlider.qml
+ToggleButton 1.0 components/shared/ToggleButton.qml
+Toggle 1.0 components/shared/Toggle.qml
+Slider 1.0 components/shared/Slider.qml
 PressableItem 1.0 components/PressableItem.qml
 SettingsWindow 1.0 components/settings/SettingsWindow.qml
 SettingsMenu 1.0 components/settings/SettingsMenu.qml
