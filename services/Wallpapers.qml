@@ -26,13 +26,7 @@ Singleton {
     return p
   }
 
-  readonly property string statePath:
-    (Quickshell.env("HOME") || "") +
-    "/.cache/quickshell/wallpaper/path.txt"
-
-  readonly property string stateDir:
-    (Quickshell.env("HOME") || "") +
-    "/.cache/quickshell/wallpaper"
+  readonly property string statePath: Quickshell.statePath("wallpaper-path.txt")
 
   property list<string> all: []
   property var allLower: []
@@ -100,20 +94,7 @@ Singleton {
       return
 
     current = path
-
-    // Paths go in as positional parameters ($1..$3) so bash never re-parses
-    // their content — quoting them into the script would break on $/backticks.
-    saveProc.command = [
-      "bash",
-      "-c",
-      'mkdir -p "$1" && printf \'%s\' "$2" > "$3"',
-      "save-wallpaper",
-      stateDir,
-      path,
-      statePath
-    ]
-
-    saveProc.running = true
+    stateFile.setText(path)
   }
 
   function refresh(): void {
@@ -209,16 +190,6 @@ Singleton {
         root.all = lines
       }
     }
-  }
-
-  /*
-   * Save current wallpaper path.
-   */
-  Process {
-    id: saveProc
-
-    stdout: StdioCollector {}
-    stderr: StdioCollector {}
   }
 
   /*
