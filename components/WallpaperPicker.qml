@@ -299,7 +299,7 @@ Scope {
 
             text:
               Wallpapers.all.length === 0
-                ? "No wallpapers in " + Config.wallDir
+                ? "No wallpapers in " + Settings.wallpaper.directory
                 : (
                     (!win.filteredModel || win.filteredModel.length === 0)
                       ? "No match"

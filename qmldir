@@ -5,6 +5,7 @@ singleton BluetoothMenuState 1.0 states/BluetoothMenuState.qml
 Workspaces 1.0 Workspaces.qml
 singleton Colors 1.0 Colors.qml
 singleton Config 1.0 Config.qml
+singleton Settings 1.0 services/Settings.qml
 singleton Wallpapers 1.0 services/Wallpapers.qml
 HoldCard 1.0 components/HoldCard.qml
 Pill 1.0 components/Pill.qml
