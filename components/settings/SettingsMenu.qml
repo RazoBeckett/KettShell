@@ -151,7 +151,7 @@ Item {
 
     Rectangle {
       anchors.fill: parent
-      color: Colors.card
+      color: Colors.background
       border.color: Colors.border
       border.width: 1
 
