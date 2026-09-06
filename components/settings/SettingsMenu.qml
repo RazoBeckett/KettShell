@@ -2,6 +2,7 @@ import "../.."
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 
 /*
  * Settings card: sidebar tabs on the left, page content on the right.
@@ -18,8 +19,23 @@ Item {
   property real introSidebar: 0.0
   property real introContent: 0.0
   readonly property bool busy: openSequence.running || closeSequence.running
+  property string commitHash: "development"
+  readonly property string commitDisplay: "KettShell @ " + commitHash
 
   signal closeFinished
+
+  Process {
+    id: gitCommitProc
+    command: ["git", "-C", Quickshell.shellDir, "rev-parse", "--short", "HEAD"]
+    workingDirectory: Quickshell.shellDir
+    running: true
+    stdout: StdioCollector {
+      onStreamFinished: {
+        let t = (text || "").trim()
+        root.commitHash = t.length > 0 ? t : "development"
+      }
+    }
+  }
 
   function playOpen(): void {
     closeSequence.stop()
@@ -272,6 +288,18 @@ Item {
             }
 
             Item { Layout.fillHeight: true }
+
+            Text {
+              text: root.commitDisplay
+              color: Colors.white
+              font.family: Typography.font.family
+              font.pixelSize: 11
+              font.weight: Typography.font.weight
+              opacity: 0.65
+              elide: Text.ElideRight
+              Layout.fillWidth: true
+              Layout.topMargin: 8
+            }
           }
 
           Rectangle {
