@@ -6,6 +6,9 @@ Item {
 
   property bool checked: false
   property bool enabled: true
+  property color onColor: Colors.blue
+  property color offColor: Colors.card
+  property color thumbColor: Colors.foreground
 
   signal toggled(bool checked)
   signal clicked()
@@ -17,7 +20,7 @@ Item {
     id: track
     anchors.fill: parent
     radius: 0
-    color: root.checked ? Colors.blue : Colors.card
+    color: root.checked ? root.onColor : root.offColor
     border.color: toggleMa.containsMouse ? Colors.border : Colors.transparent
     border.width: 1
     Behavior on color { ColorAnimation { duration: 120 } }
@@ -28,7 +31,7 @@ Item {
     width: 18
     height: 18
     radius: 0
-    color: Colors.foreground
+    color: root.thumbColor
     anchors.verticalCenter: parent.verticalCenter
     x: root.checked ? parent.width - width - 3 : 3
     scale: 1

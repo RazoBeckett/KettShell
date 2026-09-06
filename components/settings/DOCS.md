@@ -72,7 +72,9 @@ Three control patterns already in use:
 - Static text, right aligned: `WallpaperTab.qml` library row.
 - Toggle switch: `UiTab.qml` genie row. Shared `Toggle` from
   `components/shared/` with `checked` bound to the bool, `onToggled`
-  writes back: `onToggled: c => Settings.ui.genie = c`.
+  writes back: `onToggled: c => Settings.ui.genie = c`. It also takes
+  `onColor`, `offColor`, and `thumbColor`, all defaulting to the current
+  look, so new uses rarely need to touch the file.
 - Slider: `WallpaperTab.qml` wipe row. Shared `Slider` with
   `Layout.fillWidth: true`, `Layout.preferredHeight: 32`, `fraction` bound
   to the value, `onMoved` writes back with rounding:
