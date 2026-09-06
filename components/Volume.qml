@@ -24,8 +24,8 @@ WrapperMouseArea {
   }
 
   child: PressableItem {
-    implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
-    implicitHeight: Config.barHeight
+    implicitWidth: row.implicitWidth + 26
+    implicitHeight: 30
     pressed: root.pressed
 
     RowLayout {
@@ -37,7 +37,7 @@ WrapperMouseArea {
         text: root.icon
         color: Colors.foreground
         font.family: Config.materialSymbols.family
-        font.pixelSize: Config.iconSize
+        font.pixelSize: 14
       }
 
       Text {

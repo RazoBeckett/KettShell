@@ -47,15 +47,15 @@ WrapperMouseArea {
 
   child: PressableItem {
     id: blinkTarget
-    implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
-    implicitHeight: Config.barHeight
+    implicitWidth: row.implicitWidth + 26
+    implicitHeight: 30
     pressed: root.pressed
     dimOnPress: !root.critical
 
     Rectangle {
       anchors.fill: parent
-      anchors.leftMargin: Config.moduleHMargin
-      anchors.rightMargin: Config.moduleHMargin
+      anchors.leftMargin: 3
+      anchors.rightMargin: 3
       color: root.critical ? Colors.waybarCriticalBg : Colors.transparent
       visible: root.critical
     }
@@ -69,7 +69,7 @@ WrapperMouseArea {
         text: root.icon
         color: root.charging ? Colors.waybarCharging : root.critical ? Colors.foreground : Colors.foreground
         font.family: Config.materialSymbols.family
-        font.pixelSize: Config.iconSize
+        font.pixelSize: 14
       }
 
       Text {

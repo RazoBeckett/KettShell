@@ -13,7 +13,7 @@ PressableItem {
   property bool showLabel: true
 
   implicitWidth: row.implicitWidth + 20
-  implicitHeight: Config.pillHeight
+  implicitHeight: 30
   pressed: pressHandler.pressed
 
   TapHandler {
@@ -23,7 +23,7 @@ PressableItem {
 
   Rectangle {
     anchors.fill: parent
-    radius: Config.pillRadius
+    radius: 0
     color: Colors.card
     border.color: Colors.border
     border.width: 1
@@ -37,7 +37,7 @@ PressableItem {
         text: root.icon
         color: root.iconColor
         font.family: Config.materialSymbols.family
-        font.pixelSize: Config.iconSize
+        font.pixelSize: 14
         visible: root.icon !== ""
       }
 

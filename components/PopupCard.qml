@@ -10,7 +10,7 @@ PopupWindow {
   required property var barWindow
   property var shell: null
   property string popoutKind: ""
-  property int margin: Config.margin
+  property int margin: 6
   property int contentWidth: 360
   property int contentHeight: 460
 

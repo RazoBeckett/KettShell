@@ -73,7 +73,7 @@ Scope {
           left: true
           right: true
         }
-        implicitHeight: Config.barHeight
+        implicitHeight: 30
         color: Colors.transparent
 
         Item {
@@ -99,7 +99,7 @@ Scope {
             Item { Layout.fillWidth: true }
 
             RowLayout {
-              spacing: Config.spacing
+              spacing: 4
 
               Brightness {
                 id: brightnessPill
