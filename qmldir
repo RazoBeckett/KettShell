@@ -12,3 +12,9 @@ Pill 1.0 components/Pill.qml
 PopupCard 1.0 components/PopupCard.qml
 IOSSlider 1.0 components/IOSSlider.qml
 PressableItem 1.0 components/PressableItem.qml
+SettingsWindow 1.0 components/settings/SettingsWindow.qml
+SettingsMenu 1.0 components/settings/SettingsMenu.qml
+SettingsRow 1.0 components/settings/SettingsRow.qml
+UiTab 1.0 components/settings/UiTab.qml
+WallpaperTab 1.0 components/settings/WallpaperTab.qml
+AboutTab 1.0 components/settings/AboutTab.qml

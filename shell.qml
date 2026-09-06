@@ -53,6 +53,7 @@ Scope {
 
   Background {}
   WallpaperPicker { id: wallpaperPicker }
+  SettingsWindow {}
 
   Component.onCompleted: closePopouts()
 
