@@ -212,53 +212,11 @@ PopupCard {
         }
         Item { Layout.fillWidth: true }
 
-        Item {
+        ToggleButton {
           Layout.preferredWidth: 44
           Layout.preferredHeight: 24
-
-          Rectangle {
-            id: track
-            anchors.fill: parent
-            radius: 0
-            color: root.wifiOn ? Colors.blue : Colors.card
-            border.color: toggleMa.containsMouse ? Colors.border : Colors.transparent
-            border.width: 1
-            Behavior on color { ColorAnimation { duration: 120 } }
-          }
-          Rectangle {
-            id: thumb
-            width: 18
-            height: 18
-            radius: 0
-            color: Colors.foreground
-            anchors.verticalCenter: parent.verticalCenter
-            x: root.wifiOn ? parent.width - width - 3 : 3
-            scale: 1
-            transformOrigin: Item.Center
-            Behavior on x {
-              NumberAnimation {
-                duration: 320
-                easing.type: Easing.OutBack
-                easing.overshoot: 1.16
-              }
-            }
-          }
-          SequentialAnimation {
-            id: thumbScaleAnim
-            NumberAnimation { target: thumb; property: "scale"; to: 1.14; duration: 110; easing.type: Easing.OutCubic }
-            NumberAnimation { target: thumb; property: "scale"; to: 1.0; duration: 220; easing.type: Easing.OutCubic }
-          }
-          Connections {
-            target: root
-            function onWifiOnChanged() { thumbScaleAnim.restart() }
-          }
-          MouseArea {
-            id: toggleMa
-            anchors.fill: parent
-            hoverEnabled: true
-            cursorShape: Qt.PointingHandCursor
-            onClicked: Networking.wifiEnabled = !Networking.wifiEnabled
-          }
+          checked: root.wifiOn
+          onToggled: isChecked => Networking.wifiEnabled = isChecked
         }
       }
 
