@@ -413,33 +413,76 @@ ColumnLayout {
         }
       }
 
-      // Side labels positioned offset along wipe normal
-      Text {
-        id: oldLabel
-        text: "CURRENT"
-        color: Colors.foreground
-        font.family: Config.font.family
-        font.pixelSize: 10
-        font.weight: Font.Bold
-        opacity: 0.88
-        x: previewBox.width / 2 - previewBox.cs * 52 - implicitWidth / 2
-        y: previewBox.height / 2 + previewBox.sn * 52 - implicitHeight / 2
+      // Side labels positioned offset along wipe normal with thick black stroke for legibility
+      Item {
+        id: oldLabelWrap
+        width: oldLabelFront.implicitWidth + 4
+        height: oldLabelFront.implicitHeight + 4
+        x: previewBox.width / 2 - previewBox.cs * 52 - width / 2
+        y: previewBox.height / 2 + previewBox.sn * 52 - height / 2
         Behavior on x { enabled: !previewMa.pressed; NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
         Behavior on y { enabled: !previewMa.pressed; NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+        // 8-way black stroke (~2px)
+        Repeater {
+          model: [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]
+          delegate: Text {
+            required property var modelData
+            text: "CURRENT"
+            color: Colors.black
+            font.family: Config.font.family
+            font.pixelSize: 10
+            font.weight: Font.Bold
+            anchors.centerIn: parent
+            anchors.horizontalCenterOffset: modelData[0] * 1.1
+            anchors.verticalCenterOffset: modelData[1] * 1.1
+            opacity: 0.95
+          }
+        }
+        Text {
+          id: oldLabelFront
+          text: "CURRENT"
+          color: Colors.foreground
+          font.family: Config.font.family
+          font.pixelSize: 10
+          font.weight: Font.Bold
+          opacity: 0.88
+          anchors.centerIn: parent
+        }
       }
 
-      Text {
-        id: newLabel
-        text: "NEW"
-        color: Colors.blue
-        font.family: Config.font.family
-        font.pixelSize: 10
-        font.weight: Font.Bold
-        opacity: 1
-        x: previewBox.width / 2 + previewBox.cs * 62 - implicitWidth / 2
-        y: previewBox.height / 2 - previewBox.sn * 62 - implicitHeight / 2
+      Item {
+        id: newLabelWrap
+        width: newLabelFront.implicitWidth + 4
+        height: newLabelFront.implicitHeight + 4
+        x: previewBox.width / 2 + previewBox.cs * 62 - width / 2
+        y: previewBox.height / 2 - previewBox.sn * 62 - height / 2
         Behavior on x { enabled: !previewMa.pressed; NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
         Behavior on y { enabled: !previewMa.pressed; NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
+        Repeater {
+          model: [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]
+          delegate: Text {
+            required property var modelData
+            text: "NEW"
+            color: Colors.black
+            font.family: Config.font.family
+            font.pixelSize: 10
+            font.weight: Font.Bold
+            anchors.centerIn: parent
+            anchors.horizontalCenterOffset: modelData[0] * 1.1
+            anchors.verticalCenterOffset: modelData[1] * 1.1
+            opacity: 0.95
+          }
+        }
+        Text {
+          id: newLabelFront
+          text: "NEW"
+          color: Colors.blue
+          font.family: Config.font.family
+          font.pixelSize: 10
+          font.weight: Font.Bold
+          opacity: 1
+          anchors.centerIn: parent
+        }
       }
 
       // Subtle preview wipe animation when angle settles
