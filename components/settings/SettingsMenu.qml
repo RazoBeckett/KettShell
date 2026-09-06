@@ -62,6 +62,7 @@ Item {
 
   Shortcut {
     sequence: "Escape"
+    enabled: !wallpaperTab.editingDir
     onActivated: root.playClose()
   }
 
@@ -308,7 +309,7 @@ Item {
             }
 
             UiTab { visible: root.currentTab === 0; Layout.fillWidth: true }
-            WallpaperTab { visible: root.currentTab === 1; Layout.fillWidth: true }
+            WallpaperTab { id: wallpaperTab; visible: root.currentTab === 1; Layout.fillWidth: true }
             AboutTab { visible: root.currentTab === 2; Layout.fillWidth: true }
 
             Item { Layout.fillHeight: true }
