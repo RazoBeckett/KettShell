@@ -74,12 +74,13 @@ Item {
   readonly property var tabsModel: [
     { name: "UI", icon: "sliders-horizontal" },
     { name: "Wallpaper", icon: "image" },
+    { name: "Fonts", icon: "text-aa" },
     { name: "About", icon: "info" }
   ]
 
   Shortcut {
     sequence: "Escape"
-    enabled: !wallpaperTab.editingDir
+    enabled: !wallpaperTab.editingDir && !fontsTab.editingFont
     onActivated: root.playClose()
   }
 
@@ -343,7 +344,8 @@ Item {
 
             UiTab { visible: root.currentTab === 0; Layout.fillWidth: true }
             WallpaperTab { id: wallpaperTab; visible: root.currentTab === 1; Layout.fillWidth: true }
-            AboutTab { visible: root.currentTab === 2; Layout.fillWidth: true }
+            FontsTab { id: fontsTab; visible: root.currentTab === 2; Layout.fillWidth: true }
+            AboutTab { visible: root.currentTab === 3; Layout.fillWidth: true }
 
             Item { Layout.fillHeight: true }
           }

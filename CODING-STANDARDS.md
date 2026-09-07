@@ -10,7 +10,7 @@ declarative, and consistent with the existing bar components.
 - Keep shared UI state singletons in `states/`.
 - Keep system-truth singletons in `services/`.
 - Keep shared style and sizing values in the singleton files:
-  - `Colors.qml` for color tokens.
+  - `theme/Colors.qml` for color tokens.
   - `Config.qml` for spacing, dimensions, and fonts.
 - Register new public QML types in `qmldir` when they should be imported by
   name.
@@ -65,7 +65,7 @@ declarative, and consistent with the existing bar components.
 ## Visual Design
 
 - Use `Colors` tokens instead of hard-coded colors in components.
-- Add new colors to `Colors.qml` before using them in multiple places.
+- Add new colors to `theme/Colors.qml` before using them in multiple places.
 - Use `Config.font` for text labels.
 - Use `Config.iconFont` for Nerd Font icon glyphs.
 - Use `String.fromCodePoint(...)` for icon glyphs instead of pasting private-use

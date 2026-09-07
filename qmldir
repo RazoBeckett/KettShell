@@ -3,8 +3,8 @@ Clock 1.0 Clock.qml
 singleton NetworkMenuState 1.0 states/NetworkMenuState.qml
 singleton BluetoothMenuState 1.0 states/BluetoothMenuState.qml
 Workspaces 1.0 Workspaces.qml
-singleton Colors 1.0 Colors.qml
-singleton Typography 1.0 Typography.qml
+singleton Colors 1.0 theme/Colors.qml
+singleton Typography 1.0 theme/Typography.qml
 singleton Settings 1.0 services/Settings.qml
 singleton Wallpapers 1.0 services/Wallpapers.qml
 HoldCard 1.0 components/HoldCard.qml
@@ -19,3 +19,4 @@ SettingsRow 1.0 components/settings/SettingsRow.qml
 UiTab 1.0 components/settings/UiTab.qml
 WallpaperTab 1.0 components/settings/WallpaperTab.qml
 AboutTab 1.0 components/settings/AboutTab.qml
+FontsTab 1.0 components/settings/FontsTab.qml

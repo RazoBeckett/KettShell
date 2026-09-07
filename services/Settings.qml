@@ -46,6 +46,7 @@ Singleton {
       property JsonObject ui: JsonObject {
         property bool genie: true
         property int rounding: 5
+        property string fontFamily: "SF Pro Text"
       }
     }
   }

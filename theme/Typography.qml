@@ -1,9 +1,10 @@
 pragma Singleton
+import ".."
 import QtQuick
 
 QtObject {
   readonly property font font: Qt.font({
-    family: "SF Pro Text",
+    family: Settings.ui.fontFamily,
     pixelSize: 13,
     weight: Font.Bold
   })
