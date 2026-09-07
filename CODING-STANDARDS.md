@@ -6,12 +6,14 @@ declarative, and consistent with the existing bar components.
 ## Project Shape
 
 - Keep the root shell composition in `shell.qml`.
-- Keep reusable bar widgets in `components/`.
+- Keep bar widgets in `components/bar/`.
+- Keep shared primitives in `components/shared/`.
+- Keep feature clusters in their own folders (`components/settings/`, `components/wallpaper/`).
 - Keep shared UI state singletons in `states/`.
 - Keep system-truth singletons in `services/`.
 - Keep shared style and sizing values in the singleton files:
   - `theme/Colors.qml` for color tokens.
-  - `Config.qml` for spacing, dimensions, and fonts.
+  - `theme/Typography.qml` for fonts, sizes, and type scale.
 - Register new public QML types in `qmldir` when they should be imported by
   name.
 - Prefer one focused component per file. A component should own one visible bar
@@ -55,10 +57,9 @@ declarative, and consistent with the existing bar components.
 - Use `Item { Layout.fillWidth: true }` as the flexible spacer between left and
   right bar regions.
 - Keep repeated inline spacing values small and local only when they are part of
-  a component's internal visual rhythm. Use `Config.spacing` for top-level
-  spacing between bar modules.
+  a component's internal visual rhythm.
 - Keep bar height, outer margins, fonts, and shared dimensions centralized in
-  `Config.qml`.
+  their theme singletons (`theme/Colors.qml`, `theme/Typography.qml`).
 - Avoid wrapper elements unless they provide a concrete behavior such as hover,
   wheel handling, or mouse interaction.
 
@@ -66,8 +67,8 @@ declarative, and consistent with the existing bar components.
 
 - Use `Colors` tokens instead of hard-coded colors in components.
 - Add new colors to `theme/Colors.qml` before using them in multiple places.
-- Use `Config.font` for text labels.
-- Use `Config.iconFont` for Nerd Font icon glyphs.
+- Use `Typography.sans` / `Typography.mono` for text (via `Label` where possible).
+- Use `Typography.icons` for glyphs.
 - Use `String.fromCodePoint(...)` for icon glyphs instead of pasting private-use
   characters directly into source files.
 - Keep component text minimal and status-oriented: percentages, short labels,
@@ -129,12 +130,12 @@ declarative, and consistent with the existing bar components.
 
 When adding a new bar module:
 
-1. Create a focused file in `components/`.
-2. Import `".."`
-   so the component can use `Colors` and `Config`.
+1. Create a focused file in `components/bar/`, `components/shared/`, or `components/wallpaper/`.
+2. Import `".."` (or `"../.."` from a subfolder)
+   so the component can use `Colors`, `Typography`, and `Settings`.
 3. Use a small root item such as `RowLayout`, `Text`, or `WrapperMouseArea`.
 4. Define service bindings and derived `readonly property` values near the top.
-5. Render icon and text children with `Config.iconFont` and `Config.font`.
+5. Render icon and text children with `Typography.icons` and `Typography.sans`/`Typography.mono` (or `Label`).
 6. Add fallback states for missing data.
 7. Add the component to `qmldir` if it should be imported by name.
 8. Compose it into `shell.qml` in the appropriate row.
