@@ -33,7 +33,7 @@ ColumnLayout {
       Text {
         text: "KettShell"
         color: Colors.foreground
-        font.family: Typography.font.family
+        font.family: Typography.sans.family
         font.pixelSize: 20
         font.weight: Font.Bold
       }
@@ -41,9 +41,9 @@ ColumnLayout {
       Text {
         text: "A personal desktop shell for Linux"
         color: Colors.white
-        font.family: Typography.font.family
+        font.family: Typography.sans.family
         font.pixelSize: 13
-        font.weight: Typography.font.weight
+        font.weight: Typography.sans.weight
         Layout.fillWidth: true
         wrapMode: Text.WordWrap
         elide: Text.ElideRight
@@ -52,9 +52,9 @@ ColumnLayout {
       Text {
         text: "built with Quickshell."
         color: Colors.white
-        font.family: Typography.font.family
+        font.family: Typography.sans.family
         font.pixelSize: 13
-        font.weight: Typography.font.weight
+        font.weight: Typography.sans.weight
         Layout.fillWidth: true
         wrapMode: Text.WordWrap
         elide: Text.ElideRight
@@ -89,9 +89,9 @@ ColumnLayout {
           Text {
             text: "GitHub Repository"
             color: repoMa.containsMouse ? Colors.foreground : Colors.white
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             font.pixelSize: 13
-            font.weight: Typography.font.weight
+            font.weight: Typography.sans.weight
             Layout.fillWidth: true
             elide: Text.ElideRight
             Behavior on color { ColorAnimation { duration: 150 } }
@@ -134,17 +134,17 @@ ColumnLayout {
     Text {
       text: "Built with"
       color: Colors.foreground
-      font.family: Typography.font.family
+      font.family: Typography.sans.family
       font.pixelSize: 13
-      font.weight: Typography.font.weight
+      font.weight: Typography.sans.weight
     }
 
     Text {
       text: "Quickshell, Qt Quick / QML"
       color: Colors.white
-      font.family: Typography.font.family
+      font.family: Typography.sans.family
       font.pixelSize: 13
-      font.weight: Typography.font.weight
+      font.weight: Typography.sans.weight
     }
   }
 }

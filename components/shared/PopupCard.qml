@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell
 import Quickshell.Hyprland
 import QtQuick

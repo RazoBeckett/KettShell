@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell.Services.UPower
 import QtQuick
 import QtQuick.Layouts
@@ -147,7 +147,7 @@ PopupCard {
         id: percentText
         text: root.ready ? root.level + "%" : "--"
         color: Colors.foreground
-        font.family: Typography.font.family
+        font.family: Typography.mono.family
         font.pixelSize: 32
         font.weight: Font.Light
         font.letterSpacing: -0.5
@@ -166,7 +166,7 @@ PopupCard {
           id: line1
           text: root.statusLine1
           color: root.isFullyCharged ? Colors.white : Colors.foreground
-          font.family: Typography.font.family
+          font.family: Typography.sans.family
           font.pixelSize: 13
           font.weight: Font.Normal
           elide: Text.ElideRight
@@ -179,7 +179,7 @@ PopupCard {
           id: line2
           text: root.statusLine2
           color: Colors.white
-          font.family: Typography.font.family
+          font.family: Typography.sans.family
           font.pixelSize: 13
           font.weight: Font.Normal
           elide: Text.ElideRight
@@ -263,7 +263,7 @@ PopupCard {
           Text {
             text: "Energy"
             color: Colors.white
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             font.pixelSize: 10
             opacity: 0.55
             elide: Text.ElideRight
@@ -272,7 +272,7 @@ PopupCard {
           Text {
             text: root.energyLabel
             color: Colors.foreground
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             font.pixelSize: 12
             elide: Text.ElideRight
             Layout.fillWidth: true
@@ -285,7 +285,7 @@ PopupCard {
           Text {
             text: "Power"
             color: Colors.white
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             font.pixelSize: 10
             opacity: 0.55
             elide: Text.ElideRight
@@ -295,7 +295,7 @@ PopupCard {
           Text {
             text: root.rateLabel
             color: root.isCharging ? Colors.waybarCharging : Colors.foreground
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             font.pixelSize: 12
             elide: Text.ElideRight
             Layout.fillWidth: true
@@ -309,7 +309,7 @@ PopupCard {
           Text {
             text: "Health"
             color: Colors.white
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             font.pixelSize: 10
             opacity: 0.55
             elide: Text.ElideRight
@@ -319,7 +319,7 @@ PopupCard {
           Text {
             text: root.healthLabel
             color: Colors.foreground
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             font.pixelSize: 12
             elide: Text.ElideRight
             Layout.fillWidth: true

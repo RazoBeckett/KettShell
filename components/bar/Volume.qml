@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell.Services.Pipewire
 import Quickshell.Widgets
 import QtQuick
@@ -40,14 +40,15 @@ WrapperMouseArea {
         font.pixelSize: 14
       }
 
-      Text {
+      Label {
         text: {
           if (!root.ready) return "-"
           if (root.muted) return "00%"
           return root.vol + "%"
         }
         color: Colors.foreground
-        font: Typography.font
+        size: 13
+        weight: Font.Bold
       }
     }
   }

@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell.Networking
 import QtQuick
 import QtQuick.Layouts
@@ -209,7 +209,7 @@ PopupCard {
           text: "Wi-Fi"
           color: Colors.foreground
           font.pixelSize: 14
-          font.family: Typography.font.family
+          font.family: Typography.sans.family
           font.weight: Font.Normal
         }
         Item { Layout.fillWidth: true }
@@ -255,8 +255,8 @@ PopupCard {
             ColumnLayout {
               spacing: 1
               Layout.fillWidth: true
-              Text { text: "Wi-Fi is turned off"; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.font.family }
-              Text { text: "Turn on to see available networks"; color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
+              Text { text: "Wi-Fi is turned off"; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.sans.family }
+              Text { text: "Turn on to see available networks"; color: Colors.white; font.pixelSize: 12; font.family: Typography.sans.family }
             }
           }
           Rectangle {
@@ -264,7 +264,7 @@ PopupCard {
             Layout.preferredHeight: 32
             radius: Settings.rounding.md
             color: Colors.blue
-            Text { anchors.centerIn: parent; text: "Turn Wi-Fi back on"; color: Colors.black; font.pixelSize: 13; font.family: Typography.font.family }
+            Text { anchors.centerIn: parent; text: "Turn Wi-Fi back on"; color: Colors.black; font.pixelSize: 13; font.family: Typography.sans.family }
             MouseArea {
               anchors.fill: parent
               cursorShape: Qt.PointingHandCursor
@@ -300,7 +300,7 @@ PopupCard {
                 text: "Current connection"
                 color: Colors.white
                 font.pixelSize: 11
-                font.family: Typography.font.family
+                font.family: Typography.sans.family
                 Layout.leftMargin: 16
                 Layout.topMargin: 8
                 Layout.bottomMargin: 4
@@ -344,8 +344,8 @@ PopupCard {
                       ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
-                        Text { text: root.effectiveCenter ? ((root.effectiveCenter.name || "").trim() || "Hidden Network") : ""; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
-                        Text { text: root.statusText(root.effectiveCenter); color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
+                        Text { text: root.effectiveCenter ? ((root.effectiveCenter.name || "").trim() || "Hidden Network") : ""; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.sans.family; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: root.statusText(root.effectiveCenter); color: Colors.white; font.pixelSize: 12; font.family: Typography.sans.family }
                       }
                       Item { Layout.fillWidth: true }
                       RowLayout {
@@ -402,26 +402,26 @@ PopupCard {
                       RowLayout {
                         Layout.fillWidth: true
                         spacing: 8
-                        Text { text: "Interface"; color: Colors.white; font.pixelSize: 11; font.family: Typography.font.family; Layout.preferredWidth: 72 }
-                        Text { text: root.wifiDevice ? root.wifiDevice.name : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
+                        Text { text: "Interface"; color: Colors.white; font.pixelSize: 11; font.family: Typography.sans.family; Layout.preferredWidth: 72 }
+                        Text { text: root.wifiDevice ? root.wifiDevice.name : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.sans.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
                       }
                       RowLayout {
                         Layout.fillWidth: true
                         spacing: 8
-                        Text { text: "MAC"; color: Colors.white; font.pixelSize: 11; font.family: Typography.font.family; Layout.preferredWidth: 72 }
-                        Text { text: root.wifiDevice ? root.wifiDevice.address : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
+                        Text { text: "MAC"; color: Colors.white; font.pixelSize: 11; font.family: Typography.sans.family; Layout.preferredWidth: 72 }
+                        Text { text: root.wifiDevice ? root.wifiDevice.address : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.sans.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
                       }
                       RowLayout {
                         Layout.fillWidth: true
                         spacing: 8
-                        Text { text: "Signal"; color: Colors.white; font.pixelSize: 11; font.family: Typography.font.family; Layout.preferredWidth: 72 }
-                        Text { text: root.effectiveCenter ? Math.round(root.effectiveCenter.signalStrength * 100) + "%" : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.font.family; Layout.fillWidth: true }
+                        Text { text: "Signal"; color: Colors.white; font.pixelSize: 11; font.family: Typography.sans.family; Layout.preferredWidth: 72 }
+                        Text { text: root.effectiveCenter ? Math.round(root.effectiveCenter.signalStrength * 100) + "%" : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.sans.family; Layout.fillWidth: true }
                       }
                       RowLayout {
                         Layout.fillWidth: true
                         spacing: 8
-                        Text { text: "Security"; color: Colors.white; font.pixelSize: 11; font.family: Typography.font.family; Layout.preferredWidth: 72 }
-                        Text { text: root.effectiveCenter ? securityLabel(root.effectiveCenter) : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
+                        Text { text: "Security"; color: Colors.white; font.pixelSize: 11; font.family: Typography.sans.family; Layout.preferredWidth: 72 }
+                        Text { text: root.effectiveCenter ? securityLabel(root.effectiveCenter) : "—"; color: Colors.foreground; font.pixelSize: 11; font.family: Typography.sans.family; elide: Text.ElideRight; Layout.fillWidth: true; Layout.maximumWidth: 200 }
                       }
                     }
                   }
@@ -471,8 +471,8 @@ PopupCard {
                       ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
-                        Text { text: netRow.modelData.name || "Hidden Network"; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.font.family; elide: Text.ElideRight; Layout.fillWidth: true }
-                        Text { text: netRow.modelData === root.connectingNetwork ? "Connecting..." : root.statusText(netRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
+                        Text { text: netRow.modelData.name || "Hidden Network"; color: Colors.foreground; font.pixelSize: 13; font.family: Typography.sans.family; elide: Text.ElideRight; Layout.fillWidth: true }
+                        Text { text: netRow.modelData === root.connectingNetwork ? "Connecting..." : root.statusText(netRow.modelData); color: Colors.white; font.pixelSize: 12; font.family: Typography.sans.family }
                       }
                       Rectangle {
                         visible: netRow.modelData ? netRow.modelData.known && (rowHover.hovered || root.expandedNetwork === netRow.modelData) : false
@@ -547,7 +547,7 @@ PopupCard {
                             text: root.pendingNetwork === netRow.modelData ? root.password : ""
                             color: Colors.foreground
                             font.pixelSize: 13
-                            font.family: Typography.font.family
+                            font.family: Typography.sans.family
                             echoMode: root.showPassword ? TextInput.Normal : TextInput.Password
                             passwordCharacter: "•"
                             selectByMouse: true
@@ -579,7 +579,7 @@ PopupCard {
                               color: Colors.white
                               opacity: 0.6
                               font.pixelSize: 12
-                              font.family: Typography.font.family
+                              font.family: Typography.sans.family
                               visible: passInput.text.length === 0 && !passInput.activeFocus
                             }
                             MouseArea {
@@ -647,7 +647,7 @@ PopupCard {
                           text: "Connect automatically"
                           color: autoLabelHover.containsMouse ? Colors.foreground : Colors.white
                           font.pixelSize: 12
-                          font.family: Typography.font.family
+                          font.family: Typography.sans.family
                           MouseArea {
                             id: autoLabelHover
                             anchors.fill: parent
@@ -663,10 +663,10 @@ PopupCard {
                           radius: Settings.rounding.sm
                           color: connMa.containsMouse ? Qt.lighter(Colors.blue, 1.08) : Colors.blue
                           visible: netRow.modelData ? !netRow.modelData.stateChanging : true
-                          Text { anchors.centerIn: parent; text: "Connect"; color: Colors.black; font.pixelSize: 12; font.family: Typography.font.family }
+                          Text { anchors.centerIn: parent; text: "Connect"; color: Colors.black; font.pixelSize: 12; font.family: Typography.sans.family }
                           MouseArea { id: connMa; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { if (root.needsSecret(netRow.modelData)) root.confirmConnect(); else root.connectTo(netRow.modelData) } }
                         }
-                        Text { visible: netRow.modelData ? netRow.modelData.stateChanging : false; text: "Connecting..."; color: Colors.white; font.pixelSize: 12; font.family: Typography.font.family }
+                        Text { visible: netRow.modelData ? netRow.modelData.stateChanging : false; text: "Connecting..."; color: Colors.white; font.pixelSize: 12; font.family: Typography.sans.family }
                       }
                     }
                   }
@@ -681,7 +681,7 @@ PopupCard {
               text: "No Wi-Fi networks found"
               color: Colors.white
               font.pixelSize: 12
-              font.family: Typography.font.family
+              font.family: Typography.sans.family
             }
           }
         }

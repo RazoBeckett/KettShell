@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell.Services.UPower
 import Quickshell.Widgets
 import QtQuick
@@ -70,10 +70,11 @@ WrapperMouseArea {
         font.pixelSize: 14
       }
 
-      Text {
+      Label {
         text: root.ready ? root.level + "%" : "-"
         color: root.charging ? Colors.waybarCharging : root.critical ? Colors.foreground : Colors.foreground
-        font: Typography.font
+        size: 13
+        weight: Font.Bold
       }
     }
   }

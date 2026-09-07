@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell.Widgets
 import QtQuick
 
@@ -157,9 +157,9 @@ Item {
         ? Colors.foreground
         : Colors.white
 
-    font.family: Typography.font.family
+    font.family: Typography.sans.family
     font.pixelSize: 12
-    font.weight: Typography.font.weight
+    font.weight: Typography.sans.weight
 
     opacity:
       root.isCurrent

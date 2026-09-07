@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import QtQuick
 import QtQuick.Layouts
 
@@ -150,7 +150,7 @@ Item {
             text: modelData.label
             color: Colors.white
             font.pixelSize: 7
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             opacity: 0.9
           }
         }

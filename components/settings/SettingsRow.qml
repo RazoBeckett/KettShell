@@ -28,18 +28,17 @@ Rectangle {
       Layout.alignment: Qt.AlignVCenter
       spacing: 2
 
-      Text {
+      Label {
         text: root.title
         color: Colors.foreground
-        font: Typography.font
+        weight: Font.DemiBold
         elide: Text.ElideRight
         Layout.fillWidth: true
       }
 
-      Text {
+      Label {
         text: root.subtitle
         color: Colors.white
-        font: Typography.font
         elide: Text.ElideRight
         visible: root.subtitle !== ""
         Layout.fillWidth: true

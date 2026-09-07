@@ -41,10 +41,10 @@ ColumnLayout {
         anchors.fill: parent
         spacing: 12
 
-        Text {
+        Label {
           text: Settings.ui.rounding + "px"
           color: Colors.foreground
-          font: Typography.font
+          useMono: true
           Layout.preferredWidth: 42
           horizontalAlignment: Text.AlignRight
         }

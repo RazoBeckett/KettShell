@@ -80,7 +80,7 @@ Item {
 
   Shortcut {
     sequence: "Escape"
-    enabled: !wallpaperTab.editingDir && !fontsTab.editingFont
+    enabled: !wallpaperTab.editingDir && !fontsTab.editingFont && !fontsTab.editingMono
     onActivated: root.playClose()
   }
 
@@ -213,10 +213,10 @@ Item {
                 font.pixelSize: 20
               }
 
-              Text {
+              Label {
                 text: "Settings"
                 color: Colors.foreground
-                font: Typography.font
+                weight: Font.Bold
                 Layout.fillWidth: true
               }
             }
@@ -271,10 +271,10 @@ Item {
                         Behavior on color { ColorAnimation { duration: 150 } }
                       }
 
-                      Text {
+                      Label {
                         text: modelData.name
                         color: active ? Colors.black : Colors.white
-                        font: Typography.font
+                        weight: Font.DemiBold
                         Layout.fillWidth: true
                         elide: Text.ElideRight
                         Behavior on color { ColorAnimation { duration: 150 } }
@@ -298,9 +298,9 @@ Item {
             Text {
               text: root.commitDisplay
               color: Colors.white
-              font.family: Typography.font.family
+              font.family: Typography.sans.family
               font.pixelSize: 11
-              font.weight: Typography.font.weight
+              font.weight: Typography.sans.weight
               opacity: 0.65
               elide: Text.ElideRight
               Layout.fillWidth: true
@@ -330,10 +330,10 @@ Item {
             anchors.margins: 20
             spacing: 12
 
-            Text {
+            Label {
               text: root.tabsModel[root.currentTab].name
               color: Colors.foreground
-              font: Typography.font
+              weight: Font.Bold
             }
 
             Rectangle {

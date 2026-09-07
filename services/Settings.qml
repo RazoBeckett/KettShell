@@ -47,6 +47,8 @@ Singleton {
         property bool genie: true
         property int rounding: 5
         property string fontFamily: "SF Pro Text"
+        property string monoFamily: "JetBrains Mono"
+        property real fontScale: 13
       }
     }
   }

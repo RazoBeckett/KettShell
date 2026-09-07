@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell
 import Quickshell.Services.Pipewire
 import QtQuick
@@ -240,7 +240,7 @@ PopupCard {
           text: "Audio"
           color: Colors.foreground
           font.pixelSize: 14
-          font.family: Typography.font.family
+          font.family: Typography.sans.family
           font.weight: Font.Normal
         }
         Item { Layout.fillWidth: true }
@@ -277,7 +277,7 @@ PopupCard {
               text: "OUTPUT"
               color: Colors.white
               font.pixelSize: 11
-              font.family: Typography.font.family
+              font.family: Typography.sans.family
             }
 
             RowLayout {
@@ -320,7 +320,7 @@ PopupCard {
                 text: root.sinkReady ? (root.outMuted ? "0%" : root.outVol + "%") : "-"
                 color: Colors.white
                 font.pixelSize: 12
-                font.family: Typography.font.family
+                font.family: Typography.mono.family
                 Layout.preferredWidth: 36
                 horizontalAlignment: Text.AlignRight
               }
@@ -394,7 +394,7 @@ PopupCard {
                       text: root.nodeLabel(modelData)
                       color: isActive ? Colors.foreground : Colors.white
                       font.pixelSize: 12
-                      font.family: Typography.font.family
+                      font.family: Typography.sans.family
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
@@ -431,7 +431,7 @@ PopupCard {
               text: "INPUT"
               color: Colors.white
               font.pixelSize: 11
-              font.family: Typography.font.family
+              font.family: Typography.sans.family
             }
 
             RowLayout {
@@ -476,7 +476,7 @@ PopupCard {
                 text: root.sourceReady ? (root.inMuted ? "0%" : root.inVol + "%") : "-"
                 color: Colors.white
                 font.pixelSize: 12
-                font.family: Typography.font.family
+                font.family: Typography.mono.family
                 Layout.preferredWidth: 36
                 horizontalAlignment: Text.AlignRight
               }
@@ -499,7 +499,7 @@ PopupCard {
               text: "No microphone found"
               color: Colors.white
               font.pixelSize: 12
-              font.family: Typography.font.family
+              font.family: Typography.sans.family
             }
 
             Item {
@@ -557,7 +557,7 @@ PopupCard {
                       text: root.nodeLabel(modelData)
                       color: isActive ? Colors.foreground : Colors.white
                       font.pixelSize: 12
-                      font.family: Typography.font.family
+                      font.family: Typography.sans.family
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
@@ -596,7 +596,7 @@ PopupCard {
               text: "APPS"
               color: Colors.white
               font.pixelSize: 11
-              font.family: Typography.font.family
+              font.family: Typography.sans.family
             }
 
             ColumnLayout {
@@ -659,7 +659,7 @@ PopupCard {
                         text: root.streamLabel(modelData)
                         color: Colors.foreground
                         font.pixelSize: 12
-                        font.family: Typography.font.family
+                        font.family: Typography.sans.family
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                       }
@@ -668,7 +668,7 @@ PopupCard {
                         text: sMuted ? "0%" : Math.round(sVol * 100) + "%"
                         color: Colors.white
                         font.pixelSize: 11
-                        font.family: Typography.font.family
+                        font.family: Typography.sans.family
                         Layout.preferredWidth: 36
                         horizontalAlignment: Text.AlignRight
                       }

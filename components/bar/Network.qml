@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell.Networking
 import Quickshell.Widgets
 import QtQuick
@@ -48,10 +48,11 @@ WrapperMouseArea {
         font.pixelSize: 14
       }
 
-      Text {
+      Label {
         text: root.label
         color: root.disconnected ? Colors.waybarDisconnected : Colors.foreground
-        font: Typography.font
+        size: 13
+        weight: Font.Bold
         elide: Text.ElideRight
         Layout.maximumWidth: 140
       }

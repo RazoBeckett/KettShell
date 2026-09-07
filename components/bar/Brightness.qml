@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell
 import Quickshell.Io
 import Quickshell.Widgets
@@ -42,10 +42,11 @@ WrapperMouseArea {
         font.pixelSize: 14
       }
 
-      Text {
+      Label {
         text: root.ready ? root.level + "%" : "-"
         color: Colors.foreground
-        font: Typography.font
+        size: 13
+        weight: Font.Bold
       }
     }
   }

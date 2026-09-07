@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell
 import Quickshell.Io
 import Quickshell.Wayland
@@ -192,9 +192,9 @@ Scope {
             selectionColor: Colors.blue
             selectedTextColor: Colors.background
 
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             font.pixelSize: 14
-            font.weight: Typography.font.weight
+            font.weight: Typography.sans.weight
 
             property string placeholderText:
               "Search by filename"
@@ -310,7 +310,7 @@ Scope {
 
             opacity: 0.6
 
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             font.pixelSize: 13
 
             horizontalAlignment: Text.AlignHCenter

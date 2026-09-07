@@ -39,17 +39,16 @@ ColumnLayout {
       Layout.fillWidth: true
       spacing: 8
 
-      Text {
+      Label {
         text: "Library"
         color: Colors.foreground
-        font: Typography.font
+        weight: Font.DemiBold
         Layout.fillWidth: true
       }
 
-      Text {
+      Label {
         text: Wallpapers.all.length + " images"
         color: Colors.white
-        font: Typography.font
       }
     }
 
@@ -81,9 +80,9 @@ ColumnLayout {
           color: Colors.foreground
           selectionColor: Colors.blue
           selectedTextColor: Colors.black
-          font.family: Typography.font.family
-          font.pixelSize: Typography.font.pixelSize
-          font.weight: Typography.font.weight
+          font.family: Typography.sans.family
+          font.pixelSize: Typography.sans.pixelSize
+          font.weight: Typography.sans.weight
           onAccepted: root.commitDir()
           Keys.onEscapePressed: event => {
             root.cancelDir()
@@ -188,26 +187,25 @@ ColumnLayout {
       Layout.fillWidth: true
       spacing: 8
 
-      Text {
+      Label {
         text: "Wipe direction"
         color: Colors.foreground
-        font: Typography.font
+        weight: Font.DemiBold
         Layout.fillWidth: true
         elide: Text.ElideRight
       }
 
-      Text {
+      Label {
         text: Settings.wallpaper.wipeDeg + "°"
         color: Colors.foreground
-        font: Typography.font
+        useMono: true
         horizontalAlignment: Text.AlignRight
       }
     }
 
-    Text {
+    Label {
       text: "Choose from which direction the new wallpaper will appear."
       color: Colors.white
-      font: Typography.font
       Layout.fillWidth: true
       wrapMode: Text.WordWrap
       elide: Text.ElideRight
@@ -437,7 +435,7 @@ ColumnLayout {
             required property var modelData
             text: "CURRENT"
             color: Colors.black
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             font.pixelSize: 10
             font.weight: Font.Bold
             anchors.centerIn: parent
@@ -450,7 +448,7 @@ ColumnLayout {
           id: oldLabelFront
           text: "CURRENT"
           color: Colors.foreground
-          font.family: Typography.font.family
+          font.family: Typography.sans.family
           font.pixelSize: 10
           font.weight: Font.Bold
           opacity: 0.88
@@ -472,7 +470,7 @@ ColumnLayout {
             required property var modelData
             text: "NEW"
             color: Colors.black
-            font.family: Typography.font.family
+            font.family: Typography.sans.family
             font.pixelSize: 10
             font.weight: Font.Bold
             anchors.centerIn: parent
@@ -485,7 +483,7 @@ ColumnLayout {
           id: newLabelFront
           text: "NEW"
           color: Colors.blue
-          font.family: Typography.font.family
+          font.family: Typography.sans.family
           font.pixelSize: 10
           font.weight: Font.Bold
           opacity: 1

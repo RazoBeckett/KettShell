@@ -31,6 +31,8 @@ From `services/Settings.qml`:
 - `Settings.ui.rounding` (int, 0-24, default 5)
 - `Settings.rounding.lg/md/sm/xs` (derived from `ui.rounding` by φ, not persisted)
 - `Settings.ui.fontFamily` (string, default "SF Pro Text")
+- `Settings.ui.fontScale` (real, default 13, feeds `Typography.rootSize`)
+- `Settings.ui.monoFamily` (string, default "JetBrains Mono")
 
 Writing any of these from QML saves `kettshell.json` automatically.
 
@@ -123,5 +125,5 @@ dialog that misbehaves on a layer-shell overlay, so typing the path won.
 - If the config fails to load after your change, `tail quickshell.log`
   names the file, line, and missing type.
 - Settings pages must not import each other by path. They all
-  `import "../.."`, which is the root module with `Colors`, `Config`,
+  `import "../.."`, which is the root module with `Colors`, `Typography`,
   `Settings`, `Wallpapers`, and the shared components.

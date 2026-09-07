@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell
 import QtQuick
 import QtQuick.Layouts
@@ -26,22 +26,24 @@ Item {
       // triggers tick when minute changes
       onPendingTextChanged: if (outgoing.text !== "" && pendingText !== outgoing.text) tickAnim.restart()
 
-      Text {
+      Label {
         id: outgoing
         anchors.centerIn: parent
         text: root.displayText
         color: Colors.foreground
-        font: Typography.font
+        size: 13
+        weight: Font.Bold
         opacity: 1
         y: 0
       }
 
-      Text {
+      Label {
         id: incoming
         anchors.centerIn: parent
         text: root.displayText
         color: Colors.foreground
-        font: Typography.font
+        size: 13
+        weight: Font.Bold
         opacity: 0
         y: 6
         visible: false

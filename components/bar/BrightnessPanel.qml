@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell
 import Quickshell.Io
 import QtQuick
@@ -102,7 +102,7 @@ PopupCard {
           text: root.ready ? root.level + "%" : "-"
           color: Colors.white
           font.pixelSize: 12
-          font.family: Typography.font.family
+          font.family: Typography.sans.family
           Layout.preferredWidth: 36
           horizontalAlignment: Text.AlignRight
         }
@@ -149,7 +149,7 @@ PopupCard {
               text: modelData + "%"
               color: isActive ? Colors.blue : (chipMa.containsMouse ? Colors.foreground : Colors.white)
               font.pixelSize: 12
-              font.family: Typography.font.family
+              font.family: Typography.sans.family
             }
 
             MouseArea {

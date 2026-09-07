@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell
 import Quickshell.Hyprland
 import QtQuick
@@ -80,12 +80,13 @@ Item {
           NumberAnimation { target: label; property: "scale"; to: 1; duration: 130; easing.type: Easing.OutCubic }
         }
 
-        Text {
+        Label {
           id: label
           anchors.centerIn: parent
           text: wsButton.ws.id
           color: wsButton.isActive ? Colors.waybarActive : Colors.foreground
-          font: Typography.font
+          size: 13
+          weight: Font.Bold
           transformOrigin: Item.Center
           scale: 1
           Behavior on color { ColorAnimation { duration: 180; easing.type: Easing.OutCubic } }
