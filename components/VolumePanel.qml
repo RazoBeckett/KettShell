@@ -59,7 +59,7 @@ PopupCard {
       let n = nodes[i]
       if (!n || !n.isStream || !n.isSink) continue
       if (!n.audio) continue
-      if (String(n.name || "").indexOf("omarchy_speaker_tuning") === 0) continue
+      if (/speaker[_-]tuning|filter[_-]chain|easyeffects|jamesdsp|echo[_-]cancel/i.test(String(n.name || ""))) continue
       list.push(n)
     }
     return list
