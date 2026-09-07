@@ -8,8 +8,8 @@ QtObject {
     weight: Font.Bold
   })
 
-  readonly property font materialSymbols: Qt.font({
-    family: "Material Symbols Rounded",
+  readonly property font icons: Qt.font({
+    family: "Phosphor",
     pixelSize: 16,
     weight: Font.Normal
   })

@@ -80,7 +80,7 @@ ColumnLayout {
           Text {
             text: "code"
             color: repoMa.containsMouse ? Colors.foreground : Colors.white
-            font.family: Typography.materialSymbols.family
+            font.family: Typography.icons.family
             font.pixelSize: 18
             Behavior on color { ColorAnimation { duration: 150 } }
           }
@@ -97,9 +97,9 @@ ColumnLayout {
           }
 
           Text {
-            text: "open_in_browser"
+            text: "arrow-square-out"
             color: repoMa.containsMouse ? Colors.foreground : Colors.white
-            font.family: Typography.materialSymbols.family
+            font.family: Typography.icons.family
             font.pixelSize: 18
             opacity: repoMa.containsMouse ? 1 : 0.7
             Behavior on color { ColorAnimation { duration: 150 } }

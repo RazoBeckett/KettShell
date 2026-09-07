@@ -17,13 +17,13 @@ WrapperMouseArea {
   readonly property bool wifiOn: Networking.wifiEnabled
   readonly property bool disconnected: wifiOn && !active
   readonly property string icon: {
-    if (!wifiOn) return "signal_wifi_off"
-    if (!active) return "signal_wifi_0_bar"
+    if (!wifiOn) return "wifi-slash"
+    if (!active) return "wifi-none"
     let tier = signal >= 0.75 ? 4 : signal >= 0.50 ? 3 : signal >= 0.25 ? 2 : 1
-    if (tier === 4) return "network_wifi"
-    if (tier === 3) return "network_wifi_3_bar"
-    if (tier === 2) return "network_wifi_2_bar"
-    return "network_wifi_1_bar"
+    if (tier === 4) return "wifi-high"
+    if (tier === 3) return "wifi-medium"
+    if (tier === 2) return "wifi-low"
+    return "wifi-none"
   }
   readonly property string label: {
     if (!wifiOn) return "OFF"
@@ -44,7 +44,7 @@ WrapperMouseArea {
       Text {
         text: root.icon
         color: root.disconnected ? Colors.waybarDisconnected : Colors.foreground
-        font.family: Typography.materialSymbols.family
+        font.family: Typography.icons.family
         font.pixelSize: 14
       }
 

@@ -48,9 +48,9 @@ PopupCard {
   function deviceIcon(device) {
     if (!device) return "bluetooth"
     let icon = (device.icon || "").toLowerCase()
-    if (icon.includes("headset") || icon.includes("headphone")) return "headset_mic"
-    if (icon.includes("speaker")) return "speaker"
-    if (icon.includes("audio")) return "speaker"
+    if (icon.includes("headset") || icon.includes("headphone")) return "headset"
+    if (icon.includes("speaker")) return "speaker-hifi"
+    if (icon.includes("audio")) return "speaker-hifi"
     if (icon.includes("keyboard")) return "keyboard"
     if (icon.includes("mouse")) return "mouse"
     return "bluetooth"
@@ -152,9 +152,9 @@ PopupCard {
             spacing: 12
             Layout.fillWidth: true
             Text {
-              text: "bluetooth_searching"
+              text: "bluetooth"
               color: Colors.white
-              font.family: Typography.materialSymbols.family
+              font.family: Typography.icons.family
               font.pixelSize: 22
             }
             ColumnLayout {
@@ -180,9 +180,9 @@ PopupCard {
             spacing: 12
             Layout.fillWidth: true
             Text {
-              text: "bluetooth_disabled"
+              text: "bluetooth-slash"
               color: Colors.white
-              font.family: Typography.materialSymbols.family
+              font.family: Typography.icons.family
               font.pixelSize: 22
             }
             ColumnLayout {
@@ -275,7 +275,7 @@ PopupCard {
                         anchors.rightMargin: 12
                         spacing: 12
                         z: 1
-                        Text { text: root.deviceIcon(connRow.modelData); color: Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 20 }
+                        Text { text: root.deviceIcon(connRow.modelData); color: Colors.foreground; font.family: Typography.icons.family; font.pixelSize: 20 }
                         ColumnLayout {
                           Layout.fillWidth: true
                           spacing: 1
@@ -295,7 +295,7 @@ PopupCard {
                             border.color: discHover.containsMouse ? Colors.red : Colors.border
                             border.width: 1
                             Behavior on color { ColorAnimation { duration: 90 } }
-                            Text { anchors.centerIn: parent; text: "link_off"; color: discHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 14 }
+                            Text { anchors.centerIn: parent; text: "link-break"; color: discHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.icons.family; font.pixelSize: 14 }
                             MouseArea { id: discHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.handleDeviceClick(connRow.modelData) }
                           }
                           Rectangle {
@@ -306,7 +306,7 @@ PopupCard {
                             border.color: forgetHover.containsMouse ? Colors.yellow : Colors.border
                             border.width: 1
                             Behavior on color { ColorAnimation { duration: 90 } }
-                            Text { anchors.centerIn: parent; text: "delete"; color: forgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 13 }
+                            Text { anchors.centerIn: parent; text: "trash-simple"; color: forgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.icons.family; font.pixelSize: 13 }
                             MouseArea { id: forgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { connRow.modelData.forget(); root.expandedDevice = null } }
                           }
                         }
@@ -396,7 +396,7 @@ PopupCard {
                       anchors.rightMargin: 12
                       spacing: 12
                       z: 1
-                      Text { text: root.deviceIcon(availRow.modelData); color: Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 20 }
+                      Text { text: root.deviceIcon(availRow.modelData); color: Colors.foreground; font.family: Typography.icons.family; font.pixelSize: 20 }
                       ColumnLayout {
                         Layout.fillWidth: true
                         spacing: 1
@@ -416,7 +416,7 @@ PopupCard {
                           border.color: availConnHover.containsMouse ? Colors.foreground : Colors.border
                           border.width: 1
                           Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: availRow.modelData && availRow.modelData.paired ? "link" : "link_off"; color: Colors.black; font.family: Typography.materialSymbols.family; font.pixelSize: 14 }
+                          Text { anchors.centerIn: parent; text: availRow.modelData && availRow.modelData.paired ? "link" : "link-break"; color: Colors.black; font.family: Typography.icons.family; font.pixelSize: 14 }
                           MouseArea { id: availConnHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: root.handleDeviceClick(availRow.modelData) }
                         }
                         Rectangle {
@@ -428,7 +428,7 @@ PopupCard {
                           border.color: availForgetHover.containsMouse ? Colors.yellow : Colors.border
                           border.width: 1
                           Behavior on color { ColorAnimation { duration: 90 } }
-                          Text { anchors.centerIn: parent; text: "delete"; color: availForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.materialSymbols.family; font.pixelSize: 13 }
+                          Text { anchors.centerIn: parent; text: "trash-simple"; color: availForgetHover.containsMouse ? Colors.black : Colors.foreground; font.family: Typography.icons.family; font.pixelSize: 13 }
                           MouseArea { id: availForgetHover; anchors.fill: parent; hoverEnabled: true; cursorShape: Qt.PointingHandCursor; onClicked: { availRow.modelData.forget(); root.expandedDevice = null } }
                         }
                       }

@@ -21,15 +21,15 @@ PopupCard {
   readonly property int outVol: sinkReady ? Math.round(sink.audio.volume * 100) : 0
   readonly property int inVol: sourceReady ? Math.round(source.audio.volume * 100) : 0
   readonly property string outIcon: {
-    if (!sinkReady) return "volume_off"
-    if (outMuted || outVol === 0) return "volume_off"
-    if (outVol < 34) return "volume_down"
-    return "volume_up"
+    if (!sinkReady) return "speaker-slash"
+    if (outMuted || outVol === 0) return "speaker-slash"
+    if (outVol < 34) return "speaker-low"
+    return "speaker-high"
   }
   readonly property string inIcon: {
-    if (!sourceReady) return "mic_off"
-    if (inMuted || inVol === 0) return "mic_off"
-    return "mic"
+    if (!sourceReady) return "microphone-slash"
+    if (inMuted || inVol === 0) return "microphone-slash"
+    return "microphone"
   }
   readonly property real outFraction: sinkReady ? (outMuted ? 0 : outVol / 100) : 0
   readonly property real inFraction: sourceReady ? (inMuted ? 0 : inVol / 100) : 0
@@ -154,16 +154,16 @@ PopupCard {
     let p = node.properties || {}
     let blob = String([node.name, node.description, p["device.icon-name"] || ""].join(" ")).toLowerCase()
     if (blob.indexOf("bluetooth") !== -1) return "bluetooth"
-    if (blob.indexOf("hdmi") !== -1) return "tv"
-    return "speaker"
+    if (blob.indexOf("hdmi") !== -1) return "television"
+    return "speaker-hifi"
   }
 
   function sourceIcon(node) {
     let p = node ? node.properties || {} : {}
     let blob = String([node ? node.name : "", p["device.icon-name"] || ""].join(" ")).toLowerCase()
     if (blob.indexOf("bluetooth") !== -1) return "bluetooth"
-    if (blob.indexOf("webcam") !== -1 || blob.indexOf("camera") !== -1) return "videocam"
-    return "mic"
+    if (blob.indexOf("webcam") !== -1 || blob.indexOf("camera") !== -1) return "video-camera"
+    return "microphone"
   }
 
   function setOutputFraction(f) {
@@ -289,7 +289,7 @@ PopupCard {
                   anchors.centerIn: parent
                   text: root.outIcon
                   color: outIconMa.containsMouse ? Colors.blue : (root.outMuted ? Colors.white : Colors.foreground)
-                  font.family: Typography.materialSymbols.family
+                  font.family: Typography.icons.family
                   font.pixelSize: 18
                 }
                 MouseArea {
@@ -384,7 +384,7 @@ PopupCard {
                     Text {
                       text: root.sinkIcon(modelData)
                       color: isActive ? Colors.blue : Colors.foreground
-                      font.family: Typography.materialSymbols.family
+                      font.family: Typography.icons.family
                       font.pixelSize: 16
                     }
                     Text {
@@ -443,7 +443,7 @@ PopupCard {
                   anchors.centerIn: parent
                   text: root.inIcon
                   color: inIconMa.containsMouse ? Colors.blue : (root.inMuted ? Colors.white : Colors.foreground)
-                  font.family: Typography.materialSymbols.family
+                  font.family: Typography.icons.family
                   font.pixelSize: 18
                 }
                 MouseArea {
@@ -546,7 +546,7 @@ PopupCard {
                     Text {
                       text: root.sourceIcon(modelData)
                       color: isActive ? Colors.blue : Colors.foreground
-                      font.family: Typography.materialSymbols.family
+                      font.family: Typography.icons.family
                       font.pixelSize: 16
                     }
                     Text {
@@ -634,9 +634,9 @@ PopupCard {
                         Layout.preferredHeight: 20
                         Text {
                           anchors.centerIn: parent
-                          text: sMuted ? "volume_off" : "volume_up"
+                          text: sMuted ? "speaker-slash" : "speaker-high"
                           color: streamIconMa.containsMouse ? Colors.blue : (sMuted ? Colors.white : Colors.foreground)
-                          font.family: Typography.materialSymbols.family
+                          font.family: Typography.icons.family
                           font.pixelSize: 14
                         }
                         MouseArea {

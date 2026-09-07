@@ -20,14 +20,9 @@ WrapperMouseArea {
   readonly property real max: maxBrightness.loaded ? parseFloat(maxBrightness.text()) : 1
   readonly property int level: ready ? Math.round((raw / max) * 100) : 0
   readonly property string icon: {
-    if (!ready) return "brightness_4"
-    if (level <= 14) return "brightness_1"
-    if (level <= 28) return "brightness_2"
-    if (level <= 42) return "brightness_3"
-    if (level <= 57) return "brightness_4"
-    if (level <= 71) return "brightness_5"
-    if (level <= 85) return "brightness_6"
-    return "brightness_7"
+    if (!ready) return "sun"
+    if (level <= 33) return "sun-dim"
+    return "sun"
   }
 
   child: PressableItem {
@@ -43,7 +38,7 @@ WrapperMouseArea {
       Text {
         text: root.icon
         color: Colors.foreground
-        font.family: Typography.materialSymbols.family
+        font.family: Typography.icons.family
         font.pixelSize: 14
       }
 

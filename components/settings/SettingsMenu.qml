@@ -71,7 +71,7 @@ Item {
   implicitHeight: 600
 
   readonly property var tabsModel: [
-    { name: "UI", icon: "tune" },
+    { name: "UI", icon: "sliders-horizontal" },
     { name: "Wallpaper", icon: "image" },
     { name: "About", icon: "info" }
   ]
@@ -203,9 +203,9 @@ Item {
               spacing: 10
 
               Text {
-                text: "settings"
+                text: "gear"
                 color: Colors.blue
-                font.family: Typography.materialSymbols.family
+                font.family: Typography.icons.family
                 font.pixelSize: 20
               }
 
@@ -260,7 +260,7 @@ Item {
                       Text {
                         text: modelData.icon
                         color: active ? Colors.black : Colors.white
-                        font.family: Typography.materialSymbols.family
+                        font.family: Typography.icons.family
                         font.pixelSize: 18
                         Behavior on color { ColorAnimation { duration: 150 } }
                       }

@@ -122,9 +122,9 @@ ColumnLayout {
 
             Text {
               anchors.centerIn: parent
-              text: "close"
+              text: "x"
               color: cancelMa.containsMouse ? Colors.black : Colors.white
-              font.family: Typography.materialSymbols.family
+              font.family: Typography.icons.family
               font.pixelSize: 16
               Behavior on color { ColorAnimation { duration: 150 } }
             }
@@ -150,7 +150,7 @@ ColumnLayout {
               anchors.centerIn: parent
               text: "check"
               color: saveMa.containsMouse ? Colors.black : Colors.white
-              font.family: Typography.materialSymbols.family
+              font.family: Typography.icons.family
               font.pixelSize: 16
               Behavior on color { ColorAnimation { duration: 150 } }
             }
@@ -251,7 +251,7 @@ ColumnLayout {
           text: "image"
           color: Colors.white
           opacity: 0.28
-          font.family: Typography.materialSymbols.family
+          font.family: Typography.icons.family
           font.pixelSize: 28
         }
       }
@@ -304,7 +304,7 @@ ColumnLayout {
             text: "image"
             color: Colors.blue
             opacity: 0.35
-            font.family: Typography.materialSymbols.family
+            font.family: Typography.icons.family
             font.pixelSize: 28
           }
         }
@@ -379,9 +379,9 @@ ColumnLayout {
           opacity: 0.96
           Text {
             anchors.centerIn: parent
-            text: "arrow_forward"
+            text: "arrow-right"
             color: Colors.blue
-            font.family: Typography.materialSymbols.family
+            font.family: Typography.icons.family
             font.pixelSize: 14
             rotation: 180 - previewBox.deg
             Behavior on rotation { enabled: !previewMa.pressed; NumberAnimation { duration: 220; easing.type: Easing.OutCubic } }

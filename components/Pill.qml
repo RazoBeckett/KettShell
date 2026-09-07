@@ -36,7 +36,7 @@ PressableItem {
       Text {
         text: root.icon
         color: root.iconColor
-        font.family: Typography.materialSymbols.family
+        font.family: Typography.icons.family
         font.pixelSize: 14
         visible: root.icon !== ""
       }

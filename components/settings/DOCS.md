@@ -39,7 +39,7 @@ Four steps, all required:
    with `spacing: 4` and fill it with `SettingsRow` items. Copy `UiTab.qml`
    if you want a toggle, `WallpaperTab.qml` if you want a slider.
 2. Add one entry to `tabsModel` in `SettingsMenu.qml`:
-   `{ name: "Mine", icon: "tune" }`. The icon is a Material Symbols Rounded
+   `{ name: "Mine", icon: "sliders-horizontal" }`. The icon is a Phosphor
    ligature, same set the bar uses.
 3. Add the page next to the other three in `SettingsMenu.qml`, matching the
    index: `MyTab { visible: root.currentTab === 3; Layout.fillWidth: true }`.

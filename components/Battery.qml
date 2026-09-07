@@ -18,17 +18,14 @@ WrapperMouseArea {
   readonly property int level: ready ? Math.round(battery.percentage * 100) : 0
   readonly property bool critical: !charging && level <= 15
   readonly property string icon: {
-    if (!ready) return "battery_android_question"
-    if (charging) return level < 30 ? "battery_android_bolt" : "battery_android_frame_bolt"
-    if (critical) return "battery_android_alert"
-    if (level >= 95) return "battery_android_full"
-    if (level >= 85) return "battery_android_6"
-    if (level >= 70) return "battery_android_5"
-    if (level >= 55) return "battery_android_4"
-    if (level >= 40) return "battery_android_3"
-    if (level >= 25) return "battery_android_2"
-    if (level >= 10) return "battery_android_1"
-    return "battery_android_0"
+    if (!ready) return "battery-warning"
+    if (charging) return "battery-charging"
+    if (critical) return "battery-warning"
+    if (level >= 95) return "battery-full"
+    if (level >= 70) return "battery-high"
+    if (level >= 40) return "battery-medium"
+    if (level >= 15) return "battery-low"
+    return "battery-empty"
   }
 
   SequentialAnimation {
@@ -68,7 +65,7 @@ WrapperMouseArea {
       Text {
         text: root.icon
         color: root.charging ? Colors.waybarCharging : root.critical ? Colors.foreground : Colors.foreground
-        font.family: Typography.materialSymbols.family
+        font.family: Typography.icons.family
         font.pixelSize: 14
       }
 

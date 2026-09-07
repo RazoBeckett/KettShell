@@ -17,10 +17,10 @@ WrapperMouseArea {
   readonly property bool muted: ready && sink.audio.muted
   readonly property int vol: ready ? Math.round(sink.audio.volume * 100) : 0
   readonly property string icon: {
-    if (!ready) return "volume_off"
-    if (muted || vol === 0) return "volume_off"
-    if (vol < 34) return "volume_down"
-    return "volume_up"
+    if (!ready) return "speaker-slash"
+    if (muted || vol === 0) return "speaker-slash"
+    if (vol < 34) return "speaker-low"
+    return "speaker-high"
   }
 
   child: PressableItem {
@@ -36,7 +36,7 @@ WrapperMouseArea {
       Text {
         text: root.icon
         color: Colors.foreground
-        font.family: Typography.materialSymbols.family
+        font.family: Typography.icons.family
         font.pixelSize: 14
       }
 

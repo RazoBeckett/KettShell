@@ -73,7 +73,16 @@ PopupCard {
     return ""
   }
 
-  readonly property string chargingIcon: level < 30 ? "battery_android_bolt" : "battery_android_frame_bolt"
+  readonly property string icon: {
+    if (!ready) return "battery-warning"
+    if (isPendingCharge) return "plug-charging"
+    if (isCharging) return "battery-charging"
+    if (isFullyCharged || level >= 95) return "battery-full"
+    if (level <= 15) return "battery-warning"
+    if (level >= 70) return "battery-high"
+    if (level >= 40) return "battery-medium"
+    return "battery-low"
+  }
   readonly property double energy: ready ? Number(battery.energy) : 0
   readonly property double energyCapacity: ready ? Number(battery.energyCapacity) : 0
   readonly property double rateRaw: ready ? Number(battery.changeRate) : 0
@@ -122,84 +131,13 @@ PopupCard {
         Layout.fillWidth: true
         spacing: 10
 
-      // Battery icon — Win10 style. Pending shows Power icon.
-      // Charging shows single Material icon: bolt (<30) or frame_bolt (>=30).
-      // Otherwise shows outline with fill.
-      Item {
-        id: batteryIconRoot
+      Text {
+        text: root.icon
+        color: Colors.foreground
+        font.family: Typography.icons.family
+        font.pixelSize: 28
         Layout.preferredWidth: 36
-        Layout.preferredHeight: 28
         Layout.alignment: Qt.AlignVCenter
-
-        Text {
-          id: powerIcon
-          visible: root.isPendingCharge
-          anchors.centerIn: parent
-          text: "power"
-          color: Colors.foreground
-          font.family: Typography.materialSymbols.family
-          font.pixelSize: 28
-        }
-
-        Text {
-          id: chargingIcon
-          visible: root.isCharging
-          anchors.centerIn: parent
-          text: root.chargingIcon
-          color: Colors.foreground
-          font.family: Typography.materialSymbols.family
-          font.pixelSize: 28
-        }
-
-        Text {
-          id: fullIcon
-          visible: root.isFullyCharged
-          anchors.centerIn: parent
-          text: "battery_android_full"
-          color: Colors.foreground
-          font.family: Typography.materialSymbols.family
-          font.pixelSize: 28
-        }
-
-        Item {
-          visible: !root.isPendingCharge && !root.isCharging && !root.isFullyCharged
-          anchors.centerIn: parent
-          width: 40
-          height: 22
-
-          Rectangle {
-            id: outline
-            anchors.fill: parent
-            anchors.rightMargin: 3
-            radius: 2
-            color: "transparent"
-            border.color: Colors.foreground
-            border.width: 1.6
-
-            Rectangle {
-              id: fill
-              anchors.left: parent.left
-              anchors.leftMargin: 2
-              anchors.verticalCenter: parent.verticalCenter
-              height: parent.height - 4
-              width: Math.max(0, Math.round((parent.width - 4) * root.fraction))
-              radius: 1
-              color: root.level <= 15 && !root.isFullyCharged ? Colors.waybarCriticalBg : Colors.foreground
-              visible: root.ready && root.level > 0
-            }
-          }
-
-          Rectangle {
-            id: nub
-            width: 3
-            height: 10
-            radius: 1
-            color: Colors.foreground
-            anchors.left: outline.right
-            anchors.leftMargin: -1
-            anchors.verticalCenter: parent.verticalCenter
-          }
-        }
       }
 
       // Percentage — large thin number like Win10

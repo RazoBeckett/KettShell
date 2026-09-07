@@ -82,7 +82,7 @@ Item {
       color: Colors.white
       opacity: 0.25
 
-      font.family: Typography.materialSymbols.family
+      font.family: Typography.icons.family
       font.pixelSize: 28
 
       visible:
