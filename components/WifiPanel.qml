@@ -191,6 +191,8 @@ PopupCard {
     color: Colors.background
     border.color: Colors.border
     border.width: 1
+    radius: Settings.rounding.lg
+    clip: true
 
     ColumnLayout {
       anchors.fill: parent
@@ -260,6 +262,7 @@ PopupCard {
           Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 32
+            radius: Settings.rounding.md
             color: Colors.blue
             Text { anchors.centerIn: parent; text: "Turn Wi-Fi back on"; color: Colors.black; font.pixelSize: 13; font.family: Typography.font.family }
             MouseArea {
@@ -354,7 +357,7 @@ PopupCard {
                         Rectangle {
                           width: 28
                           height: 28
-                          radius: 0
+                          radius: Settings.rounding.sm
                           color: wifiDiscHover.containsMouse ? Colors.red : Colors.card
                           border.color: wifiDiscHover.containsMouse ? Colors.red : Colors.border
                           border.width: 1
@@ -366,7 +369,7 @@ PopupCard {
                           visible: root.effectiveCenter ? root.effectiveCenter.known : false
                           width: 28
                           height: 28
-                          radius: 0
+                          radius: Settings.rounding.sm
                           color: wifiForgetHover.containsMouse ? Colors.yellow : Colors.card
                           border.color: wifiForgetHover.containsMouse ? Colors.yellow : Colors.border
                           border.width: 1
@@ -475,7 +478,7 @@ PopupCard {
                         visible: netRow.modelData ? netRow.modelData.known && (rowHover.hovered || root.expandedNetwork === netRow.modelData) : false
                         width: 28
                         height: 28
-                        radius: 0
+                        radius: Settings.rounding.sm
                         color: availWifiForgetHover.containsMouse ? Colors.red : Colors.card
                         border.color: availWifiForgetHover.containsMouse ? Colors.red : Colors.border
                         border.width: 1
@@ -527,6 +530,7 @@ PopupCard {
                         visible: netRow.modelData ? root.needsSecret(netRow.modelData) : false
                         Layout.fillWidth: true
                         Layout.preferredHeight: 30
+                        radius: Settings.rounding.md
                         color: Colors.surface
                         border.color: passInput.activeFocus ? Colors.blue : Colors.border
                         border.width: passInput.activeFocus ? 2 : 1
@@ -618,6 +622,7 @@ PopupCard {
                         Rectangle {
                           width: 16
                           height: 16
+                          radius: Settings.rounding.xs
                           color: autoConnectHover.containsMouse ? Colors.surface : Colors.transparent
                           border.color: root.connectAutomatically ? Colors.blue : Colors.white
                           border.width: 1
@@ -655,6 +660,7 @@ PopupCard {
                         Rectangle {
                           Layout.preferredWidth: 72
                           Layout.preferredHeight: 28
+                          radius: Settings.rounding.sm
                           color: connMa.containsMouse ? Qt.lighter(Colors.blue, 1.08) : Colors.blue
                           visible: netRow.modelData ? !netRow.modelData.stateChanging : true
                           Text { anchors.centerIn: parent; text: "Connect"; color: Colors.black; font.pixelSize: 12; font.family: Typography.font.family }

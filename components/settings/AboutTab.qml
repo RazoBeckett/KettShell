@@ -65,6 +65,7 @@ ColumnLayout {
         Layout.fillWidth: true
         Layout.topMargin: 14
         Layout.preferredHeight: 36
+        radius: Settings.rounding.md
         color: repoMa.containsMouse ? Colors.card : Colors.transparent
         border.color: repoMa.containsMouse ? Colors.blue : Colors.border
         border.width: 1

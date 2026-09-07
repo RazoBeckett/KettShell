@@ -104,6 +104,7 @@ Item {
 
         Rectangle {
           anchors.fill: parent
+          radius: Settings.rounding.sm
           color: Colors.waybarHover
           opacity: wsButton.isHovered ? 1 : 0
           z: -1

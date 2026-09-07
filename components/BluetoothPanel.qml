@@ -88,6 +88,8 @@ PopupCard {
     color: Colors.background
     border.color: Colors.border
     border.width: 1
+    radius: Settings.rounding.lg
+    clip: true
 
     ColumnLayout {
       anchors.fill: parent
@@ -195,6 +197,7 @@ PopupCard {
           Rectangle {
             Layout.fillWidth: true
             Layout.preferredHeight: 32
+            radius: Settings.rounding.md
             color: Colors.blue
             Text { anchors.centerIn: parent; text: "Turn Bluetooth back on"; color: Colors.black; font.pixelSize: 13; font.family: Typography.font.family }
             MouseArea {
@@ -290,7 +293,7 @@ PopupCard {
                           Rectangle {
                             width: 28
                             height: 28
-                            radius: 0
+                            radius: Settings.rounding.sm
                             color: discHover.containsMouse ? Colors.red : Colors.card
                             border.color: discHover.containsMouse ? Colors.red : Colors.border
                             border.width: 1
@@ -301,7 +304,7 @@ PopupCard {
                           Rectangle {
                             width: 28
                             height: 28
-                            radius: 0
+                            radius: Settings.rounding.sm
                             color: forgetHover.containsMouse ? Colors.yellow : Colors.card
                             border.color: forgetHover.containsMouse ? Colors.yellow : Colors.border
                             border.width: 1
@@ -411,7 +414,7 @@ PopupCard {
                         Rectangle {
                           width: 28
                           height: 28
-                          radius: 0
+                          radius: Settings.rounding.sm
                           color: availConnHover.containsMouse ? Qt.lighter(Colors.blue, 1.22) : Colors.blue
                           border.color: availConnHover.containsMouse ? Colors.foreground : Colors.border
                           border.width: 1
@@ -423,7 +426,7 @@ PopupCard {
                           visible: availRow.modelData ? availRow.modelData.paired : false
                           width: 28
                           height: 28
-                          radius: 0
+                          radius: Settings.rounding.sm
                           color: availForgetHover.containsMouse ? Colors.yellow : Colors.card
                           border.color: availForgetHover.containsMouse ? Colors.yellow : Colors.border
                           border.width: 1

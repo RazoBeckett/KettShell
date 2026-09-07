@@ -172,7 +172,7 @@ Scope {
           width: parent.width
           height: 44
 
-          radius: 0
+          radius: Settings.rounding.md
 
           color: "transparent"
 

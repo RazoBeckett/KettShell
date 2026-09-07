@@ -1,4 +1,5 @@
 import ".."
+import Quickshell.Widgets
 import QtQuick
 
 Item {
@@ -51,7 +52,7 @@ Item {
     }
   }
 
-  Rectangle {
+  ClippingRectangle {
     id: thumb
 
     anchors.top: parent.top
@@ -60,9 +61,10 @@ Item {
     width: root.width
     height: root.width / 16 * 9
 
-    radius: 0
+    radius: Settings.rounding.md
 
     color: Colors.surface
+    contentUnderBorder: true
 
     border.color:
       root.isCurrent
@@ -71,8 +73,6 @@ Item {
 
     border.width:
       root.isCurrent ? 2 : 0
-
-    clip: true
 
     Text {
       anchors.centerIn: parent

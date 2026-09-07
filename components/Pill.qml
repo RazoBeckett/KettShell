@@ -23,7 +23,7 @@ PressableItem {
 
   Rectangle {
     anchors.fill: parent
-    radius: 0
+    radius: Settings.rounding.lg
     color: Colors.card
     border.color: Colors.border
     border.width: 1

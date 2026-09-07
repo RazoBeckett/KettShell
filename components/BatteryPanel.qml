@@ -118,6 +118,8 @@ PopupCard {
     color: Colors.background
     border.color: Colors.border
     border.width: 1
+    radius: Settings.rounding.lg
+    clip: true
 
     ColumnLayout {
       anchors.fill: parent
@@ -197,7 +199,7 @@ PopupCard {
         Rectangle {
           id: energyTrack
           anchors.fill: parent
-          radius: 3
+          radius: Settings.rounding.md
           color: Colors.card
         }
 
@@ -208,7 +210,7 @@ PopupCard {
           anchors.verticalCenter: energyTrack.verticalCenter
           height: energyTrack.height + 10
           width: energyFill.width
-          radius: 6
+          radius: Settings.rounding.lg
           color: Colors.waybarCharging
           opacity: 0.18
           z: -1
@@ -220,7 +222,7 @@ PopupCard {
           anchors.left: energyTrack.left
           anchors.verticalCenter: energyTrack.verticalCenter
           height: energyTrack.height
-          radius: 3
+          radius: Settings.rounding.md
           width: Math.max(energyTrack.height, Math.round(energyTrack.width * root.fraction))
           color: root.isCharging ? Colors.waybarCharging : root.level <= 15 && !root.isFullyCharged ? Colors.waybarCriticalBg : Colors.foreground
           transformOrigin: Item.Left

@@ -6,7 +6,7 @@ import QtQuick.Layouts
 // Releasing early cancels the action and drains the fill back to zero.
 Rectangle {
   id: root
-  radius: 14
+  radius: Settings.rounding.lg
   clip: true
   color: accent ? accentColor : Colors.card
   border.color: accent ? Colors.transparent : Colors.border

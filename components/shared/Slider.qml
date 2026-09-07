@@ -8,7 +8,7 @@ Item {
   property int trackHeight: 4
   property int thumbBaseWidth: 20
   property int thumbBaseHeight: 14
-  property int thumbRadius: 3
+  property int thumbRadius: Settings.rounding.md
   property int grabExtraWidth: 4
   property int grabExtraHeight: 2
   property int maxStretch: 12
@@ -18,7 +18,7 @@ Item {
   property color thumbColor: Colors.foreground
   property color thumbActiveColor: Colors.blue
   property color thumbPressedBorder: Colors.foreground
-  property int trackRadius: 0
+  property int trackRadius: Settings.rounding.sm
   property real wheelStep: 0.05
   property real wheelFineStep: 0.01
 

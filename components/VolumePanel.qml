@@ -223,6 +223,8 @@ PopupCard {
     color: Colors.background
     border.color: Colors.border
     border.width: 1
+    radius: Settings.rounding.lg
+    clip: true
 
     ColumnLayout {
       anchors.fill: parent
@@ -310,7 +312,6 @@ PopupCard {
                 trackHeight: 4
                 thumbBaseWidth: 20
                 thumbBaseHeight: 14
-                thumbRadius: 3
                 fillColor: root.outMuted ? Colors.white : Colors.blue
                 onMoved: f => root.setOutputFraction(f)
               }
@@ -354,6 +355,7 @@ PopupCard {
                 color: Colors.card
                 border.color: Colors.blue
                 border.width: 1
+                radius: Settings.rounding.md
                 Behavior on y { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
                 Behavior on opacity { NumberAnimation { duration: 150 } }
               }
@@ -373,6 +375,7 @@ PopupCard {
                     readonly property bool isActive: root.sink && modelData && root.sink.id === modelData.id
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36
+                    radius: Settings.rounding.md
                     color: (devHover.hovered && !isActive) ? Colors.surface : Colors.transparent
                     HoverHandler { id: devHover }
 
@@ -465,7 +468,6 @@ PopupCard {
                 trackHeight: 4
                 thumbBaseWidth: 20
                 thumbBaseHeight: 14
-                thumbRadius: 3
                 fillColor: root.inMuted ? Colors.white : Colors.blue
                 onMoved: f => root.setInputFraction(f)
               }
@@ -516,6 +518,7 @@ PopupCard {
                 color: Colors.card
                 border.color: Colors.blue
                 border.width: 1
+                radius: Settings.rounding.md
                 Behavior on y { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
                 Behavior on opacity { NumberAnimation { duration: 150 } }
               }
@@ -535,6 +538,7 @@ PopupCard {
                     readonly property bool isActive: root.source && modelData && root.source.id === modelData.id
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36
+                    radius: Settings.rounding.md
                     color: (inDevHover.hovered && !isActive) ? Colors.surface : Colors.transparent
                     HoverHandler { id: inDevHover }
 
@@ -611,6 +615,7 @@ PopupCard {
                   readonly property real sFraction: sMuted ? 0 : Math.min(1, sVol / 1.5)
                   Layout.fillWidth: true
                   Layout.preferredHeight: 72
+                  radius: Settings.rounding.md
                   color: streamHover.hovered ? Colors.surface : Colors.card
                   border.color: Colors.border
                   border.width: 1
@@ -678,7 +683,7 @@ PopupCard {
                       trackHeight: 3
                       thumbBaseWidth: 16
                       thumbBaseHeight: 10
-                      thumbRadius: 2
+                      thumbRadius: Settings.rounding.sm
                       maxStretch: 8
                       trackColor: Colors.background
                       fillColor: sMuted ? Colors.white : Colors.blue

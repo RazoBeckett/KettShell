@@ -2,6 +2,7 @@ import "../.."
 import QtQuick
 import QtQuick.Effects
 import QtQuick.Layouts
+import Quickshell.Widgets
 
 ColumnLayout {
   id: root
@@ -60,6 +61,7 @@ ColumnLayout {
         id: dirBox
         Layout.fillWidth: true
         Layout.preferredHeight: 32
+        radius: Settings.rounding.md
         color: root.editingDir || fieldMa.containsMouse ? Colors.surface : Colors.transparent
         border.color: root.editingDir ? Colors.blue : Colors.border
         border.width: 1
@@ -115,6 +117,7 @@ ColumnLayout {
           Rectangle {
             width: 32
             height: 32
+            radius: Settings.rounding.sm
             color: cancelMa.containsMouse ? Colors.red : Colors.transparent
             border.color: cancelMa.containsMouse ? Colors.red : Colors.border
             border.width: 1
@@ -141,6 +144,7 @@ ColumnLayout {
           Rectangle {
             width: 32
             height: 32
+            radius: Settings.rounding.sm
             color: saveMa.containsMouse ? Colors.green : Colors.transparent
             border.color: saveMa.containsMouse ? Colors.green : Colors.border
             border.width: 1
@@ -209,20 +213,21 @@ ColumnLayout {
       elide: Text.ElideRight
     }
 
-    Rectangle {
+    ClippingRectangle {
       id: previewBox
       Layout.fillWidth: true
       Layout.preferredHeight: 172
       color: Colors.surface
       border.color: previewMa.containsMouse || previewMa.pressed ? Colors.blue : Colors.border
       border.width: 1
-      clip: true
+      radius: Settings.rounding.md
+      contentUnderBorder: true
 
       readonly property int deg: Settings.wallpaper.wipeDeg
       readonly property real rad: deg * Math.PI / 180
       readonly property real sn: Math.sin(rad)
       readonly property real cs: Math.cos(rad)
-      readonly property real handleRadius: Math.min(width, height) * 0.34
+      readonly property real handleOrbit: Math.min(width, height) * 0.34
       readonly property real diag: Math.sqrt(width * width + height * height)
 
       Behavior on border.color { ColorAnimation { duration: 150 } }
@@ -373,6 +378,7 @@ ColumnLayout {
           anchors.centerIn: parent
           width: 22
           height: 22
+          radius: Settings.rounding.sm
           color: Colors.background
           border.color: Colors.blue
           border.width: 1
@@ -394,11 +400,12 @@ ColumnLayout {
         id: handle
         width: 14
         height: 14
+        radius: Settings.rounding.sm
         color: previewMa.pressed ? Colors.blue : Colors.foreground
         border.color: previewMa.pressed ? Colors.foreground : Colors.blue
         border.width: 1
-        x: previewBox.width / 2 + previewBox.sn * previewBox.handleRadius - width / 2
-        y: previewBox.height / 2 + previewBox.cs * previewBox.handleRadius - height / 2
+        x: previewBox.width / 2 + previewBox.sn * previewBox.handleOrbit - width / 2
+        y: previewBox.height / 2 + previewBox.cs * previewBox.handleOrbit - height / 2
         Behavior on x { enabled: !previewMa.pressed; NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
         Behavior on y { enabled: !previewMa.pressed; NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
         Behavior on color { ColorAnimation { duration: 120 } }
@@ -408,6 +415,7 @@ ColumnLayout {
           anchors.centerIn: parent
           width: 4
           height: 4
+          radius: Settings.rounding.xs
           color: previewMa.pressed ? Colors.foreground : Colors.blue
           Behavior on color { ColorAnimation { duration: 120 } }
         }

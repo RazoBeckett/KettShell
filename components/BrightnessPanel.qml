@@ -61,6 +61,8 @@ PopupCard {
     color: Colors.background
     border.color: Colors.border
     border.width: 1
+    radius: Settings.rounding.lg
+    clip: true
 
     ColumnLayout {
       anchors.fill: parent
@@ -92,7 +94,6 @@ PopupCard {
           trackHeight: 4
           thumbBaseWidth: 20
           thumbBaseHeight: 14
-          thumbRadius: 3
           fillColor: Colors.blue
           onMoved: f => root.setBrightnessFraction(f)
         }
@@ -121,6 +122,7 @@ PopupCard {
           color: Colors.card
           border.color: Colors.blue
           border.width: 1
+          radius: Settings.rounding.sm
           Behavior on x { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
           Behavior on width { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
         }
@@ -137,7 +139,7 @@ PopupCard {
               readonly property bool isActive: root.ready && root.level === modelData
               Layout.fillWidth: true
               Layout.preferredHeight: 28
-              radius: 0
+              radius: Settings.rounding.sm
               color: (chipMa.containsMouse && !isActive) ? Colors.surface : Colors.transparent
               border.color: isActive ? Colors.transparent : Colors.border
               border.width: 1

@@ -53,6 +53,7 @@ WrapperMouseArea {
       anchors.fill: parent
       anchors.leftMargin: 3
       anchors.rightMargin: 3
+      radius: Settings.rounding.sm
       color: root.critical ? Colors.waybarCriticalBg : Colors.transparent
       visible: root.critical
     }

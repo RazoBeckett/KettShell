@@ -90,6 +90,7 @@ Item {
 
           Rectangle {
             anchors.fill: parent
+            radius: Settings.rounding.xs
             color: "transparent"
             border.color: Colors.border
             border.width: 1

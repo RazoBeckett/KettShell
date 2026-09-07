@@ -28,6 +28,8 @@ From `services/Settings.qml`:
   through `Wallpapers.setWallpaper()`)
 - `Settings.wallpaper.wipeDeg` (int, 0-360)
 - `Settings.ui.genie` (bool)
+- `Settings.ui.rounding` (int, 0-24, default 5)
+- `Settings.rounding.lg/md/sm/xs` (derived from `ui.rounding` by φ, not persisted)
 
 Writing any of these from QML saves `kettshell.json` automatically.
 

@@ -3,6 +3,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
+import Quickshell.Widgets
 
 /*
  * Settings card: sidebar tabs on the left, page content on the right.
@@ -166,11 +167,13 @@ Item {
     scale: 0.95 + 0.05 * root.introBase
     transformOrigin: Item.Center
 
-    Rectangle {
+    ClippingRectangle {
       anchors.fill: parent
       color: Colors.background
       border.color: Colors.border
       border.width: 1
+      radius: Settings.rounding.lg
+      contentUnderBorder: true
 
       MouseArea {
         anchors.fill: parent
@@ -227,6 +230,7 @@ Item {
                 height: 44
                 y: tabsRepeater.itemAt(root.currentTab) ? tabsRepeater.itemAt(root.currentTab).y : 0
                 color: Colors.blue
+                radius: Settings.rounding.md
                 Behavior on y { NumberAnimation { duration: 300; easing.type: Easing.OutQuint } }
               }
 
@@ -247,6 +251,7 @@ Item {
                     Rectangle {
                       anchors.fill: parent
                       color: tabMa.containsMouse && !active ? Colors.card : Colors.transparent
+                      radius: Settings.rounding.md
                       Behavior on color { ColorAnimation { duration: 150 } }
                     }
 
