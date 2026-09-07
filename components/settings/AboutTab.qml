@@ -30,31 +30,24 @@ ColumnLayout {
       Layout.alignment: Qt.AlignVCenter
       spacing: 2
 
-      Text {
+      Label {
         text: "KettShell"
         color: Colors.foreground
-        font.family: Typography.sans.family
-        font.pixelSize: 20
-        font.weight: Font.Bold
+        size: Typography.sizeLG
+        weight: Font.Bold
       }
 
-      Text {
+      Label {
         text: "A personal desktop shell for Linux"
         color: Colors.white
-        font.family: Typography.sans.family
-        font.pixelSize: 13
-        font.weight: Typography.sans.weight
         Layout.fillWidth: true
         wrapMode: Text.WordWrap
         elide: Text.ElideRight
       }
 
-      Text {
+      Label {
         text: "built with Quickshell."
         color: Colors.white
-        font.family: Typography.sans.family
-        font.pixelSize: 13
-        font.weight: Typography.sans.weight
         Layout.fillWidth: true
         wrapMode: Text.WordWrap
         elide: Text.ElideRight
@@ -86,12 +79,9 @@ ColumnLayout {
             Behavior on color { ColorAnimation { duration: 150 } }
           }
 
-          Text {
+          Label {
             text: "GitHub Repository"
             color: repoMa.containsMouse ? Colors.foreground : Colors.white
-            font.family: Typography.sans.family
-            font.pixelSize: 13
-            font.weight: Typography.sans.weight
             Layout.fillWidth: true
             elide: Text.ElideRight
             Behavior on color { ColorAnimation { duration: 150 } }
@@ -131,20 +121,14 @@ ColumnLayout {
     Layout.fillWidth: true
     spacing: 4
 
-    Text {
+    Label {
       text: "Built with"
       color: Colors.foreground
-      font.family: Typography.sans.family
-      font.pixelSize: 13
-      font.weight: Typography.sans.weight
     }
 
-    Text {
+    Label {
       text: "Quickshell, Qt Quick / QML"
       color: Colors.white
-      font.family: Typography.sans.family
-      font.pixelSize: 13
-      font.weight: Typography.sans.weight
     }
   }
 }

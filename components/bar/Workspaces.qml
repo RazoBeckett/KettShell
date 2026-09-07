@@ -85,7 +85,6 @@ Item {
           anchors.centerIn: parent
           text: wsButton.ws.id
           color: wsButton.isActive ? Colors.waybarActive : Colors.foreground
-          size: 13
           weight: Font.Bold
           transformOrigin: Item.Center
           scale: 1

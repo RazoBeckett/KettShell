@@ -3,6 +3,10 @@ import ".."
 import QtQuick
 
 QtObject {
+  // Text takes pixelSize from this scale (directly or via Label), never a
+  // literal. Remaining literal pixelSize at call sites is either an
+  // icons-family glyph (icons never take text tokens) or a fixed-density
+  // exception marked `scale-exempt` (BatteryPanel hero, ObsMeter ticks).
   readonly property real rootSize: Settings.ui.fontScale
   readonly property real sizeXS: rootSize * 0.85
   readonly property real sizeSM: rootSize

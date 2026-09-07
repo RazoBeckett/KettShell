@@ -98,11 +98,9 @@ PopupCard {
           onMoved: f => root.setBrightnessFraction(f)
         }
 
-        Text {
+        Label {
           text: root.ready ? root.level + "%" : "-"
           color: Colors.white
-          font.pixelSize: 12
-          font.family: Typography.sans.family
           Layout.preferredWidth: 36
           horizontalAlignment: Text.AlignRight
         }
@@ -144,12 +142,10 @@ PopupCard {
               border.color: isActive ? Colors.transparent : Colors.border
               border.width: 1
 
-            Text {
+            Label {
               anchors.centerIn: parent
               text: modelData + "%"
               color: isActive ? Colors.blue : (chipMa.containsMouse ? Colors.foreground : Colors.white)
-              font.pixelSize: 12
-              font.family: Typography.sans.family
             }
 
             MouseArea {

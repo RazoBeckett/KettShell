@@ -103,7 +103,7 @@ ColumnLayout {
           selectionColor: Colors.blue
           selectedTextColor: Colors.black
           font.family: Typography.sans.family
-          font.pixelSize: Typography.sans.pixelSize
+          font.pixelSize: Typography.sizeSM
           font.weight: Typography.sans.weight
           onAccepted: root.commitFont()
           Keys.onEscapePressed: event => {
@@ -218,7 +218,7 @@ ColumnLayout {
         text: "Ag " + Settings.ui.fontFamily
         color: Colors.foreground
         font.family: Settings.ui.fontFamily
-        font.pixelSize: 22
+        font.pixelSize: Typography.sizeLG
         font.weight: Font.Normal
         elide: Text.ElideRight
       }
@@ -277,7 +277,7 @@ ColumnLayout {
           selectionColor: Colors.blue
           selectedTextColor: Colors.black
           font.family: Typography.mono.family
-          font.pixelSize: Typography.mono.pixelSize
+          font.pixelSize: Typography.sizeSM
           font.weight: Typography.mono.weight
           onAccepted: root.commitMono()
           Keys.onEscapePressed: event => {
@@ -392,7 +392,7 @@ ColumnLayout {
         text: "0123456789"
         color: Colors.foreground
         font.family: Settings.ui.monoFamily
-        font.pixelSize: 20
+        font.pixelSize: Typography.sizeLG
         font.weight: Font.Normal
         elide: Text.ElideRight
       }

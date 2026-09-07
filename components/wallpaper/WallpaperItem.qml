@@ -135,7 +135,7 @@ Item {
     }
   }
 
-  Text {
+  Label {
     id: label
 
     anchors.top: thumb.bottom
@@ -157,9 +157,7 @@ Item {
         ? Colors.foreground
         : Colors.white
 
-    font.family: Typography.sans.family
-    font.pixelSize: 12
-    font.weight: Typography.sans.weight
+    size: Typography.sizeSM
 
     opacity:
       root.isCurrent

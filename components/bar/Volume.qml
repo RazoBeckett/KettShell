@@ -47,7 +47,6 @@ WrapperMouseArea {
           return root.vol + "%"
         }
         color: Colors.foreground
-        size: 13
         weight: Font.Bold
       }
     }

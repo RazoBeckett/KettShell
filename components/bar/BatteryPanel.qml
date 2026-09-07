@@ -148,6 +148,7 @@ PopupCard {
         text: root.ready ? root.level + "%" : "--"
         color: Colors.foreground
         font.family: Typography.mono.family
+        // scale-exempt: hero numeral pinned to this fixed 360x148 card; the text scale tops out at sizeLG
         font.pixelSize: 32
         font.weight: Font.Light
         font.letterSpacing: -0.5
@@ -162,26 +163,20 @@ PopupCard {
         Layout.alignment: Qt.AlignVCenter
         spacing: 2
 
-        Text {
+        Label {
           id: line1
           text: root.statusLine1
           color: root.isFullyCharged ? Colors.white : Colors.foreground
-          font.family: Typography.sans.family
-          font.pixelSize: 13
-          font.weight: Font.Normal
           elide: Text.ElideRight
           Layout.fillWidth: true
           horizontalAlignment: Text.AlignRight
           opacity: root.ready ? 0.92 : 0.5
         }
 
-        Text {
+        Label {
           id: line2
           text: root.statusLine2
           color: Colors.white
-          font.family: Typography.sans.family
-          font.pixelSize: 13
-          font.weight: Font.Normal
           elide: Text.ElideRight
           Layout.fillWidth: true
           horizontalAlignment: Text.AlignRight
@@ -260,20 +255,17 @@ PopupCard {
         ColumnLayout {
           Layout.fillWidth: true
           spacing: 2
-          Text {
+          Label {
             text: "Energy"
             color: Colors.white
-            font.family: Typography.sans.family
-            font.pixelSize: 10
+            size: Typography.sizeXS
             opacity: 0.55
             elide: Text.ElideRight
             Layout.fillWidth: true
           }
-          Text {
+          Label {
             text: root.energyLabel
             color: Colors.foreground
-            font.family: Typography.sans.family
-            font.pixelSize: 12
             elide: Text.ElideRight
             Layout.fillWidth: true
           }
@@ -282,21 +274,18 @@ PopupCard {
         ColumnLayout {
           Layout.fillWidth: true
           spacing: 2
-          Text {
+          Label {
             text: "Power"
             color: Colors.white
-            font.family: Typography.sans.family
-            font.pixelSize: 10
+            size: Typography.sizeXS
             opacity: 0.55
             elide: Text.ElideRight
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
           }
-          Text {
+          Label {
             text: root.rateLabel
             color: root.isCharging ? Colors.waybarCharging : Colors.foreground
-            font.family: Typography.sans.family
-            font.pixelSize: 12
             elide: Text.ElideRight
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignHCenter
@@ -306,21 +295,18 @@ PopupCard {
         ColumnLayout {
           Layout.fillWidth: true
           spacing: 2
-          Text {
+          Label {
             text: "Health"
             color: Colors.white
-            font.family: Typography.sans.family
-            font.pixelSize: 10
+            size: Typography.sizeXS
             opacity: 0.55
             elide: Text.ElideRight
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignRight
           }
-          Text {
+          Label {
             text: root.healthLabel
             color: Colors.foreground
-            font.family: Typography.sans.family
-            font.pixelSize: 12
             elide: Text.ElideRight
             Layout.fillWidth: true
             horizontalAlignment: Text.AlignRight

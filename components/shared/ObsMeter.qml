@@ -149,6 +149,7 @@ Item {
             anchors.horizontalCenter: parent.horizontalCenter
             text: modelData.label
             color: Colors.white
+            // scale-exempt: dense tick strip is 14px tall; even sizeXS overflows it
             font.pixelSize: 7
             font.family: Typography.sans.family
             opacity: 0.9

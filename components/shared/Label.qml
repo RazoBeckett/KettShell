@@ -5,7 +5,7 @@ Text {
   id: root
 
   property bool useMono: false
-  property real size: Typography.sans.pixelSize
+  property real size: Typography.sizeSM
   property int weight: Font.Normal
 
   color: Colors.foreground

@@ -81,7 +81,7 @@ ColumnLayout {
           selectionColor: Colors.blue
           selectedTextColor: Colors.black
           font.family: Typography.sans.family
-          font.pixelSize: Typography.sans.pixelSize
+          font.pixelSize: Typography.sizeSM
           font.weight: Typography.sans.weight
           onAccepted: root.commitDir()
           Keys.onEscapePressed: event => {
@@ -431,26 +431,24 @@ ColumnLayout {
         // 8-way black stroke (~2px)
         Repeater {
           model: [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]
-          delegate: Text {
+          delegate: Label {
             required property var modelData
             text: "CURRENT"
             color: Colors.black
-            font.family: Typography.sans.family
-            font.pixelSize: 10
-            font.weight: Font.Bold
+            size: Typography.sizeXS
+            weight: Font.Bold
             anchors.centerIn: parent
             anchors.horizontalCenterOffset: modelData[0] * 1.1
             anchors.verticalCenterOffset: modelData[1] * 1.1
             opacity: 0.95
           }
         }
-        Text {
+        Label {
           id: oldLabelFront
           text: "CURRENT"
           color: Colors.foreground
-          font.family: Typography.sans.family
-          font.pixelSize: 10
-          font.weight: Font.Bold
+          size: Typography.sizeXS
+          weight: Font.Bold
           opacity: 0.88
           anchors.centerIn: parent
         }
@@ -466,26 +464,24 @@ ColumnLayout {
         Behavior on y { enabled: !previewMa.pressed; NumberAnimation { duration: 160; easing.type: Easing.OutCubic } }
         Repeater {
           model: [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]]
-          delegate: Text {
+          delegate: Label {
             required property var modelData
             text: "NEW"
             color: Colors.black
-            font.family: Typography.sans.family
-            font.pixelSize: 10
-            font.weight: Font.Bold
+            size: Typography.sizeXS
+            weight: Font.Bold
             anchors.centerIn: parent
             anchors.horizontalCenterOffset: modelData[0] * 1.1
             anchors.verticalCenterOffset: modelData[1] * 1.1
             opacity: 0.95
           }
         }
-        Text {
+        Label {
           id: newLabelFront
           text: "NEW"
           color: Colors.blue
-          font.family: Typography.sans.family
-          font.pixelSize: 10
-          font.weight: Font.Bold
+          size: Typography.sizeXS
+          weight: Font.Bold
           opacity: 1
           anchors.centerIn: parent
         }

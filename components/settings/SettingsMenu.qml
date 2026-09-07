@@ -295,12 +295,10 @@ Item {
 
             Item { Layout.fillHeight: true }
 
-            Text {
+            Label {
               text: root.commitDisplay
               color: Colors.white
-              font.family: Typography.sans.family
-              font.pixelSize: 11
-              font.weight: Typography.sans.weight
+              size: Typography.sizeXS
               opacity: 0.65
               elide: Text.ElideRight
               Layout.fillWidth: true

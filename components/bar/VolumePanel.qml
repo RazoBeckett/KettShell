@@ -236,12 +236,10 @@ PopupCard {
         Layout.leftMargin: 16
         Layout.rightMargin: 16
         spacing: 8
-        Text {
+        Label {
           text: "Audio"
           color: Colors.foreground
-          font.pixelSize: 14
-          font.family: Typography.sans.family
-          font.weight: Font.Normal
+          size: Typography.sizeMD
         }
         Item { Layout.fillWidth: true }
       }
@@ -273,11 +271,10 @@ PopupCard {
             Layout.topMargin: 12
             spacing: 8
 
-            Text {
+            Label {
               text: "OUTPUT"
               color: Colors.white
-              font.pixelSize: 11
-              font.family: Typography.sans.family
+              size: Typography.sizeXS
             }
 
             RowLayout {
@@ -316,11 +313,10 @@ PopupCard {
                 onMoved: f => root.setOutputFraction(f)
               }
 
-              Text {
+              Label {
                 text: root.sinkReady ? (root.outMuted ? "0%" : root.outVol + "%") : "-"
                 color: Colors.white
-                font.pixelSize: 12
-                font.family: Typography.mono.family
+                useMono: true
                 Layout.preferredWidth: 36
                 horizontalAlignment: Text.AlignRight
               }
@@ -390,11 +386,9 @@ PopupCard {
                       font.family: Typography.icons.family
                       font.pixelSize: 16
                     }
-                    Text {
+                    Label {
                       text: root.nodeLabel(modelData)
                       color: isActive ? Colors.foreground : Colors.white
-                      font.pixelSize: 12
-                      font.family: Typography.sans.family
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
@@ -427,11 +421,10 @@ PopupCard {
             spacing: 8
             visible: root.source !== null || root.audioSources.length > 0
 
-            Text {
+            Label {
               text: "INPUT"
               color: Colors.white
-              font.pixelSize: 11
-              font.family: Typography.sans.family
+              size: Typography.sizeXS
             }
 
             RowLayout {
@@ -472,11 +465,10 @@ PopupCard {
                 onMoved: f => root.setInputFraction(f)
               }
 
-              Text {
+              Label {
                 text: root.sourceReady ? (root.inMuted ? "0%" : root.inVol + "%") : "-"
                 color: Colors.white
-                font.pixelSize: 12
-                font.family: Typography.mono.family
+                useMono: true
                 Layout.preferredWidth: 36
                 horizontalAlignment: Text.AlignRight
               }
@@ -494,12 +486,10 @@ PopupCard {
               Behavior on opacity { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
             }
 
-            Text {
+            Label {
               visible: !root.sourceReady
               text: "No microphone found"
               color: Colors.white
-              font.pixelSize: 12
-              font.family: Typography.sans.family
             }
 
             Item {
@@ -553,11 +543,9 @@ PopupCard {
                       font.family: Typography.icons.family
                       font.pixelSize: 16
                     }
-                    Text {
+                    Label {
                       text: root.nodeLabel(modelData)
                       color: isActive ? Colors.foreground : Colors.white
-                      font.pixelSize: 12
-                      font.family: Typography.sans.family
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
@@ -592,11 +580,10 @@ PopupCard {
             spacing: 8
             visible: root.audioStreams.length > 0
 
-            Text {
+            Label {
               text: "APPS"
               color: Colors.white
-              font.pixelSize: 11
-              font.family: Typography.sans.family
+              size: Typography.sizeXS
             }
 
             ColumnLayout {
@@ -655,20 +642,17 @@ PopupCard {
                         }
                       }
 
-                      Text {
+                      Label {
                         text: root.streamLabel(modelData)
                         color: Colors.foreground
-                        font.pixelSize: 12
-                        font.family: Typography.sans.family
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                       }
 
-                      Text {
+                      Label {
                         text: sMuted ? "0%" : Math.round(sVol * 100) + "%"
                         color: Colors.white
-                        font.pixelSize: 11
-                        font.family: Typography.sans.family
+                        size: Typography.sizeXS
                         Layout.preferredWidth: 36
                         horizontalAlignment: Text.AlignRight
                       }

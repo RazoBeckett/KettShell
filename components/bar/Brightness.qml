@@ -45,7 +45,6 @@ WrapperMouseArea {
       Label {
         text: root.ready ? root.level + "%" : "-"
         color: Colors.foreground
-        size: 13
         weight: Font.Bold
       }
     }

@@ -51,7 +51,6 @@ WrapperMouseArea {
       Label {
         text: root.label
         color: root.disconnected ? Colors.waybarDisconnected : Colors.foreground
-        size: 13
         weight: Font.Bold
         elide: Text.ElideRight
         Layout.maximumWidth: 140

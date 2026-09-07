@@ -31,7 +31,6 @@ Item {
         anchors.centerIn: parent
         text: root.displayText
         color: Colors.foreground
-        size: 13
         weight: Font.Bold
         opacity: 1
         y: 0
@@ -42,7 +41,6 @@ Item {
         anchors.centerIn: parent
         text: root.displayText
         color: Colors.foreground
-        size: 13
         weight: Font.Bold
         opacity: 0
         y: 6

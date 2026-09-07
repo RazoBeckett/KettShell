@@ -73,7 +73,6 @@ WrapperMouseArea {
       Label {
         text: root.ready ? root.level + "%" : "-"
         color: root.charging ? Colors.waybarCharging : root.critical ? Colors.foreground : Colors.foreground
-        size: 13
         weight: Font.Bold
       }
     }

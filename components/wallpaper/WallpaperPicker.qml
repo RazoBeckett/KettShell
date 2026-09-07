@@ -193,7 +193,7 @@ Scope {
             selectedTextColor: Colors.background
 
             font.family: Typography.sans.family
-            font.pixelSize: 14
+            font.pixelSize: Typography.sizeMD
             font.weight: Typography.sans.weight
 
             property string placeholderText:
@@ -311,7 +311,7 @@ Scope {
             opacity: 0.6
 
             font.family: Typography.sans.family
-            font.pixelSize: 13
+            font.pixelSize: Typography.sizeSM
 
             horizontalAlignment: Text.AlignHCenter
 
