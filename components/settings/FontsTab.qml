@@ -66,12 +66,6 @@ ColumnLayout {
         weight: Font.DemiBold
         Layout.fillWidth: true
       }
-
-      Label {
-        text: Settings.ui.fontFamily
-        color: Colors.white
-        elide: Text.ElideRight
-      }
     }
 
     RowLayout {
@@ -239,12 +233,6 @@ ColumnLayout {
         color: Colors.foreground
         weight: Font.DemiBold
         Layout.fillWidth: true
-      }
-
-      Label {
-        text: Settings.ui.monoFamily
-        color: Colors.white
-        elide: Text.ElideRight
       }
     }
 
