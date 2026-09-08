@@ -21,7 +21,7 @@ Item {
   property real introContent: 0.0
   readonly property bool busy: openSequence.running || closeSequence.running
   property string commitHash: "development"
-  readonly property string commitDisplay: "KettShell @ " + commitHash
+  readonly property string commitDisplay: "KettShell @" + commitHash
 
   signal closeFinished
 
@@ -342,7 +342,7 @@ Item {
 
             UiTab { visible: root.currentTab === 0; Layout.fillWidth: true }
             WallpaperTab { id: wallpaperTab; visible: root.currentTab === 1; Layout.fillWidth: true }
-            FontsTab { id: fontsTab; visible: root.currentTab === 2; Layout.fillWidth: true }
+            FontsTab { id: fontsTab; visible: root.currentTab === 2; Layout.fillWidth: true; commitDisplay: root.commitDisplay }
             AboutTab { visible: root.currentTab === 3; Layout.fillWidth: true }
 
             Item { Layout.fillHeight: true }

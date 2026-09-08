@@ -6,6 +6,8 @@ ColumnLayout {
   id: root
   spacing: 4
 
+  property string commitDisplay: "KettShell @development"
+
   property bool editingFont: false
   property real editProgress: editingFont ? 1 : 0
   Behavior on editProgress { NumberAnimation { duration: 260; easing.type: Easing.OutCubic } }
@@ -209,7 +211,7 @@ ColumnLayout {
         anchors.leftMargin: 12
         anchors.rightMargin: 12
         verticalAlignment: Text.AlignVCenter
-        text: "Ag " + Settings.ui.fontFamily
+        text: root.commitDisplay
         color: Colors.foreground
         font.family: Settings.ui.fontFamily
         font.pixelSize: Typography.sizeLG
@@ -377,7 +379,7 @@ ColumnLayout {
         anchors.leftMargin: 12
         anchors.rightMargin: 12
         verticalAlignment: Text.AlignVCenter
-        text: "0123456789"
+        text: root.commitDisplay
         color: Colors.foreground
         font.family: Settings.ui.monoFamily
         font.pixelSize: Typography.sizeLG
