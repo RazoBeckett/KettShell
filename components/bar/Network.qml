@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell.Networking
 import Quickshell.Widgets
 import QtQuick
@@ -17,13 +17,13 @@ WrapperMouseArea {
   readonly property bool wifiOn: Networking.wifiEnabled
   readonly property bool disconnected: wifiOn && !active
   readonly property string icon: {
-    if (!wifiOn) return "signal_wifi_off"
-    if (!active) return "signal_wifi_0_bar"
+    if (!wifiOn) return "wifi-slash"
+    if (!active) return "wifi-none"
     let tier = signal >= 0.75 ? 4 : signal >= 0.50 ? 3 : signal >= 0.25 ? 2 : 1
-    if (tier === 4) return "network_wifi"
-    if (tier === 3) return "network_wifi_3_bar"
-    if (tier === 2) return "network_wifi_2_bar"
-    return "network_wifi_1_bar"
+    if (tier === 4) return "wifi-high"
+    if (tier === 3) return "wifi-medium"
+    if (tier === 2) return "wifi-low"
+    return "wifi-none"
   }
   readonly property string label: {
     if (!wifiOn) return "OFF"
@@ -32,8 +32,8 @@ WrapperMouseArea {
   }
 
   child: PressableItem {
-    implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
-    implicitHeight: Config.barHeight
+    implicitWidth: row.implicitWidth + 26
+    implicitHeight: Sizing.barHeight
     pressed: root.pressed
 
     RowLayout {
@@ -44,14 +44,14 @@ WrapperMouseArea {
       Text {
         text: root.icon
         color: root.disconnected ? Colors.waybarDisconnected : Colors.foreground
-        font.family: Config.materialSymbols.family
-        font.pixelSize: Config.iconSize
+        font.family: Typography.icons.family
+        font.pixelSize: 14
       }
 
-      Text {
+      Label {
         text: root.label
         color: root.disconnected ? Colors.waybarDisconnected : Colors.foreground
-        font: Config.font
+        weight: Font.Bold
         elide: Text.ElideRight
         Layout.maximumWidth: 140
       }

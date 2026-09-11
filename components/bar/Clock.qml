@@ -1,12 +1,12 @@
-import ".."
+import "../.."
 import Quickshell
 import QtQuick
 import QtQuick.Layouts
 
 Item {
   id: root
-  implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
-  implicitHeight: Config.barHeight
+  implicitWidth: row.implicitWidth + 26
+  implicitHeight: Sizing.barHeight
 
   property string displayText: Qt.formatDateTime(clock.date, "hh:mm")
 
@@ -26,22 +26,22 @@ Item {
       // triggers tick when minute changes
       onPendingTextChanged: if (outgoing.text !== "" && pendingText !== outgoing.text) tickAnim.restart()
 
-      Text {
+      Label {
         id: outgoing
         anchors.centerIn: parent
         text: root.displayText
         color: Colors.foreground
-        font: Config.font
+        weight: Font.Bold
         opacity: 1
         y: 0
       }
 
-      Text {
+      Label {
         id: incoming
         anchors.centerIn: parent
         text: root.displayText
         color: Colors.foreground
-        font: Config.font
+        weight: Font.Bold
         opacity: 0
         y: 6
         visible: false

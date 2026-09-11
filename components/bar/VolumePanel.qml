@@ -1,4 +1,5 @@
-import ".."
+import "../.."
+import Quickshell
 import Quickshell.Services.Pipewire
 import QtQuick
 import QtQuick.Layouts
@@ -20,15 +21,15 @@ PopupCard {
   readonly property int outVol: sinkReady ? Math.round(sink.audio.volume * 100) : 0
   readonly property int inVol: sourceReady ? Math.round(source.audio.volume * 100) : 0
   readonly property string outIcon: {
-    if (!sinkReady) return "volume_off"
-    if (outMuted || outVol === 0) return "volume_off"
-    if (outVol < 34) return "volume_down"
-    return "volume_up"
+    if (!sinkReady) return "speaker-slash"
+    if (outMuted || outVol === 0) return "speaker-slash"
+    if (outVol < 34) return "speaker-low"
+    return "speaker-high"
   }
   readonly property string inIcon: {
-    if (!sourceReady) return "mic_off"
-    if (inMuted || inVol === 0) return "mic_off"
-    return "mic"
+    if (!sourceReady) return "microphone-slash"
+    if (inMuted || inVol === 0) return "microphone-slash"
+    return "microphone"
   }
   readonly property real outFraction: sinkReady ? (outMuted ? 0 : outVol / 100) : 0
   readonly property real inFraction: sourceReady ? (inMuted ? 0 : inVol / 100) : 0
@@ -58,7 +59,7 @@ PopupCard {
       let n = nodes[i]
       if (!n || !n.isStream || !n.isSink) continue
       if (!n.audio) continue
-      if (String(n.name || "").indexOf("omarchy_speaker_tuning") === 0) continue
+      if (/speaker[_-]tuning|filter[_-]chain|easyeffects|jamesdsp|echo[_-]cancel/i.test(String(n.name || ""))) continue
       list.push(n)
     }
     return list
@@ -153,16 +154,16 @@ PopupCard {
     let p = node.properties || {}
     let blob = String([node.name, node.description, p["device.icon-name"] || ""].join(" ")).toLowerCase()
     if (blob.indexOf("bluetooth") !== -1) return "bluetooth"
-    if (blob.indexOf("hdmi") !== -1) return "tv"
-    return "speaker"
+    if (blob.indexOf("hdmi") !== -1) return "television"
+    return "speaker-hifi"
   }
 
   function sourceIcon(node) {
     let p = node ? node.properties || {} : {}
     let blob = String([node ? node.name : "", p["device.icon-name"] || ""].join(" ")).toLowerCase()
     if (blob.indexOf("bluetooth") !== -1) return "bluetooth"
-    if (blob.indexOf("webcam") !== -1 || blob.indexOf("camera") !== -1) return "videocam"
-    return "mic"
+    if (blob.indexOf("webcam") !== -1 || blob.indexOf("camera") !== -1) return "video-camera"
+    return "microphone"
   }
 
   function setOutputFraction(f) {
@@ -222,6 +223,8 @@ PopupCard {
     color: Colors.background
     border.color: Colors.border
     border.width: 1
+    radius: Settings.rounding.lg
+    clip: true
 
     ColumnLayout {
       anchors.fill: parent
@@ -233,12 +236,10 @@ PopupCard {
         Layout.leftMargin: 16
         Layout.rightMargin: 16
         spacing: 8
-        Text {
+        Label {
           text: "Audio"
           color: Colors.foreground
-          font.pixelSize: 14
-          font.family: Config.font.family
-          font.weight: Font.Normal
+          size: Typography.sizeMD
         }
         Item { Layout.fillWidth: true }
       }
@@ -270,11 +271,10 @@ PopupCard {
             Layout.topMargin: 12
             spacing: 8
 
-            Text {
+            Label {
               text: "OUTPUT"
               color: Colors.white
-              font.pixelSize: 11
-              font.family: Config.font.family
+              size: Typography.sizeXS
             }
 
             RowLayout {
@@ -288,7 +288,7 @@ PopupCard {
                   anchors.centerIn: parent
                   text: root.outIcon
                   color: outIconMa.containsMouse ? Colors.blue : (root.outMuted ? Colors.white : Colors.foreground)
-                  font.family: Config.materialSymbols.family
+                  font.family: Typography.icons.family
                   font.pixelSize: 18
                 }
                 MouseArea {
@@ -300,7 +300,7 @@ PopupCard {
                 }
               }
 
-              IOSSlider {
+              Slider {
                 id: outSliderRoot
                 Layout.fillWidth: true
                 Layout.preferredHeight: 24
@@ -309,16 +309,14 @@ PopupCard {
                 trackHeight: 4
                 thumbBaseWidth: 20
                 thumbBaseHeight: 14
-                thumbRadius: 3
                 fillColor: root.outMuted ? Colors.white : Colors.blue
                 onMoved: f => root.setOutputFraction(f)
               }
 
-              Text {
+              Label {
                 text: root.sinkReady ? (root.outMuted ? "0%" : root.outVol + "%") : "-"
                 color: Colors.white
-                font.pixelSize: 12
-                font.family: Config.font.family
+                useMono: true
                 Layout.preferredWidth: 36
                 horizontalAlignment: Text.AlignRight
               }
@@ -353,6 +351,7 @@ PopupCard {
                 color: Colors.card
                 border.color: Colors.blue
                 border.width: 1
+                radius: Settings.rounding.md
                 Behavior on y { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
                 Behavior on opacity { NumberAnimation { duration: 150 } }
               }
@@ -363,13 +362,16 @@ PopupCard {
                 spacing: 2
 
                 Repeater {
-                  model: root.audioSinks
+                  model: ScriptModel {
+                    values: root.showing ? root.audioSinks : []
+                  }
                   delegate: Rectangle {
                     required property var modelData
                     required property int index
                     readonly property bool isActive: root.sink && modelData && root.sink.id === modelData.id
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36
+                    radius: Settings.rounding.md
                     color: (devHover.hovered && !isActive) ? Colors.surface : Colors.transparent
                     HoverHandler { id: devHover }
 
@@ -381,14 +383,12 @@ PopupCard {
                     Text {
                       text: root.sinkIcon(modelData)
                       color: isActive ? Colors.blue : Colors.foreground
-                      font.family: Config.materialSymbols.family
+                      font.family: Typography.icons.family
                       font.pixelSize: 16
                     }
-                    Text {
+                    Label {
                       text: root.nodeLabel(modelData)
                       color: isActive ? Colors.foreground : Colors.white
-                      font.pixelSize: 12
-                      font.family: Config.font.family
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
@@ -421,11 +421,10 @@ PopupCard {
             spacing: 8
             visible: root.source !== null || root.audioSources.length > 0
 
-            Text {
+            Label {
               text: "INPUT"
               color: Colors.white
-              font.pixelSize: 11
-              font.family: Config.font.family
+              size: Typography.sizeXS
             }
 
             RowLayout {
@@ -440,7 +439,7 @@ PopupCard {
                   anchors.centerIn: parent
                   text: root.inIcon
                   color: inIconMa.containsMouse ? Colors.blue : (root.inMuted ? Colors.white : Colors.foreground)
-                  font.family: Config.materialSymbols.family
+                  font.family: Typography.icons.family
                   font.pixelSize: 18
                 }
                 MouseArea {
@@ -453,7 +452,7 @@ PopupCard {
                 }
               }
 
-              IOSSlider {
+              Slider {
                 id: inSliderRoot
                 Layout.fillWidth: true
                 Layout.preferredHeight: 24
@@ -462,16 +461,14 @@ PopupCard {
                 trackHeight: 4
                 thumbBaseWidth: 20
                 thumbBaseHeight: 14
-                thumbRadius: 3
                 fillColor: root.inMuted ? Colors.white : Colors.blue
                 onMoved: f => root.setInputFraction(f)
               }
 
-              Text {
+              Label {
                 text: root.sourceReady ? (root.inMuted ? "0%" : root.inVol + "%") : "-"
                 color: Colors.white
-                font.pixelSize: 12
-                font.family: Config.font.family
+                useMono: true
                 Layout.preferredWidth: 36
                 horizontalAlignment: Text.AlignRight
               }
@@ -489,12 +486,10 @@ PopupCard {
               Behavior on opacity { NumberAnimation { duration: 120; easing.type: Easing.OutCubic } }
             }
 
-            Text {
+            Label {
               visible: !root.sourceReady
               text: "No microphone found"
               color: Colors.white
-              font.pixelSize: 12
-              font.family: Config.font.family
             }
 
             Item {
@@ -513,6 +508,7 @@ PopupCard {
                 color: Colors.card
                 border.color: Colors.blue
                 border.width: 1
+                radius: Settings.rounding.md
                 Behavior on y { NumberAnimation { duration: 280; easing.type: Easing.OutCubic } }
                 Behavior on opacity { NumberAnimation { duration: 150 } }
               }
@@ -523,13 +519,16 @@ PopupCard {
                 spacing: 2
 
                 Repeater {
-                  model: root.audioSources
+                  model: ScriptModel {
+                    values: root.showing ? root.audioSources : []
+                  }
                   delegate: Rectangle {
                     required property var modelData
                     required property int index
                     readonly property bool isActive: root.source && modelData && root.source.id === modelData.id
                     Layout.fillWidth: true
                     Layout.preferredHeight: 36
+                    radius: Settings.rounding.md
                     color: (inDevHover.hovered && !isActive) ? Colors.surface : Colors.transparent
                     HoverHandler { id: inDevHover }
 
@@ -541,14 +540,12 @@ PopupCard {
                     Text {
                       text: root.sourceIcon(modelData)
                       color: isActive ? Colors.blue : Colors.foreground
-                      font.family: Config.materialSymbols.family
+                      font.family: Typography.icons.family
                       font.pixelSize: 16
                     }
-                    Text {
+                    Label {
                       text: root.nodeLabel(modelData)
                       color: isActive ? Colors.foreground : Colors.white
-                      font.pixelSize: 12
-                      font.family: Config.font.family
                       elide: Text.ElideRight
                       Layout.fillWidth: true
                     }
@@ -583,11 +580,10 @@ PopupCard {
             spacing: 8
             visible: root.audioStreams.length > 0
 
-            Text {
+            Label {
               text: "APPS"
               color: Colors.white
-              font.pixelSize: 11
-              font.family: Config.font.family
+              size: Typography.sizeXS
             }
 
             ColumnLayout {
@@ -595,7 +591,9 @@ PopupCard {
               spacing: 6
 
               Repeater {
-                model: root.audioStreams
+                model: ScriptModel {
+                  values: root.showing ? root.audioStreams : []
+                }
                 delegate: Rectangle {
                   required property var modelData
                   required property int index
@@ -604,6 +602,7 @@ PopupCard {
                   readonly property real sFraction: sMuted ? 0 : Math.min(1, sVol / 1.5)
                   Layout.fillWidth: true
                   Layout.preferredHeight: 72
+                  radius: Settings.rounding.md
                   color: streamHover.hovered ? Colors.surface : Colors.card
                   border.color: Colors.border
                   border.width: 1
@@ -627,9 +626,9 @@ PopupCard {
                         Layout.preferredHeight: 20
                         Text {
                           anchors.centerIn: parent
-                          text: sMuted ? "volume_off" : "volume_up"
+                          text: sMuted ? "speaker-slash" : "speaker-high"
                           color: streamIconMa.containsMouse ? Colors.blue : (sMuted ? Colors.white : Colors.foreground)
-                          font.family: Config.materialSymbols.family
+                          font.family: Typography.icons.family
                           font.pixelSize: 14
                         }
                         MouseArea {
@@ -643,26 +642,23 @@ PopupCard {
                         }
                       }
 
-                      Text {
+                      Label {
                         text: root.streamLabel(modelData)
                         color: Colors.foreground
-                        font.pixelSize: 12
-                        font.family: Config.font.family
                         elide: Text.ElideRight
                         Layout.fillWidth: true
                       }
 
-                      Text {
+                      Label {
                         text: sMuted ? "0%" : Math.round(sVol * 100) + "%"
                         color: Colors.white
-                        font.pixelSize: 11
-                        font.family: Config.font.family
+                        size: Typography.sizeXS
                         Layout.preferredWidth: 36
                         horizontalAlignment: Text.AlignRight
                       }
                     }
 
-                    IOSSlider {
+                    Slider {
                       id: streamSliderRoot
                       Layout.fillWidth: true
                       Layout.preferredHeight: 16
@@ -671,7 +667,7 @@ PopupCard {
                       trackHeight: 3
                       thumbBaseWidth: 16
                       thumbBaseHeight: 10
-                      thumbRadius: 2
+                      thumbRadius: Settings.rounding.sm
                       maxStretch: 8
                       trackColor: Colors.background
                       fillColor: sMuted ? Colors.white : Colors.blue

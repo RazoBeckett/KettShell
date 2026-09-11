@@ -1,4 +1,4 @@
-import ".."
+import "../.."
 import Quickshell.Services.Pipewire
 import Quickshell.Widgets
 import QtQuick
@@ -17,15 +17,15 @@ WrapperMouseArea {
   readonly property bool muted: ready && sink.audio.muted
   readonly property int vol: ready ? Math.round(sink.audio.volume * 100) : 0
   readonly property string icon: {
-    if (!ready) return "volume_off"
-    if (muted || vol === 0) return "volume_off"
-    if (vol < 34) return "volume_down"
-    return "volume_up"
+    if (!ready) return "speaker-slash"
+    if (muted || vol === 0) return "speaker-slash"
+    if (vol < 34) return "speaker-low"
+    return "speaker-high"
   }
 
   child: PressableItem {
-    implicitWidth: row.implicitWidth + Config.moduleHPadding * 2
-    implicitHeight: Config.barHeight
+    implicitWidth: row.implicitWidth + 26
+    implicitHeight: Sizing.barHeight
     pressed: root.pressed
 
     RowLayout {
@@ -36,18 +36,18 @@ WrapperMouseArea {
       Text {
         text: root.icon
         color: Colors.foreground
-        font.family: Config.materialSymbols.family
-        font.pixelSize: Config.iconSize
+        font.family: Typography.icons.family
+        font.pixelSize: 14
       }
 
-      Text {
+      Label {
         text: {
           if (!root.ready) return "-"
           if (root.muted) return "00%"
           return root.vol + "%"
         }
         color: Colors.foreground
-        font: Config.font
+        weight: Font.Bold
       }
     }
   }

@@ -53,6 +53,7 @@ Scope {
 
   Background {}
   WallpaperPicker { id: wallpaperPicker }
+  SettingsWindow {}
 
   Component.onCompleted: closePopouts()
 
@@ -72,7 +73,7 @@ Scope {
           left: true
           right: true
         }
-        implicitHeight: Config.barHeight
+        implicitHeight: Sizing.barHeight
         color: Colors.transparent
 
         Item {
@@ -89,8 +90,8 @@ Scope {
 
           RowLayout {
             anchors.fill: parent
-            anchors.leftMargin: 4
-            anchors.rightMargin: 4
+            anchors.leftMargin: Sizing.barMargin
+            anchors.rightMargin: Sizing.barMargin
             spacing: 0
 
             Workspaces {}
@@ -98,7 +99,7 @@ Scope {
             Item { Layout.fillWidth: true }
 
             RowLayout {
-              spacing: Config.spacing
+              spacing: Sizing.moduleSpacing
 
               Brightness {
                 id: brightnessPill
