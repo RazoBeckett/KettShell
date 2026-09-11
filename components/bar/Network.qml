@@ -33,7 +33,7 @@ WrapperMouseArea {
 
   child: PressableItem {
     implicitWidth: row.implicitWidth + 26
-    implicitHeight: 30
+    implicitHeight: Sizing.barHeight
     pressed: root.pressed
 
     RowLayout {

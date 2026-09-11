@@ -45,7 +45,7 @@ WrapperMouseArea {
   child: PressableItem {
     id: blinkTarget
     implicitWidth: row.implicitWidth + 26
-    implicitHeight: 30
+    implicitHeight: Sizing.barHeight
     pressed: root.pressed
     dimOnPress: !root.critical
 

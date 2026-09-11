@@ -14,6 +14,7 @@ declarative, and consistent with the existing bar components.
 - Keep shared style and sizing values in the singleton files:
   - `theme/Colors.qml` for color tokens.
   - `theme/Typography.qml` for fonts, sizes, and type scale.
+  - `theme/Sizing.qml` for bar dimensions and shared layout metrics.
 - Register new public QML types in `qmldir` when they should be imported by
   name.
 - Prefer one focused component per file. A component should own one visible bar
@@ -59,7 +60,8 @@ declarative, and consistent with the existing bar components.
 - Keep repeated inline spacing values small and local only when they are part of
   a component's internal visual rhythm.
 - Keep bar height, outer margins, fonts, and shared dimensions centralized in
-  their theme singletons (`theme/Colors.qml`, `theme/Typography.qml`).
+  the theme singletons (`theme/Sizing.qml`, `theme/Colors.qml`,
+  `theme/Typography.qml`).
 - Avoid wrapper elements unless they provide a concrete behavior such as hover,
   wheel handling, or mouse interaction.
 

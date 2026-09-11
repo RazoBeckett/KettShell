@@ -6,7 +6,7 @@ import QtQuick.Layouts
 Item {
   id: root
   implicitWidth: row.implicitWidth + 26
-  implicitHeight: 30
+  implicitHeight: Sizing.barHeight
 
   property string displayText: Qt.formatDateTime(clock.date, "hh:mm")
 

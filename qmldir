@@ -13,6 +13,7 @@ singleton NetworkMenuState 1.0 states/NetworkMenuState.qml
 singleton BluetoothMenuState 1.0 states/BluetoothMenuState.qml
 singleton Colors 1.0 theme/Colors.qml
 singleton Typography 1.0 theme/Typography.qml
+singleton Sizing 1.0 theme/Sizing.qml
 singleton Settings 1.0 services/Settings.qml
 singleton Wallpapers 1.0 services/Wallpapers.qml
 PopupCard 1.0 components/shared/PopupCard.qml

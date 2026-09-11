@@ -7,7 +7,7 @@ import QtQuick.Layouts
 Item {
   id: root
   implicitWidth: layout.implicitWidth
-  implicitHeight: 30
+  implicitHeight: Sizing.barHeight
 
   readonly property var sortedWorkspaces: [...Hyprland.workspaces.values].sort((a, b) => a.id - b.id)
   readonly property int focusedId: Hyprland.focusedWorkspace?.id ?? -1
@@ -71,7 +71,7 @@ Item {
         property bool isHovered: ma.containsMouse
 
         implicitWidth: label.implicitWidth + 18
-        implicitHeight: 30
+        implicitHeight: Sizing.barHeight
         property alias pop: popAnim
 
         SequentialAnimation {
