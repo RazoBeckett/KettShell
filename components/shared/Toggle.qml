@@ -5,7 +5,6 @@ Item {
   id: root
 
   property bool checked: false
-  property bool enabled: true
   property color onColor: Colors.blue
   property color offColor: Colors.card
   property color thumbColor: Colors.foreground
