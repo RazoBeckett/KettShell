@@ -21,6 +21,7 @@ Item {
   property real introContent: 0.0
   readonly property bool busy: openSequence.running || closeSequence.running
   property string commitHash: "development"
+  property bool commitResolved: false
   readonly property string commitDisplay: "KettShell @" + commitHash
 
   signal closeFinished
@@ -29,11 +30,12 @@ Item {
     id: gitCommitProc
     command: ["git", "-C", Quickshell.shellDir, "rev-parse", "--short", "HEAD"]
     workingDirectory: Quickshell.shellDir
-    running: true
+    running: root.open && !root.commitResolved
     stdout: StdioCollector {
       onStreamFinished: {
         let t = (text || "").trim()
         root.commitHash = t.length > 0 ? t : "development"
+        root.commitResolved = true
       }
     }
   }
