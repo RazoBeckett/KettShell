@@ -11,8 +11,8 @@ Singleton {
   readonly property string expandedWallDir: {
     let p = Settings.wallpaper.directory
 
-    if (!p || p.length === 0)
-      p = "~/Pictures/Wallpapers/MyWallpapers/"
+    if (!p || p.trim().length === 0)
+      return ""
 
     let home = Quickshell.env("HOME") || ""
 
@@ -24,6 +24,32 @@ Singleton {
       p += "/"
 
     return p
+  }
+
+  // Specific state for the wallpaper directory. Used to drive error messages
+  // instead of a silent hardcoded fallback. Values: "empty" | "missing" | "notADir" | "noPerm" | "ok"
+  // Start optimistic ("ok"/"empty") to avoid flashing red before the sh check completes.
+  property string directoryState: expandedWallDir === "" ? "empty" : "ok"
+  readonly property bool directoryExists: directoryState === "ok"
+
+  // POSIX sh validation — no bashisms. Reports why the path is broken.
+  // expandedWallDir always ends with "/", so strip it before testing
+  // otherwise a file like "/a/b.jpg/" tests as "missing" not "notADir".
+  Process {
+    id: dirCheckProc
+    command: [
+      "sh", "-c",
+      'p="$1"; p=${p%/}; if [ -z "$p" ]; then echo empty; elif [ ! -e "$p" ]; then echo missing; elif [ ! -d "$p" ]; then echo notADir; elif [ ! -r "$p" ] || [ ! -x "$p" ]; then echo noPerm; else echo ok; fi',
+      "sh",
+      root.expandedWallDir
+    ]
+    stdout: StdioCollector {
+      onStreamFinished: {
+        let s = (text || "").trim()
+        if (s === "empty" || s === "missing" || s === "notADir" || s === "noPerm" || s === "ok") root.directoryState = s
+        else root.directoryState = "missing"
+      }
+    }
   }
 
   property list<string> all: []
@@ -120,9 +146,9 @@ Singleton {
   Process {
     id: listProc
 
-    // Directory comes in as $1 so bash never re-parses its content.
+    // Directory comes in as $1 so sh never re-parses its content.
     command: [
-      "bash",
+      "sh",
       "-c",
       "dir=\"$1\"; " +
         "[ -d \"$dir\" ] || exit 0; " +
@@ -161,10 +187,20 @@ Singleton {
     }
   }
 
+  Component.onCompleted: {
+    if (root.expandedWallDir === "") root.directoryState = "empty"
+    else dirCheckProc.running = true
+  }
+
   /*
-   * Re-list when the wallpaper directory changes.
+   * Re-check and re-list when the wallpaper directory changes.
    */
   onExpandedWallDirChanged: {
+    if (root.expandedWallDir === "") {
+      root.directoryState = "empty"
+    } else {
+      dirCheckProc.running = true
+    }
     Qt.callLater(() => {
       listProc.running = true
     })

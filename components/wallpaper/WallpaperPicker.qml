@@ -294,28 +294,43 @@ Scope {
 
           clip: true
 
-          Text {
+          Column {
             anchors.centerIn: parent
+            width: parent.width - 32
+            spacing: 4
+            visible: Wallpapers.all.length === 0 || !win.filteredModel || win.filteredModel.length === 0
 
-            text:
-              Wallpapers.all.length === 0
-                ? "No wallpapers in " + Settings.wallpaper.directory
-                : (
-                    (!win.filteredModel || win.filteredModel.length === 0)
-                      ? "No match"
-                      : ""
-                  )
+            Text {
+              anchors.horizontalCenter: parent.horizontalCenter
+              width: parent.width
+              horizontalAlignment: Text.AlignHCenter
+              wrapMode: Text.WordWrap
+              visible: Wallpapers.all.length === 0
+              text: {
+                switch (Wallpapers.directoryState) {
+                  case "empty": return "Wallpaper directory not set — please set a path in Settings"
+                  case "missing": return "Wallpaper directory not found — please check Settings\n" + Settings.wallpaper.directory
+                  case "notADir": return "Path is not a directory — please pick a folder\n" + Settings.wallpaper.directory
+                  case "noPerm": return "No permission to read that folder\n" + Settings.wallpaper.directory
+                  default: return Wallpapers.all.length === 0 ? "No wallpapers found in this folder\n" + Settings.wallpaper.directory : ""
+                }
+              }
+              color: Wallpapers.directoryState === "ok" ? Colors.white : Colors.red
+              opacity: 0.85
+              font.family: Typography.sans.family
+              font.pixelSize: Typography.sizeSM
+            }
 
-            color: Colors.white
-
-            opacity: 0.6
-
-            font.family: Typography.sans.family
-            font.pixelSize: Typography.sizeSM
-
-            horizontalAlignment: Text.AlignHCenter
-
-            visible: text !== ""
+            Text {
+              anchors.horizontalCenter: parent.horizontalCenter
+              visible: Wallpapers.all.length !== 0 && (!win.filteredModel || win.filteredModel.length === 0)
+              text: "No match"
+              color: Colors.white
+              opacity: 0.6
+              font.family: Typography.sans.family
+              font.pixelSize: Typography.sizeSM
+              horizontalAlignment: Text.AlignHCenter
+            }
           }
 
         /*

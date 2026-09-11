@@ -62,7 +62,10 @@ ColumnLayout {
         Layout.preferredHeight: 32
         radius: Settings.rounding.md
         color: root.editingDir || fieldMa.containsMouse ? Colors.surface : Colors.transparent
-        border.color: root.editingDir ? Colors.blue : Colors.border
+        border.color: {
+          if (Wallpapers.directoryState !== "ok" && !root.editingDir) return Colors.red
+          return root.editingDir ? Colors.blue : Colors.border
+        }
         border.width: 1
         Behavior on color { ColorAnimation { duration: 150 } }
         Behavior on border.color { ColorAnimation { duration: 150 } }
@@ -166,6 +169,24 @@ ColumnLayout {
               onClicked: root.commitDir()
             }
           }
+        }
+      }
+    }
+
+    // Inline validation — specific message per directoryState (POSIX sh)
+    Label {
+      visible: Wallpapers.directoryState !== "ok" && !root.editingDir
+      Layout.fillWidth: true
+      wrapMode: Text.WordWrap
+      color: Colors.red
+      size: Typography.sizeXS
+      text: {
+        switch (Wallpapers.directoryState) {
+          case "empty": return "Directory not set — please set a valid path"
+          case "missing": return "Directory not found — please check path"
+          case "notADir": return "Path is not a directory"
+          case "noPerm": return "No permission to read that folder"
+          default: return ""
         }
       }
     }

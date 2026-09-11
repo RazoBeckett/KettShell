@@ -38,7 +38,7 @@ Singleton {
       id: adapter
 
       property JsonObject wallpaper: JsonObject {
-        property string directory: "~/Pictures/Wallpapers/MyWallpapers/"
+        property string directory: "~/Pictures/wallpapers"
         property string current: ""
         property int wipeDeg: 30
       }
